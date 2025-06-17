@@ -13,7 +13,7 @@ public class HomePageController implements IController {
     public HomePageController(IHomeView view, INavigationController navigationController) {
         this.homePageView = view;
         this.navigationController = navigationController;
-        setupBackButtonAction();
+        setupActions();
     }
 
     @Override
@@ -21,11 +21,9 @@ public class HomePageController implements IController {
         return homePageView.getView();
     }
 
-    private void setupBackButtonAction() {
-        // homePageView.getBackButton().setOnAction(event -> {
-        //     // TODO: Implement actual back navigation using navigationController
-        //     System.out.println("Back button clicked in HomePageController");
-        //     // Example: navigationController.goBack(); or navigationController.goToPreviousPage();
-        // });
+    private void setupActions() {
+        homePageView.getBookButton().setOnAction(event -> {
+            this.navigationController.goToBooksPage();
+        });
     }
 }

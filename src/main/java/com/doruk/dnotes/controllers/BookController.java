@@ -14,7 +14,7 @@ public class BookController implements IController {
     public BookController(IBookView view, INavigationController navigationController) {
         this.bookPageView = view;
         this.navigationController = navigationController;
-        setupBackButtonAction();
+        setupActions();
     }
 
     @Override
@@ -22,11 +22,13 @@ public class BookController implements IController {
         return bookPageView.getView();
     }
 
-    private void setupBackButtonAction() {
+    private void setupActions() {
         bookPageView.getBackButton().setOnAction(event -> {
-            // TODO: Implement actual back navigation using navigationController
-            System.out.println("Back button clicked in BookController");
-            // Example: navigationController.goBack(); or navigationController.goToHomePage();
+            this.navigationController.goToHomePage();
+        });
+
+        bookPageView.getEditorButton().setOnAction(event -> {
+            this.navigationController.goToEditorPage();
         });
     }
 }

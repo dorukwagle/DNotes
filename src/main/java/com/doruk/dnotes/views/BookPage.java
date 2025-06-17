@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 
 public class BookPage implements IBookView {
 
-    private Button backButton;
+    private Button backButton, editorButton;
     private BorderPane root;
 
     public BookPage() {
@@ -21,8 +21,12 @@ public class BookPage implements IBookView {
         BorderPane.setAlignment(bookText, Pos.CENTER);
 
         backButton = new Button("Back");
-        root.setBottom(backButton);
-        BorderPane.setAlignment(backButton, Pos.CENTER);
+        root.setLeft(backButton);
+        BorderPane.setAlignment(backButton, Pos.BOTTOM_LEFT);
+
+        editorButton = new Button("Editor");
+        root.setRight(editorButton);
+        BorderPane.setAlignment(editorButton, Pos.BOTTOM_RIGHT);
     }
 
     @Override
@@ -34,7 +38,8 @@ public class BookPage implements IBookView {
         return backButton;
     }
 
-    public BorderPane getRoot() {
-        return root;
+    public Button getEditorButton() {
+        return editorButton;
     }
+
 }

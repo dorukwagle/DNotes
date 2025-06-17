@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 
 public class HomePage implements IHomeView {
 
-    private Button backButton;
+    private Button bookButton;
     private BorderPane root;
 
     public HomePage() {
@@ -20,9 +20,9 @@ public class HomePage implements IHomeView {
         root.setCenter(welcomeText);
         BorderPane.setAlignment(welcomeText, Pos.CENTER);
 
-        backButton = new Button("Back");
-        root.setBottom(backButton);
-        BorderPane.setAlignment(backButton, Pos.CENTER);
+        bookButton = new Button("Book");
+        root.setBottom(bookButton);
+        BorderPane.setAlignment(bookButton, Pos.CENTER);
     }
 
     @Override
@@ -30,11 +30,8 @@ public class HomePage implements IHomeView {
         return root;
     }
 
-    public Button getBackButton() {
-        return backButton;
-    }
 
-    public BorderPane getRoot() {
-        return root;
+    public Button getBookButton() {
+        return bookButton;
     }
 }
