@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import javax.swing.text.View;
 
 public class NavigationController implements INavigationController {
     private static NavigationController instance;

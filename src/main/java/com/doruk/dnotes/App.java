@@ -1,9 +1,26 @@
 package com.doruk.dnotes;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+import com.doruk.dnotes.controllers.BookController;
+import com.doruk.dnotes.controllers.EditorController;
+import com.doruk.dnotes.controllers.HomePageController;
+import com.doruk.dnotes.enums.ViewPage;
+import com.doruk.dnotes.interfaces.IBookView;
+import com.doruk.dnotes.interfaces.IController;
+import com.doruk.dnotes.interfaces.IEditorView;
+import com.doruk.dnotes.interfaces.IHomeView;
+import com.doruk.dnotes.interfaces.INavigationController;
+import com.doruk.dnotes.interfaces.IView;
+import com.doruk.dnotes.utils.ControllerFactory;
+import com.doruk.dnotes.views.BookPage;
+import com.doruk.dnotes.views.EditorPage;
+import com.doruk.dnotes.views.HomePage;
+
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
@@ -11,13 +28,22 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        var javaVersion = SystemInfo.javaVersion();
-        var javafxVersion = SystemInfo.javafxVersion();
+        Map<ViewPage, Supplier<IView>> viewMap = Map.of(
+            ViewPage.HOME, HomePage::new,
+            ViewPage.BOOK, BookPage::new,
+            ViewPage.EDITOR, EditorPage::new
+        );
 
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        var scene = new Scene(new StackPane(label), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+        Map<ViewPage, BiFunction<IView, INavigationController, IController>> controllerMap = Map.of(
+            ViewPage.HOME, (view, nav) -> new HomePageController((IHomeView)view, nav),
+            ViewPage.BOOK, (view, nav) -> new BookController((IBookView)view, nav),
+            ViewPage.EDITOR, (view, nav) -> new EditorController((IEditorView)view, nav)
+        );
+
+        ControllerFactory.init(viewMap, controllerMap);
+
+        var navigationController = NavigationController.getInstance(stage);
+        navigationController.goToHomePage();
     }
 
     public static void main(String[] args) {
