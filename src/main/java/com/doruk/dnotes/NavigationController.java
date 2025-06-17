@@ -11,12 +11,13 @@ import javafx.stage.Stage;
 public class NavigationController implements INavigationController {
     private static NavigationController instance;
     private static Scene scene;
-    private final double defaultW = 600;
-    private final double defaultH = 500;
+    private final double defaultW = 800;
+    private final double defaultH = 600;
 
     private NavigationController(Stage stage) {
         this.createScene(defaultW, defaultH);
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
     }
 
