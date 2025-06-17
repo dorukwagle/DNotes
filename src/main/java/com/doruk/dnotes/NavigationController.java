@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javax.swing.text.View;
+
 public class NavigationController implements INavigationController {
     private static NavigationController instance;
     private static Scene scene;
@@ -39,8 +41,15 @@ public class NavigationController implements INavigationController {
         return this;
     }
 
-    public void goToHome() {
-        var view = ControllerFactory.create(ViewPage.HOME, this).getView();
-        scene.setRoot(view);
+    public void goToHomePage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.HOME, this).getView());
+    }
+
+    public void goToBooksPage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.BOOK, this).getView());
+    }
+
+    public void goToEditorPage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.EDITOR, this).getView());
     }
 }
