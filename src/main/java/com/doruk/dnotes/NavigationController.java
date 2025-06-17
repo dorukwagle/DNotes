@@ -1,0 +1,46 @@
+package com.doruk.dnotes;
+
+import com.doruk.dnotes.enums.ViewPage;
+import com.doruk.dnotes.interfaces.INavigationController;
+import com.doruk.dnotes.utils.ControllerFactory;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+public class NavigationController implements INavigationController {
+    private static NavigationController instance;
+    private static Scene scene;
+    private final double defaultW = 600;
+    private final double defaultH = 500;
+
+    private NavigationController(Stage stage) {
+        this.createScene(defaultW, defaultH);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static NavigationController getInstance(Stage stage) {
+        if (instance == null)
+            instance = new NavigationController(stage);
+        return instance;
+    }
+
+    private void createScene(double w, double h) {
+        scene = new Scene(new Pane(), w, h);
+    }
+
+    public NavigationController reCreateScene() {
+        this.createScene(this.defaultW, this.defaultH);
+        return this;
+    }
+
+    public NavigationController reCreateScene(double w, double h) {
+        this.createScene(w, h);
+        return this;
+    }
+
+    public void goToHome() {
+        var view = ControllerFactory.create(ViewPage.HOME, this).getView();
+        scene.setRoot(view);
+    }
+}
