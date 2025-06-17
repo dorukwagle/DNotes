@@ -1,6 +1,5 @@
 package com.doruk.dnotes;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
