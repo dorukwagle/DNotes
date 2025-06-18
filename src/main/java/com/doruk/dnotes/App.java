@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.doruk.dnotes.controllers.BookController;
 import com.doruk.dnotes.controllers.EditorController;
 import com.doruk.dnotes.controllers.HomePageController;
+import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
@@ -15,6 +16,7 @@ import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IView;
 import com.doruk.dnotes.utils.ControllerFactory;
+import com.doruk.dnotes.utils.ThemeManager;
 import com.doruk.dnotes.views.BookPage;
 import com.doruk.dnotes.views.EditorPage;
 import com.doruk.dnotes.views.HomePage;
@@ -43,7 +45,9 @@ public class App extends Application {
 
         var navigationController = NavigationController.getInstance(stage);
         // navigationController.goToBooksPage();
-        navigationController.goToHomePage();
+        navigationController.goToBooksPage();
+
+        ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
     }
 
     public static void main(String[] args) {

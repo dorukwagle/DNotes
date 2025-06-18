@@ -7,7 +7,6 @@ import com.doruk.dnotes.utils.ControllerFactory;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
