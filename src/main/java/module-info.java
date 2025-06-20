@@ -1,7 +1,14 @@
 module com.doruk.dnotes {
-    requires javafx.controls;
-    requires java.desktop;
+    requires transitive javafx.base;
+    requires transitive javafx.controls;
+    requires transitive javafx.graphics;
+    requires java.base;
     requires atlantafx.base;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.core;
+    requires org.kordamp.ikonli.materialdesign2;
 
     exports com.doruk.dnotes;
+    exports com.doruk.dnotes.views;
+    exports com.doruk.dnotes.views.components;
 }

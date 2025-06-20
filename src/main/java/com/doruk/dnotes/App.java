@@ -40,13 +40,12 @@ public class App extends Application {
             ViewPage.BOOK, (view, nav) -> new BookController((IBookView)view, nav),
             ViewPage.EDITOR, (view, nav) -> new EditorController((IEditorView)view, nav)
         );
-
+        
         ControllerFactory.init(viewMap, controllerMap);
-
+        
         var navigationController = NavigationController.getInstance(stage);
         navigationController.goToHomePage();
-        // navigationController.goToBooksPage();
-
+        
         ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
     }
 
