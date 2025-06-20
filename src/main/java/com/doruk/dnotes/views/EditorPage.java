@@ -2,6 +2,8 @@ package com.doruk.dnotes.views;
 
 import atlantafx.base.theme.Styles;
 import com.doruk.dnotes.interfaces.IEditorView;
+import com.doruk.dnotes.views.components.Sidebar;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -25,6 +27,10 @@ public class EditorPage implements IEditorView {
         // 1. Root Layout
         root = new BorderPane();
         root.setPadding(new Insets(10));
+
+        // 2. Sidebar
+        Sidebar sidebar = new Sidebar();
+        root.setLeft(sidebar.getView());
 
         // 2. Loading Indicator
         loadingIndicator = new ProgressIndicator();

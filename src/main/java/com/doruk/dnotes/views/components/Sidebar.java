@@ -82,7 +82,6 @@ public class Sidebar {
                 setOnMouseExited(e -> setStyle("-fx-background-color: transparent; -fx-background-radius: 4; -fx-font-size: 16px;"));
             }
         });
-        
         return listView;
     }
     
