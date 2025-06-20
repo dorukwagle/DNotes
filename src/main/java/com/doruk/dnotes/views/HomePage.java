@@ -25,11 +25,22 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.control.Tooltip;
 
 public class HomePage implements IHomeView {
 
     private Button bookButton;
     private BorderPane root;
+
+
+    /**
+     * search bar for books
+     * import / export buttons
+     * add collections btn
+     * add books btn
+     * sort created/name 
+     * sort order asc,desc
+     */
 
     public HomePage() {
         // Create main layout
@@ -39,30 +50,67 @@ public class HomePage implements IHomeView {
         Sidebar sidebar = new Sidebar();
         root.setLeft(sidebar.getView());
         
-        // Create center content
-        VBox centerContent = new VBox();
-        centerContent.setAlignment(Pos.CENTER);
-        centerContent.setSpacing(20);
+        // Create main content container
+        VBox mainContent = new VBox();
+        mainContent.setAlignment(Pos.TOP_CENTER);
+        mainContent.setSpacing(20);
+        mainContent.setPadding(new Insets(20));
         
-        // Add welcome text
+        // Create navigation bar
+        HBox navBar = new HBox();
+        navBar.setAlignment(Pos.CENTER_LEFT);
+        navBar.setPadding(new Insets(10, 20, 10, 20));
+        navBar.setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 8;");
+        navBar.setMaxWidth(Double.MAX_VALUE);
+        
+        // Welcome text
         Text welcomeText = new Text("Welcome to DNotes!");
-        welcomeText.setFont(new Font(24));
+        welcomeText.setFont(new Font(18));
         
-        // Add book button
-        bookButton = new Button("Open Books");
+        // Spacer to push icons to the right
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // create card grid
-        ScrollPane cardGrid = createCardGrid();
+        // layout to hold icon buttons
+        HBox iconButtons = new HBox();
+        iconButtons.setSpacing(10);
         
-        // Add components to center content
-        centerContent.getChildren().addAll(welcomeText, cardGrid, bookButton);
+        // View Deleted button
+        Button viewDeletedBtn = new Button();
+        FontIcon trashIcon = new FontIcon("mdi2d-delete");
+        trashIcon.setIconSize(30);
+        viewDeletedBtn.setGraphic(trashIcon);
+        viewDeletedBtn.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
+        viewDeletedBtn.setTooltip(new Tooltip("View Deleted"));
+        iconButtons.getChildren().add(viewDeletedBtn);
+        
+        // Preferences button
+        Button preferencesBtn = new Button();
+        FontIcon settingsIcon = new FontIcon("mdi2a-account-cog");
+        settingsIcon.setIconSize(30);
+        preferencesBtn.setGraphic(settingsIcon);
+        preferencesBtn.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
+        preferencesBtn.setTooltip(new Tooltip("Preferences"));
+        iconButtons.getChildren().add(preferencesBtn);
+
+        bookButton = new Button("Open Books");
+        
+        // Add all elements to nav bar
+        navBar.getChildren().addAll(welcomeText, spacer, iconButtons);
+        
+        // Create card grid
+        ScrollPane cardGrid = createCardGrid();
+        VBox.setVgrow(cardGrid, Priority.ALWAYS);
+        
+        // Add components to main content
+        mainContent.getChildren().addAll(navBar, cardGrid, bookButton);
         
         // Set center content
-        root.setCenter(centerContent);
+        root.setCenter(mainContent);
         
-        // Make the center content grow to fill available space
-        VBox.setVgrow(centerContent, Priority.ALWAYS);
-        HBox.setHgrow(centerContent, Priority.ALWAYS);
+        // Make the main content grow to fill available space
+        VBox.setVgrow(mainContent, Priority.ALWAYS);
+        HBox.setHgrow(mainContent, Priority.ALWAYS);
     }
 
     private ScrollPane createCardGrid() {
@@ -182,8 +230,7 @@ public class HomePage implements IHomeView {
         FontIcon deleteIcon = new FontIcon("mdi2d-delete");
         deleteIcon.setIconSize(16);
         deleteButton.setGraphic(deleteIcon);
-        deleteButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT);
-        deleteButton.setStyle("-fx-text-fill: -color-danger-fg;");
+        deleteButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT, Styles.DANGER);
         deleteButton.setOnAction(e -> {
             // Handle delete action
             System.out.println("Delete card: " + title);
