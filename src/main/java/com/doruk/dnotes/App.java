@@ -44,8 +44,8 @@ public class App extends Application {
         ControllerFactory.init(viewMap, controllerMap);
 
         var navigationController = NavigationController.getInstance(stage);
+        navigationController.goToHomePage();
         // navigationController.goToBooksPage();
-        navigationController.goToBooksPage();
 
         ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
     }
@@ -53,5 +53,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 }

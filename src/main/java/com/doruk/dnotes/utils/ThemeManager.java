@@ -5,20 +5,18 @@ import atlantafx.base.theme.NordLight;
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
 import atlantafx.base.theme.Theme;
-
 import java.util.Map;
-
-import com.doruk.dnotes.enums.Themes;
-
 import atlantafx.base.theme.CupertinoDark;
 import atlantafx.base.theme.CupertinoLight;
 import atlantafx.base.theme.Dracula;
 import javafx.application.Application;
 
+import com.doruk.dnotes.enums.Themes;
+
+
 public class ThemeManager {
 
     private static ThemeManager instance;
-    private boolean isDark = true;  // Default theme
     private static Map<Themes, Theme> themeCollection;
 
     private ThemeManager() {

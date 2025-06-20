@@ -7,16 +7,25 @@ import com.doruk.dnotes.utils.ControllerFactory;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
 public class NavigationController implements INavigationController {
     private static NavigationController instance;
     private static Scene scene;
-    private final double defaultW = 800;
-    private final double defaultH = 600;
+    private final double defaultW;
+    private final double defaultH;
 
     private NavigationController(Stage stage) {
+
+        // calculate screen size
+        double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
+        double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
+        // scale app to 70%, 80% of screen size
+        this.defaultW = screenWidth * 0.7;
+        this.defaultH = screenHeight * 0.8;
+
         this.createScene(defaultW, defaultH);
         stage.setScene(scene);
 
