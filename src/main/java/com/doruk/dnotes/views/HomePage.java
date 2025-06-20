@@ -18,11 +18,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
@@ -121,13 +123,14 @@ public class HomePage implements IHomeView {
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
         
-        // Create grid for cards
-        GridPane grid = new GridPane();
-        grid.setHgap(20);
-        grid.setVgap(20);
-        grid.setPadding(new Insets(10));
+        // Create flow pane for responsive card layout
+        FlowPane flowPane = new FlowPane();
+        flowPane.setPadding(new Insets(15));
+        flowPane.setVgap(20);
+        flowPane.setHgap(20);
+        flowPane.setStyle("-fx-background-color: transparent;");
         
-        // Add cards to grid
+        // Add cards to flow pane
         List<String> dummyTitles = Arrays.asList(
             "Project Ideas",
             "Meeting Notes",
@@ -150,28 +153,26 @@ public class HomePage implements IHomeView {
             "Book flights, reserve hotel, create itinerary for Japan trip..."
         );
         
-        int columns = 3;
         for (int i = 0; i < dummyTitles.size(); i++) {
             VBox card = createCard(
                 dummyTitles.get(i),
                 dummyContent.get(i),
                 LocalDate.now().minusDays(i)
             );
-            grid.add(card, i % columns, i / columns);
+            // Set preferred width for cards with min and max constraints
+            card.setMinWidth(280);
+            card.setMaxWidth(380);
+            card.setPrefWidth(320);
+            flowPane.getChildren().add(card);
         }
         
-        // Make grid fill available width
-        ColumnConstraints column1 = new ColumnConstraints();
-        column1.setPercentWidth(100.0 / columns);
-        for (int i = 0; i < columns; i++) {
-            grid.getColumnConstraints().add(column1);
-        }
+        // Bind flow pane width to scroll pane width
+        flowPane.prefWrapLengthProperty().bind(
+            scrollPane.widthProperty().subtract(40) // account for padding and scrollbar
+        );
         
-        // Add grid to scroll pane
-        scrollPane.setContent(grid);
-        
-        // Bind grid width to scroll pane width
-        grid.prefWidthProperty().bind(scrollPane.widthProperty().subtract(30));
+        // Add flow pane to scroll pane
+        scrollPane.setContent(flowPane);
         
         return scrollPane;
     }
@@ -179,38 +180,52 @@ public class HomePage implements IHomeView {
     private VBox createCard(String title, String content, LocalDate date) {
         VBox card = new VBox();
         card.getStyleClass().add("card");
-        card.setSpacing(10);
-        card.setPadding(new Insets(15));
+        card.setSpacing(16);
+        card.setPadding(new Insets(24));
         card.setStyle(
             "-fx-background-color: -color-bg-default;" +
-            "-fx-background-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" +
-            "-fx-cursor: hand;"
+            "-fx-background-radius: 12;" +
+            "-fx-border-color: -color-border-muted;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0.1, 0, 4);" +
+            "-fx-cursor: hand;" +
+            "-fx-transition: all 0.2s;"
         );
         
         // Add hover effect
         card.setOnMouseEntered(e -> card.setStyle(
             "-fx-background-color: -color-bg-subtle;" +
-            "-fx-background-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0, 0, 4);" +
-            "-fx-cursor: hand;"
+            "-fx-background-radius: 12;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0.15, 0, 6);" +
+            "-fx-cursor: hand;" +
+            "-fx-scale-x: 1.05;" + 
+            "-fx-scale-y: 1.05;"
         ));
         
         card.setOnMouseExited(e -> card.setStyle(
             "-fx-background-color: -color-bg-default;" +
-            "-fx-background-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" +
-            "-fx-cursor: hand;"
+            "-fx-background-radius: 12;" +
+            "-fx-border-color: -color-border-muted;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0.1, 0, 4);" +
+            "-fx-cursor: hand;" +
+            "-fx-scale-x: 1;" + 
+            "-fx-scale-y: 1;"
         ));
         
         // Title
         Text titleText = new Text(title);
-        titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
+        titleText.getStyleClass().add(Styles.TITLE_4);
+        titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 18;");
         
         // Content preview (limit to 3 lines)
         Text contentText = new Text(content);
-        contentText.setStyle("-fx-fill: -color-fg-muted;");
-        contentText.setWrappingWidth(250);
+        contentText.setStyle("-fx-fill: -color-fg-muted; -fx-font-size: 14;");
+        contentText.setWrappingWidth(280);
         
         // Status bar
         HBox statusBar = new HBox();
