@@ -1,5 +1,6 @@
 package com.doruk.dnotes.views;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -11,8 +12,10 @@ import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.views.components.Sidebar;
 
 import atlantafx.base.theme.Styles;
+import javafx.animation.RotateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -22,10 +25,14 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 
@@ -74,6 +81,8 @@ public class HomePage implements IHomeView {
         
         // Search icon
         FontIcon searchIcon = new FontIcon("mdi2m-magnify");
+        searchIcon.setScaleX(1.3);
+        searchIcon.setScaleY(1.3);
         searchIcon.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.LARGE);
         
         // Search field
@@ -124,6 +133,8 @@ public class HomePage implements IHomeView {
         menuButton.setPrefHeight(50);
         FontIcon menuIcon = new FontIcon("mdi2m-menu");
         menuButton.setGraphic(menuIcon);
+        menuIcon.setScaleX(2);
+        menuIcon.setScaleY(2);
         menuButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.ACCENT, "no-arrow");
         createMenuList(menuButton);
         navBar.setRight(menuButton);
@@ -138,8 +149,50 @@ public class HomePage implements IHomeView {
         // Add components to main content
         mainContent.getChildren().addAll(navBar, cardGrid, bookButton);
         
-        // Set center content
-        root.setCenter(mainContent);
+        // Main content is wrapped in StackPane with FAB
+
+        // Create floating action button
+        Button fab = new Button();
+        fab.getStyleClass().addAll(Styles.ACCENT);
+        fab.setScaleZ(2);
+        fab.setStyle(
+            "-fx-background-radius: 28;\n" +
+            "-fx-min-width: 56;\n" +
+            "-fx-min-height: 56;\n" +
+            "-fx-max-width: 56;\n" +
+            "-fx-max-height: 56;\n" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);"
+        );
+        FontIcon plusIcon = new FontIcon("mdi2b-book-plus-multiple");
+        plusIcon.setScaleX(2.3);
+        plusIcon.setScaleY(2.3);
+        fab.setGraphic(plusIcon);
+        
+        // Add hover effect
+        fab.hoverProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal){
+                fab.setStyle(fab.getStyle() + "-fx-rotate: 180;");
+            }
+            else {
+                fab.setStyle(fab.getStyle().replace("-fx-rotate: 180;", ""));
+            }
+        });
+        
+        // Position FAB in bottom-right corner
+        StackPane.setAlignment(fab, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(fab, new Insets(0, 50, 50, 0));
+        
+        // Add click handler
+        fab.setOnAction(e -> {
+            System.out.println("FAB clicked - Open add dialog");
+            // TODO: Implement add book/collection dialog
+        });
+        
+        // Wrap main content in StackPane to overlay FAB
+        StackPane contentWrapper = new StackPane(mainContent, fab);
+        
+        // Set the wrapped content as center
+        root.setCenter(contentWrapper);
         
         // Make the main content grow to fill available space
         VBox.setVgrow(mainContent, Priority.ALWAYS);
