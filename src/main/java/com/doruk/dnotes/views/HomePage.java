@@ -17,6 +17,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -60,7 +64,7 @@ public class HomePage implements IHomeView {
         
         // Create navigation bar
         BorderPane navBar = new BorderPane();
-        navBar.setPadding(new Insets(10, 20, 10, 20));
+        navBar.setPadding(new Insets(5, 20, 5, 20));
         navBar.setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 8;");
         navBar.setMaxWidth(Double.MAX_VALUE);
         
@@ -68,7 +72,7 @@ public class HomePage implements IHomeView {
         HBox searchContainer = new HBox(10);
         searchContainer.setAlignment(Pos.CENTER_LEFT);
         searchContainer.setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 8;");
-        searchContainer.setPadding(new Insets(0, 10, 0, 10));
+        searchContainer.setPadding(new Insets(0, 50, 0, 10));
         searchContainer.setMinHeight(45);
         searchContainer.setMaxHeight(45);
         
@@ -119,17 +123,24 @@ public class HomePage implements IHomeView {
         navBar.setCenter(searchContainer);
 
         // Create menu button
-        HBox menuButtonContainer = new HBox();
-        menuButtonContainer.setPadding(new Insets(0, 0, 0, 50));
-        Button menuButton = new Button();
-        menuButton.setStyle("-fx-font-size: 24;");
+        MenuBar menuBar = new MenuBar();
+        Menu menu = new Menu();
+        menu.setStyle("-fx-font-size: 24;");
         FontIcon menuIcon = new FontIcon("mdi2m-menu");
         menuIcon.setIconSize(24);
-        menuButton.setGraphic(menuIcon);
+        menu.setGraphic(menuIcon);
+        menu.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
         
-        menuButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
-        menuButtonContainer.getChildren().add(menuButton);
-        navBar.setRight(menuButtonContainer);
+        // Create menu container
+        StackPane menuContainer = new StackPane();
+        menuContainer.setStyle("");
+        root.setRight(menuContainer);
+        StackPane.setAlignment(menuContainer, Pos.TOP_RIGHT);
+
+        createMenuList(menu);
+        
+        menuBar.getMenus().add(menu);
+        navBar.setRight(menuBar);
 
         bookButton = new Button("Open Books");
         
@@ -146,6 +157,27 @@ public class HomePage implements IHomeView {
         // Make the main content grow to fill available space
         VBox.setVgrow(mainContent, Priority.ALWAYS);
         HBox.setHgrow(mainContent, Priority.ALWAYS);
+    }
+
+    private void createMenuList(Menu menu) {
+        // Add menu items with icons
+        String[][] menuData = {
+            {"Backup", "mdi2c-cloud-upload"},
+            {"Restore", "mdi2c-cloud-download"},
+            {"View Trash", "mdi2d-delete"},
+            {"Preferences", "mdi2a-account-cog"}
+        };
+        
+        for (String[] itemData : menuData) {
+            MenuItem menuItem = new MenuItem(itemData[0]);
+            FontIcon icon = new FontIcon(itemData[1]);
+            icon.setIconSize(18);
+            menuItem.setGraphic(icon);
+            
+            menuItem.setOnAction(e -> System.out.println(itemData[0] + " clicked"));
+            menu.getItems().add(menuItem);
+        }
+        
     }
 
     private ScrollPane createCardGrid() {

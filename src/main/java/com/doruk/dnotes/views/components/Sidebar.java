@@ -64,6 +64,7 @@ public class Sidebar {
             "-fx-background-color: transparent; " +
             "-fx-border-width: 0; " +
             "-fx-padding: 0 0 0 8; " +
+            "-fx-font-size: 15px;" +
             "-fx-text-fill: -color-fg-default;"
         );
         searchField.focusTraversableProperty().set(false);
