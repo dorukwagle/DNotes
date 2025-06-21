@@ -16,11 +16,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -56,46 +59,79 @@ public class HomePage implements IHomeView {
         mainContent.setPadding(new Insets(20));
         
         // Create navigation bar
-        HBox navBar = new HBox();
-        navBar.setAlignment(Pos.CENTER_LEFT);
+        BorderPane navBar = new BorderPane();
         navBar.setPadding(new Insets(10, 20, 10, 20));
         navBar.setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 8;");
         navBar.setMaxWidth(Double.MAX_VALUE);
         
-        // Welcome text
-        Text welcomeText = new Text("Welcome to DNotes!");
-        welcomeText.setFont(new Font(18));
+        // Search bar container
+        HBox searchContainer = new HBox(10);
+        searchContainer.setAlignment(Pos.CENTER_LEFT);
+        searchContainer.setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 8;");
+        searchContainer.setPadding(new Insets(0, 10, 0, 10));
+        searchContainer.setMinHeight(45);
+        searchContainer.setMaxHeight(45);
         
-        // Spacer to push icons to the right
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        // Search icon
+        FontIcon searchIcon = new FontIcon("mdi2m-magnify");
+        searchIcon.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.LARGE);
+        
+        // Search field
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search books...");
+        searchField.setStyle(
+            "-fx-background-color: transparent; " +
+            "-fx-border-width: 0; " +
+            "-fx-padding: 0 0 0 8; " +
+            "-fx-font-size: 18; " +
+            "-fx-text-fill: -color-fg-default;"
+        );
+        searchField.focusTraversableProperty().set(false);
+        HBox.setHgrow(searchField, Priority.ALWAYS);
+        
+        // Sort controls container
+        HBox sortControls = new HBox(2);
+        sortControls.setAlignment(Pos.CENTER_RIGHT);
+        sortControls.setPadding(new Insets(0, 0, 0, 5));
+        
+        // Sort by toggle (Date/Alphabetical)
+        ToggleButton sortByToggle = new ToggleButton("Date");
+        sortByToggle.setGraphic(new FontIcon("mdi2c-calendar-month-outline"));
+        sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
+        sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
+        sortByToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            sortByToggle.setGraphic(new FontIcon(newVal ? "mdi2a-alphabetical-variant" : "mdi2c-calendar-month-outline"));
+        });
+        
+        // Sort order toggle (Ascending/Descending)
+        ToggleButton sortOrderToggle = new ToggleButton("");
+        sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-ascending"));
+        sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
+        sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
+        sortOrderToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-descending" : "mdi2s-sort-ascending"));
+        });
+        
+        sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);
+        searchContainer.getChildren().addAll(searchIcon, searchField, sortControls);
+        
+        // Add search bar to nav bar
+        navBar.setCenter(searchContainer);
 
-        // layout to hold icon buttons
-        HBox iconButtons = new HBox();
-        iconButtons.setSpacing(10);
+        // Create menu button
+        HBox menuButtonContainer = new HBox();
+        menuButtonContainer.setPadding(new Insets(0, 0, 0, 50));
+        Button menuButton = new Button();
+        menuButton.setStyle("-fx-font-size: 24;");
+        FontIcon menuIcon = new FontIcon("mdi2m-menu");
+        menuIcon.setIconSize(24);
+        menuButton.setGraphic(menuIcon);
         
-        // View Deleted button
-        Button viewDeletedBtn = new Button();
-        FontIcon trashIcon = new FontIcon("mdi2d-delete");
-        trashIcon.setIconSize(30);
-        viewDeletedBtn.setGraphic(trashIcon);
-        viewDeletedBtn.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
-        viewDeletedBtn.setTooltip(new Tooltip("View Deleted"));
-        iconButtons.getChildren().add(viewDeletedBtn);
-        
-        // Preferences button
-        Button preferencesBtn = new Button();
-        FontIcon settingsIcon = new FontIcon("mdi2a-account-cog");
-        settingsIcon.setIconSize(30);
-        preferencesBtn.setGraphic(settingsIcon);
-        preferencesBtn.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
-        preferencesBtn.setTooltip(new Tooltip("Preferences"));
-        iconButtons.getChildren().add(preferencesBtn);
+        menuButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
+        menuButtonContainer.getChildren().add(menuButton);
+        navBar.setRight(menuButtonContainer);
 
         bookButton = new Button("Open Books");
-        
-        // Add all elements to nav bar
-        navBar.getChildren().addAll(welcomeText, spacer, iconButtons);
         
         // Create card grid
         ScrollPane cardGrid = createCardGrid();
