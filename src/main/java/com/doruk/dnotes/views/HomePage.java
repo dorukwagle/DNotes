@@ -17,9 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
@@ -27,9 +25,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 
@@ -123,25 +119,21 @@ public class HomePage implements IHomeView {
         navBar.setCenter(searchContainer);
 
         // Create menu button
-        MenuBar menuBar = new MenuBar();
-        menuBar.setStyle("-fx-cursor: hand;");
-        
-        Menu menu = new Menu();
+        MenuButton menuButton = new MenuButton();
+        menuButton.setStyle("-fx-cursor: hand; -fx-background-color: transparent;");
+        menuButton.setPrefHeight(50);
         FontIcon menuIcon = new FontIcon("mdi2m-menu");
-        menuIcon.setIconSize(24);
-        menu.setGraphic(menuIcon);
-        menu.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
-        
-        createMenuList(menu);
-        
-        menuBar.getMenus().add(menu);
-        navBar.setRight(menuBar);
+        menuButton.setGraphic(menuIcon);
+        menuButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.ACCENT, "no-arrow");
+        createMenuList(menuButton);
+        navBar.setRight(menuButton);
 
         bookButton = new Button("Open Books");
         
         // Create card grid
         ScrollPane cardGrid = createCardGrid();
         VBox.setVgrow(cardGrid, Priority.ALWAYS);
+
         
         // Add components to main content
         mainContent.getChildren().addAll(navBar, cardGrid, bookButton);
@@ -154,11 +146,11 @@ public class HomePage implements IHomeView {
         HBox.setHgrow(mainContent, Priority.ALWAYS);
     }
 
-    private void createMenuList(Menu menu) {
+    private void createMenuList(MenuButton menuButton) {
         // Add menu items with icons
         String[][] menuData = {
-            {"Backup", "mdi2c-cloud-upload"},
-            {"Restore", "mdi2c-cloud-download"},
+            {"Backup", "mdi2e-export"},
+            {"Restore", "mdi2b-backup-restore"},
             {"View Trash", "mdi2d-delete"},
             {"Preferences", "mdi2a-account-cog"}
         };
@@ -166,7 +158,7 @@ public class HomePage implements IHomeView {
         for (String[] itemData : menuData) {
             MenuItem menuItem = new MenuItem(itemData[0]);
             FontIcon icon = new FontIcon(itemData[1]);
-            icon.setIconSize(18);
+            icon.setIconSize(30);
             menuItem.setGraphic(icon);
             menuItem.getStyleClass().addAll(Styles.ACCENT);
             
@@ -179,22 +171,12 @@ public class HomePage implements IHomeView {
             );
             
             menuItem.setOnAction(e -> System.out.println(itemData[0] + " clicked"));
-            menu.getItems().add(menuItem);
+            menuButton.getItems().add(menuItem);
         }
         
-        // Style the context menu using Atlantafx
-        menu.setStyle(
-            menu.getStyle() + 
-            "-fx-background-color: -color-bg-default;\n" +
-            "-fx-background-radius: 8;\n" +
-            "-fx-padding: 5;\n" +
-            "-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 2);\n" +
-            "-fx-skin: \"com/sun/javafx/scene/control/skin/ContextMenuSkin\";"
-        );
-        
-        // Add style class for the menu items container
-        menu.getStyleClass().add("context-menu");
-        
+        // Style the popup content
+        menuButton.getStyleClass().add("menu-button");
+        menuButton.popupSideProperty().set(javafx.geometry.Side.BOTTOM);
     }
 
     private ScrollPane createCardGrid() {
