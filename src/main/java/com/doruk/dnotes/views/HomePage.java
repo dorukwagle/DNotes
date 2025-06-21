@@ -124,19 +124,14 @@ public class HomePage implements IHomeView {
 
         // Create menu button
         MenuBar menuBar = new MenuBar();
+        menuBar.setStyle("-fx-cursor: hand;");
+        
         Menu menu = new Menu();
-        menu.setStyle("-fx-font-size: 24;");
         FontIcon menuIcon = new FontIcon("mdi2m-menu");
         menuIcon.setIconSize(24);
         menu.setGraphic(menuIcon);
         menu.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED);
         
-        // Create menu container
-        StackPane menuContainer = new StackPane();
-        menuContainer.setStyle("");
-        root.setRight(menuContainer);
-        StackPane.setAlignment(menuContainer, Pos.TOP_RIGHT);
-
         createMenuList(menu);
         
         menuBar.getMenus().add(menu);
@@ -173,10 +168,32 @@ public class HomePage implements IHomeView {
             FontIcon icon = new FontIcon(itemData[1]);
             icon.setIconSize(18);
             menuItem.setGraphic(icon);
+            menuItem.getStyleClass().addAll(Styles.ACCENT);
+            
+            // Style menu items
+            menuItem.setStyle(
+                "-fx-padding: 8 15 8 10;\n" +
+                "-fx-background-radius: 4;\n" +
+                "-fx-cursor: hand;\n" +
+                "-fx-background-color: transparent;"
+            );
             
             menuItem.setOnAction(e -> System.out.println(itemData[0] + " clicked"));
             menu.getItems().add(menuItem);
         }
+        
+        // Style the context menu using Atlantafx
+        menu.setStyle(
+            menu.getStyle() + 
+            "-fx-background-color: -color-bg-default;\n" +
+            "-fx-background-radius: 8;\n" +
+            "-fx-padding: 5;\n" +
+            "-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 2);\n" +
+            "-fx-skin: \"com/sun/javafx/scene/control/skin/ContextMenuSkin\";"
+        );
+        
+        // Add style class for the menu items container
+        menu.getStyleClass().add("context-menu");
         
     }
 
