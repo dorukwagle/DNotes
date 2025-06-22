@@ -16,6 +16,12 @@ public class EditorController implements IEditorController {
         setupActions();
     }
 
+    private void setupActions() {
+        editorPageView.getBackButton().setOnAction(event -> {
+            this.navigationController.goToBooksPage();
+        });
+    }
+
     @Override
     public Parent getView() {
         return editorPageView.getView();
@@ -26,9 +32,8 @@ public class EditorController implements IEditorController {
         
     }
 
-    private void setupActions() {
-        editorPageView.getBackButton().setOnAction(event -> {
-            this.navigationController.goToBooksPage();
-        });
+    @Override
+    public void close() {
+        
     }
 }

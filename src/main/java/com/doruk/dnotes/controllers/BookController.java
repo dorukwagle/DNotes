@@ -32,6 +32,10 @@ public class BookController implements IController {
         });
 
         this.view.getEditorButton().setOnAction(event -> {
+            // close editorController gracefully
+            if (this.editorController != null)
+                this.editorController.close();
+
             this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR, this.navigationController);
             this.view.displayEditor(this.editorController.getView());
             this.editorController.openPage("id-of-page");
