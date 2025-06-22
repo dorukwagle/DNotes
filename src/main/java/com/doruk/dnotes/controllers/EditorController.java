@@ -21,6 +21,11 @@ public class EditorController implements IEditorController {
         return editorPageView.getView();
     }
 
+    @Override
+    public void openPage(String pageId) {
+        
+    }
+
     private void setupActions() {
         editorPageView.getBackButton().setOnAction(event -> {
             this.navigationController.goToBooksPage();
