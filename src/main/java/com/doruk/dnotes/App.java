@@ -49,7 +49,7 @@ public class App extends Application {
         ControllerFactory.init(viewMap, controllerMap);
         
         var navigationController = NavigationController.getInstance(stage);
-        navigationController.goToHomePage();
+        navigationController.goToBooksPage();
         
         ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
     }

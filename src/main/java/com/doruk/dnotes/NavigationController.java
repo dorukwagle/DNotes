@@ -56,18 +56,17 @@ public class NavigationController implements INavigationController {
         return this;
     }
 
+    @Override
     public void goToHomePage() {
         scene.setRoot(ControllerFactory.create(ViewPage.HOME, this).getView());
     }
 
+    @Override
     public void goToBooksPage() {
         scene.setRoot(ControllerFactory.create(ViewPage.BOOK, this).getView());
     }
 
-    public void goToEditorPage() {
-        scene.setRoot(ControllerFactory.create(ViewPage.EDITOR, this).getView());
-    }
-
+    @Override
     public void goToPreferencePage() {
         scene.setRoot(ControllerFactory.create(ViewPage.PREFERENCE, this).getView());
     }

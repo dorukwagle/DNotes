@@ -167,6 +167,7 @@ public class FAB extends Button {
             Insets fabMargin = StackPane.getMargin(this);
             if (fabMargin == null) {
                 fabMargin = new Insets(0, 50, 50, 0); // Default margin if not set
+                StackPane.setAlignment(this, Pos.BOTTOM_RIGHT);
                 StackPane.setMargin(this, fabMargin);
             }
             StackPane.setAlignment(this.itemsPane, Pos.BOTTOM_RIGHT);

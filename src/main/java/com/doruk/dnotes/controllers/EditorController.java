@@ -1,11 +1,11 @@
 package com.doruk.dnotes.controllers;
 
-import com.doruk.dnotes.interfaces.IController;
+import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IEditorView;
 import javafx.scene.Parent;
 
-public class EditorController implements IController {
+public class EditorController implements IEditorController {
 
     private final IEditorView editorPageView;
     private final INavigationController navigationController;
