@@ -2,7 +2,6 @@ package com.doruk.dnotes.views.components;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 

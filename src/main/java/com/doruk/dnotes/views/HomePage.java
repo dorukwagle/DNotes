@@ -1,6 +1,5 @@
 package com.doruk.dnotes.views;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -13,10 +12,8 @@ import com.doruk.dnotes.views.components.FAB;
 import com.doruk.dnotes.views.components.Sidebar;
 
 import atlantafx.base.theme.Styles;
-import javafx.animation.RotateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -27,13 +24,10 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 
@@ -41,16 +35,6 @@ public class HomePage implements IHomeView {
 
     private Button bookButton;
     private BorderPane root;
-
-
-    /**
-     * search bar for books
-     * import / export buttons
-     * add collections btn
-     * add books btn
-     * sort created/name 
-     * sort order asc,desc
-     */
 
     public HomePage() {
         // Create main layout
