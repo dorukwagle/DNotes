@@ -196,7 +196,6 @@ public class HomePage implements IHomeView {
                 "-fx-font-size: 16px;"
             );
 
-            
             menuItem.setOnAction(e -> System.out.println(itemData[0] + " clicked"));
             menuButton.getItems().add(menuItem);
         }

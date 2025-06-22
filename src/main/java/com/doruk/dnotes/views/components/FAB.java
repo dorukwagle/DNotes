@@ -2,6 +2,7 @@ package com.doruk.dnotes.views.components;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -20,6 +21,8 @@ public class FAB extends Button {
     private Pane parent;
     private boolean isItemsHovering = false;
     private boolean isFabHovering = false;
+    private Runnable onAddBook;
+    private Runnable onAddCollection;
 
     public FAB() {
         super();
@@ -30,18 +33,25 @@ public class FAB extends Button {
         this.itemsPane.setMaxWidth(175);
         this.itemsPane.setMaxHeight(50);
         this.itemsPane.setStyle(
-            "-fx-background-color: transparent; " +
-            "-fx-background-radius: 8; " +
-            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 2, 2);"
-        );
+                "-fx-background-color: transparent; " +
+                        "-fx-background-radius: 8; " +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 2, 2);");
 
         // Create menu items
         Button addBookBtn = createMenuItem("mdi2b-book-plus", "Book");
         Button addCollectionBtn = createMenuItem("mdi2f-folder-plus", "Collection");
 
         // Add click handlers
-        addBookBtn.setOnAction(e -> System.out.println("Add Book clicked"));
-        addCollectionBtn.setOnAction(e -> System.out.println("Add Collection clicked"));
+        addBookBtn.setOnAction(e -> {
+            this.forceClose();
+            if (this.onAddBook != null)
+                this.onAddBook.run();
+        });
+        addCollectionBtn.setOnAction(e -> {
+            this.forceClose();
+            if (this.onAddCollection != null)
+                this.onAddCollection.run();
+        });
 
         this.itemsPane.getChildren().addAll(addBookBtn, addCollectionBtn);
 
@@ -85,21 +95,21 @@ public class FAB extends Button {
         this.itemsPane.setVisible(true);
     }
 
-    private void close() {
+    private void forceClose() {
         this.setStyle(this.getStyle().replace("-fx-scale-x: 0.8; -fx-scale-y: 0.8;", ""));
         this.itemsPane.setVisible(false);
     }
 
     private void closeMenu() {
-        // use delay of 200ms ( allow to move mouse hover from  fab to items )
+        // use delay of 200ms ( allow to move mouse hover from fab to items )
         CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS)
-            .execute(() -> {
-                if (this.isItemsHovering || this.isFabHovering)
-                    return;
+                .execute(() -> {
+                    if (this.isItemsHovering || this.isFabHovering)
+                        return;
 
-                // hovering exited, close the menu
-                Platform.runLater(this::close);
-            });
+                    // hovering exited, close the menu
+                    Platform.runLater(this::forceClose);
+                });
     }
 
     private Button createMenuItem(String iconLiteral, String text) {
@@ -108,40 +118,38 @@ public class FAB extends Button {
         menuItem.setAlignment(Pos.CENTER_LEFT);
         menuItem.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT);
         menuItem.getStyleClass().addAll(Styles.LARGE, Styles.TEXT_BOLD);
-        
+
         // Set style
         menuItem.setStyle(
-            "-fx-padding: 8 12; " +
-            "-fx-background-radius: 4; " +
-            "-fx-background-color: transparent; " +
-            "-fx-text-fill: -color-fg-default; " +
-            "-fx-cursor: hand;"
-        );
-        
+                "-fx-padding: 8 12; " +
+                        "-fx-background-radius: 4; " +
+                        "-fx-background-color: transparent; " +
+                        "-fx-text-fill: -color-fg-default; " +
+                        "-fx-cursor: hand;");
+
         // Add hover effect
         menuItem.hoverProperty().addListener((obs, oldVal, isHovering) -> {
             menuItem.setStyle(
-                "-fx-padding: 8 12; " +
-                "-fx-background-radius: 4; " +
-                "-fx-background-color: " + (isHovering ? "-color-accent-fg; " : "transparent; ") +
-                "-fx-text-fill: -color-fg-emphasis; " +
-                "-fx-cursor: hand;"
-            );
+                    "-fx-padding: 8 12; " +
+                            "-fx-background-radius: 4; " +
+                            "-fx-background-color: " + (isHovering ? "-color-accent-fg; " : "transparent; ") +
+                            "-fx-text-fill: -color-fg-emphasis; " +
+                            "-fx-cursor: hand;");
         });
-        
+
         // Add icon
         FontIcon icon = new FontIcon(iconLiteral);
         icon.setIconSize(20);
         icon.setScaleX(1.3);
         icon.setScaleY(1.3);
         menuItem.setGraphic(icon);
-        
+
         // Add spacing between icon and text
         menuItem.setGraphicTextGap(20);
-        
+
         return menuItem;
     }
-    
+
     public void setActionsParent(Pane parent) {
         if (this.parent != null)
             return;
@@ -163,13 +171,17 @@ public class FAB extends Button {
                 StackPane.setMargin(this, fabMargin);
             }
             StackPane.setAlignment(this.itemsPane, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(this.itemsPane, new Insets(0, fabMargin.getRight(), fabMargin.getBottom() + 75, 0)); // 56
-                                                                                                                     // is
-                                                                                                                     // FAB
-                                                                                                                     // height,
-                                                                                                                     // 12
-                                                                                                                     // is
-                                                                                                                     // spacing
+            StackPane.setMargin(this.itemsPane,
+                    new Insets(0, fabMargin.getRight(),
+                            fabMargin.getBottom() + 75, 0));
         }
+    }
+
+    public void setOnAddBook(Runnable onAddBook) {
+        this.onAddBook = onAddBook;
+    }
+
+    public void setOnAddCollection(Runnable onAddCollection) {
+        this.onAddCollection = onAddCollection;
     }
 }
