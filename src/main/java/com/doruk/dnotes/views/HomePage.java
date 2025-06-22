@@ -192,15 +192,17 @@ public class HomePage implements IHomeView {
                 "-fx-padding: 8 15 8 10;\n" +
                 "-fx-background-radius: 4;\n" +
                 "-fx-cursor: hand;\n" +
-                "-fx-background-color: transparent;"
+                "-fx-background-color: transparent;\n" +
+                "-fx-font-size: 16px;"
             );
+
             
             menuItem.setOnAction(e -> System.out.println(itemData[0] + " clicked"));
             menuButton.getItems().add(menuItem);
         }
         
         // Style the popup content
-        menuButton.getStyleClass().add("menu-button");
+        menuButton.getStyleClass().addAll("menu-button");
         menuButton.popupSideProperty().set(javafx.geometry.Side.BOTTOM);
     }
 
