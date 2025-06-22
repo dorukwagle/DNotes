@@ -67,4 +67,8 @@ public class NavigationController implements INavigationController {
     public void goToEditorPage() {
         scene.setRoot(ControllerFactory.create(ViewPage.EDITOR, this).getView());
     }
+
+    public void goToPreferencePage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.PREFERENCE, this).getView());
+    }
 }
