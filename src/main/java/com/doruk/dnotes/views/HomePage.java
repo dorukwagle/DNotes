@@ -9,6 +9,7 @@ import java.util.List;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.interfaces.IHomeView;
+import com.doruk.dnotes.views.components.FAB;
 import com.doruk.dnotes.views.components.Sidebar;
 
 import atlantafx.base.theme.Styles;
@@ -150,46 +151,17 @@ public class HomePage implements IHomeView {
         mainContent.getChildren().addAll(navBar, cardGrid, bookButton);
         
         // Main content is wrapped in StackPane with FAB
+        StackPane contentWrapper = new StackPane();
 
         // Create floating action button
-        Button fab = new Button();
-        fab.getStyleClass().addAll(Styles.ACCENT);
-        fab.setScaleZ(2);
-        fab.setStyle(
-            "-fx-background-radius: 28;\n" +
-            "-fx-min-width: 56;\n" +
-            "-fx-min-height: 56;\n" +
-            "-fx-max-width: 56;\n" +
-            "-fx-max-height: 56;\n" +
-            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);"
-        );
-        FontIcon plusIcon = new FontIcon("mdi2b-book-plus-multiple");
-        plusIcon.setScaleX(2.3);
-        plusIcon.setScaleY(2.3);
-        fab.setGraphic(plusIcon);
-        
-        // Add hover effect
-        fab.hoverProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal){
-                fab.setStyle(fab.getStyle() + "-fx-rotate: 180;");
-            }
-            else {
-                fab.setStyle(fab.getStyle().replace("-fx-rotate: 180;", ""));
-            }
-        });
-        
+        FAB fab = new FAB();
+        contentWrapper.getChildren().addAll(mainContent, fab);
+        fab.setActionsParent(contentWrapper);
+
         // Position FAB in bottom-right corner
         StackPane.setAlignment(fab, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(fab, new Insets(0, 50, 50, 0));
         
-        // Add click handler
-        fab.setOnAction(e -> {
-            System.out.println("FAB clicked - Open add dialog");
-            // TODO: Implement add book/collection dialog
-        });
-        
-        // Wrap main content in StackPane to overlay FAB
-        StackPane contentWrapper = new StackPane(mainContent, fab);
         
         // Set the wrapped content as center
         root.setCenter(contentWrapper);
