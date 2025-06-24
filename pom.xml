@@ -1,65 +1,79 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.doruk.dnotes</groupId>
     <artifactId>DNotes</artifactId>
     <version>1.0.0</version>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <javafx.version>24.0.1</javafx.version>
+        <atlantafx.version>2.0.1</atlantafx.version>
+        <ikonli.version>12.3.1</ikonli.version>
     </properties>
+
     <dependencies>
+        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>24.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>24.0.1</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>24.0.1</version>
+            <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- Atlantafx -->
         <dependency>
             <groupId>io.github.mkpaz</groupId>
             <artifactId>atlantafx-base</artifactId>
-            <version>2.0.1</version>
+            <version>${atlantafx.version}</version>
         </dependency>
-        <!-- Ikonli for icons -->
+
+        <!-- Ikonli -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-materialdesign2-pack</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli.version}</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
+            <!-- Latest Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>21</release>
                 </configuration>
             </plugin>
+
+            <!-- JavaFX Plugin for jlink and running -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running -->
-                        <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <stripDebug>true</stripDebug>
@@ -67,13 +81,43 @@
                             <noHeaderFiles>true</noHeaderFiles>
                             <noManPages>true</noManPages>
                             <launcher>DNotes</launcher>
-                            <jlinkImageName>dnotes</jlinkImageName>
-                            <jlinkZipName>dnoteszip</jlinkZipName>
+                            <jlinkImageName>dnotes-runtime</jlinkImageName>
+                            <jlinkZipName>dnotes-distribution</jlinkZipName>
                             <mainClass>com.doruk.dnotes/com.doruk.dnotes.App</mainClass>
                         </configuration>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+    <groupId>org.panteleyev</groupId>
+    <artifactId>jpackage-maven-plugin</artifactId>
+    <version>1.6.6</version>
+    <executions>
+        <execution>
+            <id>create-deb-installer</id>
+            <goals>
+                <goal>jpackage</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <type>DEB</type>
+        <runtimeImage>${project.build.directory}/dnotes-runtime</runtimeImage>
+        <destination>${project.build.directory}/installer</destination>
+        <name>DNotes</name>
+        <appVersion>1.0.0</appVersion>
+        <mainClass>com.doruk.dnotes.App</mainClass>
+        <module>com.doruk.dnotes</module>
+        <icon>src/main/resources/dnotes.png</icon>
+        <vendor>Doruk</vendor>
+        <copyright>Doruk © 2025</copyright>
+        <!-- <installDir>/opt/dnotes</installDir> -->
+    </configuration>
+</plugin>
+
         </plugins>
     </build>
 </project>

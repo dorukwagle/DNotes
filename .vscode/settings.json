@@ -1,3 +1,10 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-24",
+      "path": "/usr/lib/jvm/java-24-openjdk",
+      "default": true
+    }
+  ]
 }
