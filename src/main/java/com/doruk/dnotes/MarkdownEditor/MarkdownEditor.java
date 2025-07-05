@@ -1,12 +1,13 @@
 package com.doruk.dnotes.MarkdownEditor;
 
+import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 import com.doruk.dnotes.interfaces.IMarkdownEditor;
 import javafx.scene.Parent;
 
 public class MarkdownEditor implements IMarkdownEditor {
     
     private StringBuilder editorText;
-    private IEditorView editorView;
+    private View editorView;
 
     public MarkdownEditor() {
         editorText = new StringBuilder();

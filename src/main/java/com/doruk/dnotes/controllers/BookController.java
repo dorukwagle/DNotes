@@ -1,11 +1,11 @@
 package com.doruk.dnotes.controllers;
 
+import com.doruk.dnotes.ControllerFactory;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
-import com.doruk.dnotes.utils.ControllerFactory;
 
 import javafx.scene.Parent;
 

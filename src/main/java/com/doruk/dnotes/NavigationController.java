@@ -2,7 +2,6 @@ package com.doruk.dnotes;
 
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.INavigationController;
-import com.doruk.dnotes.utils.ControllerFactory;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;

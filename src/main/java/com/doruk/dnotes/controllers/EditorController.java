@@ -1,6 +1,5 @@
 package com.doruk.dnotes.controllers;
 
-import com.doruk.dnotes.MarkdownEditor.IEditorView;
 import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.interfaces.INavigationController;
