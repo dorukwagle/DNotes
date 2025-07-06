@@ -2,6 +2,7 @@ package com.doruk.dnotes.MarkdownEditor;
 
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -22,8 +23,9 @@ public class EditorView implements View {
         root.setCenter(welcomeText);
 
         // add control panel
-        var panel = new ControlPanelView();
-        root.setTop(panel.getView());
+        var panel = new ControlPanelView().getView();
+        root.setTop(panel);
+        BorderPane.setMargin(panel, new Insets(15, 10, 0, 10));
 
         closeButton = new Button("Close");
         root.setBottom(closeButton);
