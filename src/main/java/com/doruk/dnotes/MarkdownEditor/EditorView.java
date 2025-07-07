@@ -1,34 +1,43 @@
 package com.doruk.dnotes.MarkdownEditor;
 
+import org.fxmisc.flowless.VirtualizedScrollPane;
+
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
 
 public class EditorView implements View {
     
-    private BorderPane root;
+    private VBox root;
     private Button closeButton;
 
     public EditorView() {
-        root = new BorderPane();
-
-        // welcome text
-        Text welcomeText = new Text("Welcome to DNotes");
-        welcomeText.setFont(new Font(24));
-        root.setCenter(welcomeText);
+        root = new VBox();
+        root.setPrefHeight(10);
 
         // add control panel
         var panel = new ControlPanelView().getView();
-        root.setTop(panel);
-        BorderPane.setMargin(panel, new Insets(15, 10, 0, 10));
+        root.getChildren().add(panel);
+        VBox.setMargin(panel, new Insets(15, 10, 0, 10));
 
+        // add close button and text editor
         closeButton = new Button("Close");
-        root.setBottom(closeButton);
+        root.getChildren().add(closeButton);
+        
+        // add markdown editor
+        var editor = new RichTextFX();
+        var scrollPane = new VirtualizedScrollPane<>(editor.getArea());
+        scrollPane.setPrefHeight(10);
+        
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        root.getChildren().add(scrollPane);
+
+        editor.setText("hello world...");
     }
 
     @Override

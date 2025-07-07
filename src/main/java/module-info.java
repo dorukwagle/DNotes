@@ -8,6 +8,10 @@ module com.doruk.dnotes {
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.materialdesign2;
 
+    requires org.fxmisc.richtext;
+    requires reactfx;
+    requires org.fxmisc.flowless;
+
     exports com.doruk.dnotes;
     exports com.doruk.dnotes.views;
     exports com.doruk.dnotes.views.components;

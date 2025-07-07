@@ -38,7 +38,6 @@ public class BookController implements IController {
 
             this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR, this.navigationController);
             this.view.displayEditor(this.editorController.getView());
-            this.editorController.openPage("id-of-page");
         });
     }
 }

@@ -29,11 +29,6 @@ public class EditorController implements IEditorController {
     }
 
     @Override
-    public void openPage(String pageId) {
-        
-    }
-
-    @Override
     public void close() {
         
     }

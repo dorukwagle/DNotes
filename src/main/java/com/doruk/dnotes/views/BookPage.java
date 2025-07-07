@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -62,6 +63,10 @@ public class BookPage implements IBookView {
         StackPane.setMargin(fabButton, new Insets(0, 50, 50, 0));
         mainContainer.getChildren().addAll(editorContainer, fabButton);
 
+
+
+        VBox.setVgrow(editorContainer, Priority.ALWAYS);
+
         // shrink, expang fab while hover
         fabButton.hoverProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal)
@@ -102,6 +107,7 @@ public class BookPage implements IBookView {
     @Override
     public void displayEditor(Parent editorView) {
         this.editorContainer.getChildren().clear();
+        VBox.setVgrow(editorView, Priority.ALWAYS);
         this.editorContainer.getChildren().add(editorView);
     }
 }
