@@ -63,16 +63,14 @@ public class BookPage implements IBookView {
         StackPane.setMargin(fabButton, new Insets(0, 50, 50, 0));
         mainContainer.getChildren().addAll(editorContainer, fabButton);
 
-
-
         VBox.setVgrow(editorContainer, Priority.ALWAYS);
 
         // shrink, expang fab while hover
         fabButton.hoverProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal)
-                fabButton.setStyle(fabButton.getStyle() + "-fx-scale-x: 0.8; -fx-scale-y: 0.8;");
+                fabButton.setStyle(fabButton.getStyle() + "-fx-scale-x: 0.9; -fx-scale-y: 0.9;");
             else
-                fabButton.setStyle(fabButton.getStyle().replace("-fx-scale-x: 0.8; -fx-scale-y: 0.8;", ""));
+                fabButton.setStyle(fabButton.getStyle().replace("-fx-scale-x: 0.9; -fx-scale-y: 0.9;", ""));
         });
 
         Text bookText = new Text("Click on a page to view/edit");

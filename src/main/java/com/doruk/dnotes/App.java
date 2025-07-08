@@ -50,6 +50,10 @@ public class App extends Application {
         navigationController.goToBooksPage();
         
         ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
+
+        // from settings, editor color
+        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_SUBTLE);
+        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);
     }
 
     public static void main(String[] args) {

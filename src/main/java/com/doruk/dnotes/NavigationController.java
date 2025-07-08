@@ -22,7 +22,7 @@ public class NavigationController implements INavigationController {
         double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
         double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
         // scale app to 70%, 80% of screen size
-        this.defaultW = screenWidth * 0.705;
+        this.defaultW = screenWidth * 0.7;
         this.defaultH = screenHeight * 0.8;
 
         this.createScene(defaultW, defaultH);

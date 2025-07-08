@@ -1,12 +1,18 @@
 package com.doruk.dnotes.MarkdownEditor;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.IndexRange;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.model.*;
+
+import atlantafx.base.theme.Styles;
 
 public class RichTextFX {
 
@@ -74,10 +80,9 @@ public class RichTextFX {
                 SegmentOps.styledTextOps(),
                 segment -> {
                     var text = new javafx.scene.text.Text(segment.getSegment());
-
                     var style = segment.getStyle();
                     StringBuilder css = new StringBuilder();
-
+                
                     if (style.bold)
                         css.append("-fx-font-weight: bold;");
                     if (style.italic)
@@ -88,19 +93,25 @@ public class RichTextFX {
                         css.append("-fx-strikethrough: true;");
                     if (style.textColor != null)
                         css.append("-fx-fill: ").append(toRgba(style.textColor)).append(";");
-                    if (style.backgroundColor != null)
-                        css.append("-fx-background-color: ").append(toRgba(style.backgroundColor)).append(";");
                     if (style.fontSize > 0)
                         css.append("-fx-font-size: ").append(style.fontSize).append("px;");
-
+                    if (style.backgroundColor != null)
+                        css.append("-rtfx-background-color: ").append(toRgba(style.backgroundColor)).append(";");
+                
                     text.setStyle(css.toString());
-
                     return text;
                 });
+
+        // to apply text background color support
+        // area.setStyleLayerFactory(
+        //     StyleLayerFactoryBuilder<String, TextStyle>builder()
+        //         .backgroundFactory(TextBackgroundRenderer.forTextStyle())
+        //         .build()
+        // );
+
         area.setWrapText(true);
         area.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
     }
 
     public GenericStyledArea<ParagraphStyle, String, TextStyle> getArea() {
@@ -117,7 +128,7 @@ public class RichTextFX {
     }
 
     public void appendText(String text) {
-        area.appendText(text);
+        area.insertText(area.getLength(), text);
     }
 
     public void insertText(int position, String text) {
@@ -248,7 +259,7 @@ public class RichTextFX {
             case H3 -> css.append("-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 6px 0 3px 0;");
             case H4 -> css.append("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 4px 0 2px 0;");
             case BLOCKQUOTE -> css.append(
-                    "-fx-background-color: #f5f5f5; -fx-border-color: #ccc; -fx-border-width: 0 0 0 4px; -fx-padding: 5px 0 5px 10px;");
+                    "-fx-border-color: #ccc; -fx-border-width: 0 0 0 4px; -fx-padding: 5px 0 5px 10px;");
             case UL_ITEM, OL_ITEM, CHECKBOX_ITEM -> css.append("-fx-padding: 2px 0 2px 20px;");
         }
 

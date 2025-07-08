@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignL;
@@ -49,7 +50,7 @@ public class ControlPanelView {
     private ToggleButton checkboxButton;
     private ComboBox<String> fontSizeCombo;
     private ColorPicker textColorPicker;
-    private ColorPicker highlightColorPicker;
+    private Button backButton;
 
     public ControlPanelView() {
         root = new FlowPane();
@@ -103,14 +104,14 @@ public class ControlPanelView {
         textColorPicker.setPrefWidth(40);
         
         // Create a toggle button for highlight color
-        ToggleButton highlightColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_FILL, "Highlight Color");
+        // ToggleButton highlightColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_FILL, "Highlight Color");
         
-        // Highlight Color Picker
-        highlightColorPicker = new ColorPicker(Color.CYAN);
-        highlightColorPicker.setStyle("-fx-background-color: transparent; -fx-background-radius: 0; -fx-padding: 0; -fx-cursor: hand;");
-        highlightColorPicker.setScaleX(1.6);
-        highlightColorPicker.setScaleY(1.6);
-        highlightColorPicker.setPrefWidth(40);
+        // // Highlight Color Picker
+        // highlightColorPicker = new ColorPicker(Color.CYAN);
+        // highlightColorPicker.setStyle("-fx-background-color: transparent; -fx-background-radius: 0; -fx-padding: 0; -fx-cursor: hand;");
+        // highlightColorPicker.setScaleX(1.6);
+        // highlightColorPicker.setScaleY(1.6);
+        // highlightColorPicker.setPrefWidth(40);
         
         // Add button groups with separators
         addButtonGroup(
@@ -132,9 +133,9 @@ public class ControlPanelView {
         // Add color pickers
         addButtonGroup(
             textColorBtn, 
-            createColorPicker(textColorPicker), 
-            highlightColorBtn, 
-            createColorPicker(highlightColorPicker)
+            createColorPicker(textColorPicker)
+            // highlightColorBtn, 
+            // createColorPicker(highlightColorPicker)  
         );
         
         // Add font size dropdown with icon
@@ -154,6 +155,15 @@ public class ControlPanelView {
         
         fontSizeGroup.getChildren().addAll(fontSizeLabel, fontSizeCombo);
         root.getChildren().add(fontSizeGroup);
+
+        // add back button
+        backButton = new Button();
+        backButton.setTooltip(new Tooltip("Back"));
+        backButton.getStyleClass().addAll(Styles.MEDIUM, Styles.DANGER);
+        backButton.setGraphic(new FontIcon(MaterialDesignB.BACKSPACE));
+        backButton.setPrefWidth(40);
+         
+        addButtonGroup(backButton);
     }
     
     private ToggleButton createIconToggleButton(Ikon icon, String tooltip) {
@@ -221,5 +231,9 @@ public class ControlPanelView {
 
     public Parent getView() {
         return root;
+    }
+
+    public Button getBackButton() {
+        return backButton;
     }
 }
