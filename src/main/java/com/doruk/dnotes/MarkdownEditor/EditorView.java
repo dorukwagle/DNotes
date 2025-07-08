@@ -44,9 +44,10 @@ public class EditorView implements View {
         editor.applyItalic();
         editor.applyFontSize(20);
         editor.applyTextColor(Color.RED);
+        editor.applyBackgroundColor(Color.YELLOW);
         
         editor.appendText("normal text");
-        // editor.applyBackgroundColor(Color.TRANSPARENT);
+        editor.applyBackgroundColor(Color.AQUA);
     }
 
     @Override

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 
 import org.fxmisc.richtext.GenericStyledArea;
+import org.fxmisc.richtext.TextExt;
 import org.fxmisc.richtext.model.*;
 
 import atlantafx.base.theme.Styles;
@@ -79,7 +80,7 @@ public class RichTextFX {
                 TextStyle.EMPTY,
                 SegmentOps.styledTextOps(),
                 segment -> {
-                    var text = new javafx.scene.text.Text(segment.getSegment());
+                    var text = new TextExt(segment.getSegment());
                     var style = segment.getStyle();
                     StringBuilder css = new StringBuilder();
                 

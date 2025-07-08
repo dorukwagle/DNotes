@@ -50,6 +50,7 @@ public class ControlPanelView {
     private ToggleButton checkboxButton;
     private ComboBox<String> fontSizeCombo;
     private ColorPicker textColorPicker;
+    private ColorPicker highlightColorPicker;
     private Button backButton;
 
     public ControlPanelView() {
@@ -104,14 +105,14 @@ public class ControlPanelView {
         textColorPicker.setPrefWidth(40);
         
         // Create a toggle button for highlight color
-        // ToggleButton highlightColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_FILL, "Highlight Color");
+        ToggleButton highlightColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_FILL, "Highlight Color");
         
-        // // Highlight Color Picker
-        // highlightColorPicker = new ColorPicker(Color.CYAN);
-        // highlightColorPicker.setStyle("-fx-background-color: transparent; -fx-background-radius: 0; -fx-padding: 0; -fx-cursor: hand;");
-        // highlightColorPicker.setScaleX(1.6);
-        // highlightColorPicker.setScaleY(1.6);
-        // highlightColorPicker.setPrefWidth(40);
+        // Highlight Color Picker
+        highlightColorPicker = new ColorPicker(Color.CYAN);
+        highlightColorPicker.setStyle("-fx-background-color: transparent; -fx-background-radius: 0; -fx-padding: 0; -fx-cursor: hand;");
+        highlightColorPicker.setScaleX(1.6);
+        highlightColorPicker.setScaleY(1.6);
+        highlightColorPicker.setPrefWidth(40);
         
         // Add button groups with separators
         addButtonGroup(
@@ -133,9 +134,9 @@ public class ControlPanelView {
         // Add color pickers
         addButtonGroup(
             textColorBtn, 
-            createColorPicker(textColorPicker)
-            // highlightColorBtn, 
-            // createColorPicker(highlightColorPicker)  
+            createColorPicker(textColorPicker),
+            highlightColorBtn, 
+            createColorPicker(highlightColorPicker)
         );
         
         // Add font size dropdown with icon
