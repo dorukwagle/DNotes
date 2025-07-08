@@ -27,8 +27,8 @@ public class RichTextFX {
         public final int fontSize;
         public final String linkUrl;
 
-        public static final TextStyle EMPTY = new TextStyle(false, false, false, false, Color.BLACK, Color.TRANSPARENT,
-                14, null);
+        public static final TextStyle EMPTY = new TextStyle(false, false, false, false, null, Color.TRANSPARENT,
+                16, null);
 
         public TextStyle(boolean bold, boolean italic, boolean underline, boolean strike,
                 Color textColor, Color backgroundColor, int fontSize, String linkUrl) {
@@ -83,7 +83,7 @@ public class RichTextFX {
                     var text = new TextExt(segment.getSegment());
                     var style = segment.getStyle();
                     StringBuilder css = new StringBuilder();
-                
+
                     if (style.bold)
                         css.append("-fx-font-weight: bold;");
                     if (style.italic)
@@ -92,27 +92,25 @@ public class RichTextFX {
                         text.setUnderline(true);
                     if (style.strike)
                         css.append("-fx-strikethrough: true;");
-                    if (style.textColor != null)
-                        css.append("-fx-fill: ").append(toRgba(style.textColor)).append(";");
                     if (style.fontSize > 0)
                         css.append("-fx-font-size: ").append(style.fontSize).append("px;");
                     if (style.backgroundColor != null)
                         css.append("-rtfx-background-color: ").append(toRgba(style.backgroundColor)).append(";");
-                
+                    
+                    // set text color is given
+                    css.append("-fx-fill: ").append(style.textColor != null ? toRgba(style.textColor) : "-color-fg-default").append(";");
+
                     text.setStyle(css.toString());
                     return text;
                 });
 
-        // to apply text background color support
-        // area.setStyleLayerFactory(
-        //     StyleLayerFactoryBuilder<String, TextStyle>builder()
-        //         .backgroundFactory(TextBackgroundRenderer.forTextStyle())
-        //         .build()
-        // );
-
         area.setWrapText(true);
         area.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        area.getStyleClass().add(Styles.ACCENT);
+        
+        area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
     }
 
     public GenericStyledArea<ParagraphStyle, String, TextStyle> getArea() {

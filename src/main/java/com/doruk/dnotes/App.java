@@ -49,7 +49,8 @@ public class App extends Application {
         var navigationController = NavigationController.getInstance(stage);
         navigationController.goToBooksPage();
         
-        ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
+        // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
+        ThemeManager.getInstance().applyGlobalTheme(Themes.DRACULA);
 
         // from settings, editor color
         // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_SUBTLE);

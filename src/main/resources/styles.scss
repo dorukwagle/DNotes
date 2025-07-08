@@ -1,0 +1,14 @@
+.styled-text-area .caret {
+    -fx-stroke: -color-fg-default;
+    -fx-stroke-width: 2px;
+}
+
+.styled-text-area .selection {
+    -rtfx-background-color: -color-accent-muted;
+    -fx-highlight-fill: -color-accent-fg;
+}
+
+.styled-text-area {
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+}
