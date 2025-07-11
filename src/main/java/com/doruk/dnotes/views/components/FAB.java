@@ -132,7 +132,7 @@ public class FAB extends Button {
                     "-fx-padding: 8 12; " +
                             "-fx-background-radius: 4; " +
                             "-fx-background-color: " + (isHovering ? "-color-accent-fg; " : "transparent; ") +
-                            "-fx-text-fill: -color-fg-emphasis; " +
+                            "-fx-text-fill: " + (isHovering ? "-color-fg-emphasis; " : "-color-fg-default; ") +
                             "-fx-cursor: hand;");
         });
 
