@@ -134,7 +134,7 @@ public class Sidebar {
                 setText(item);
                 setPadding(new Insets(10));
                 setStyle("-fx-background-radius: 4; -fx-font-size: 16px;");
-                setOnMouseEntered(e -> setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 4; -fx-font-size: 16px;"));
+                setOnMouseEntered(e -> setStyle("-fx-background-color: -color-bg-subtle; -fx-background-radius: 4; -fx-font-size: 16px; -fx-cursor: hand;"));
                 setOnMouseExited(e -> setStyle("-fx-background-color: transparent; -fx-background-radius: 4; -fx-font-size: 16px;"));
             }
         });
