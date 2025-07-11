@@ -22,8 +22,8 @@ public class HomePageController implements IController {
     }
 
     private void setupActions() {
-        homePageView.getBookButton().setOnAction(event -> {
-            this.navigationController.goToBooksPage();
-        });
+        // homePageView.getBookButton().setOnAction(event -> {
+        //     this.navigationController.goToBooksPage();
+        // });
     }
 }

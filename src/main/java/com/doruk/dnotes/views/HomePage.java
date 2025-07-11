@@ -32,8 +32,6 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Tooltip;
 
 public class HomePage implements IHomeView {
-
-    private Button bookButton;
     private BorderPane root;
 
     public HomePage() {
@@ -123,8 +121,6 @@ public class HomePage implements IHomeView {
         menuButton.getStyleClass().addAll("no-arrow");
         createMenuList(menuButton);
         navBar.setRight(menuButton);
-
-        bookButton = new Button("Open Books");
         
         // Create card grid
         ScrollPane cardGrid = createCardGrid();
@@ -132,7 +128,7 @@ public class HomePage implements IHomeView {
 
         
         // Add components to main content
-        mainContent.getChildren().addAll(navBar, cardGrid, bookButton);
+        mainContent.getChildren().addAll(navBar, cardGrid);
         
         // Main content is wrapped in StackPane with FAB
         StackPane contentWrapper = new StackPane();
@@ -336,10 +332,5 @@ public class HomePage implements IHomeView {
     @Override
     public Parent getView() {
         return root;
-    }
-
-
-    public Button getBookButton() {
-        return bookButton;
     }
 }

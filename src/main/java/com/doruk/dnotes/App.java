@@ -47,7 +47,7 @@ public class App extends Application {
         ControllerFactory.init(viewMap, controllerMap);
         
         var navigationController = NavigationController.getInstance(stage);
-        navigationController.goToPreferencePage();
+        navigationController.goToHomePage();
         
         // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
         ThemeManager.getInstance().applyGlobalTheme(Themes.DRACULA);
