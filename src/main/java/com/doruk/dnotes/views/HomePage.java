@@ -120,7 +120,7 @@ public class HomePage implements IHomeView {
         menuButton.setGraphic(menuIcon);
         menuIcon.setScaleX(2);
         menuIcon.setScaleY(2);
-        menuButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.ACCENT, "no-arrow");
+        menuButton.getStyleClass().addAll("no-arrow");
         createMenuList(menuButton);
         navBar.setRight(menuButton);
 

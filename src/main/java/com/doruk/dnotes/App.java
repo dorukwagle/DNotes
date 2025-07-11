@@ -47,14 +47,14 @@ public class App extends Application {
         ControllerFactory.init(viewMap, controllerMap);
         
         var navigationController = NavigationController.getInstance(stage);
-        navigationController.goToBooksPage();
+        navigationController.goToHomePage();
         
         // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
         ThemeManager.getInstance().applyGlobalTheme(Themes.DRACULA);
 
         // from settings, editor color
         // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_SUBTLE);
-        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);
+        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);d 
     }
 
     public static void main(String[] args) {
