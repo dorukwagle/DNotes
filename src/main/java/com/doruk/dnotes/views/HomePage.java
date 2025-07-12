@@ -1,17 +1,23 @@
 package com.doruk.dnotes.views;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import com.doruk.dnotes.dto.BookDto;
+import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.views.components.FAB;
 import com.doruk.dnotes.views.components.Sidebar;
 
 import atlantafx.base.theme.Styles;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -33,13 +39,22 @@ import javafx.scene.control.Tooltip;
 
 public class HomePage implements IHomeView {
     private BorderPane root;
+    private Sidebar sidebar;
+    private TextField searchField;
+    private ToggleButton sortByToggle;
+    private ToggleButton sortOrderToggle;
+    private final ObservableList<BookDto> books;
+    private Function<BookDto, Void> booksOnSelect;
+    private Function<BookDto, Void> onDeleteBtnClick;
 
     public HomePage() {
+        this.books = FXCollections.observableArrayList();
+        
         // Create main layout
         root = new BorderPane();
         
         // Create and add sidebar
-        Sidebar sidebar = new Sidebar();
+        sidebar = new Sidebar();
         root.setLeft(sidebar.getView());
         
         // Create main content container
@@ -69,7 +84,7 @@ public class HomePage implements IHomeView {
         searchIcon.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.LARGE);
         
         // Search field
-        TextField searchField = new TextField();
+        searchField = new TextField();
         searchField.setPromptText("Search books...");
         searchField.setStyle(
             "-fx-background-color: transparent; " +
@@ -87,7 +102,7 @@ public class HomePage implements IHomeView {
         sortControls.setPadding(new Insets(0, 0, 0, 5));
         
         // Sort by toggle (Date/Alphabetical)
-        ToggleButton sortByToggle = new ToggleButton("Date");
+        sortByToggle = new ToggleButton("Date");
         sortByToggle.setGraphic(new FontIcon("mdi2c-calendar-month-outline"));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
@@ -96,7 +111,7 @@ public class HomePage implements IHomeView {
         });
         
         // Sort order toggle (Ascending/Descending)
-        ToggleButton sortOrderToggle = new ToggleButton("");
+        sortOrderToggle = new ToggleButton("");
         sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-ascending"));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
@@ -200,41 +215,32 @@ public class HomePage implements IHomeView {
         flowPane.setHgap(20);
         flowPane.setStyle("-fx-background-color: transparent;");
         
-        // Add cards to flow pane
-        List<String> dummyTitles = Arrays.asList(
-            "Project Ideas",
-            "Meeting Notes",
-            "Shopping List",
-            "Book Summaries",
-            "Work Tasks",
-            "Personal Goals",
-            "Recipes",
-            "Travel Plans"
-        );
-        
-        List<String> dummyContent = Arrays.asList(
-            "Brainstorming for new project ideas and potential features...",
-            "Discussed project timeline and assigned tasks to team members...",
-            "Milk, eggs, bread, fruits, vegetables, and snacks...",
-            "Atomic Habits by James Clear - key takeaways and action items...",
-            "Complete UI redesign, fix critical bugs, prepare presentation...",
-            "Learn JavaFX, Exercise 3x a week, Read 10 books this year...",
-            "Pasta Carbonara: Ingredients - pasta, eggs, pancetta, parmesan...",
-            "Book flights, reserve hotel, create itinerary for Japan trip..."
-        );
-        
-        for (int i = 0; i < dummyTitles.size(); i++) {
-            VBox card = createCard(
-                dummyTitles.get(i),
-                dummyContent.get(i),
-                LocalDate.now().minusDays(i)
-            );
+        // add listener to the observable list
+        this.books.addListener((ListChangeListener<? super BookDto>) _ -> {
+            flowPane.getChildren().clear();
+            
+            this.books.forEach(book -> {
+                VBox card = createCard(book);
+
             // Set preferred width for cards with min and max constraints
             card.setMinWidth(280);
             card.setMaxWidth(380);
             card.setPrefWidth(320);
-            flowPane.getChildren().add(card);
-        }
+            Platform.runLater(() -> flowPane.getChildren().add(card));
+        });
+    });
+
+    // Add cards to flow pane
+    this.books.addAll(
+        new BookDto("1", "Project Ideas that will nevver cease to exist", "Brainstorming for new project ideas and potential features...", LocalDate.now().toString()),
+        new BookDto("2", "Meeting Notes", "Discussed project timeline and assigned tasks to team members...", LocalDate.now().toString()),
+        new BookDto("3", "Shopping List", "Milk, eggs, bread, fruits, vegetables, and snacks...", LocalDate.now().toString()),
+        new BookDto("4", "Book Summaries", "Atomic Habits by James Clear - key takeaways and action items...", LocalDate.now().toString()),
+        new BookDto("5", "Work Tasks", "Complete UI redesign, fix critical bugs, prepare presentation...", LocalDate.now().toString()),
+        new BookDto("6", "Personal Goals", "Learn JavaFX, Exercise 3x a week, Read 10 books this year...", LocalDate.now().toString()),
+        new BookDto("7", "Recipes", "Pasta Carbonara: Ingredients - pasta, eggs, pancetta, parmesan...", LocalDate.now().toString()),
+        new BookDto("8", "Travel Plans", "Book flights, reserve hotel, create itinerary for Japan trip...", LocalDate.now().toString())
+    );
         
         // Bind flow pane width to scroll pane width
         flowPane.prefWrapLengthProperty().bind(
@@ -247,7 +253,7 @@ public class HomePage implements IHomeView {
         return scrollPane;
     }
     
-    private VBox createCard(String title, String content, LocalDate date) {
+    private VBox createCard(BookDto book) {
         VBox card = new VBox();
         card.getStyleClass().add("card");
         card.setSpacing(16);
@@ -288,12 +294,13 @@ public class HomePage implements IHomeView {
         ));
         
         // Title
-        Text titleText = new Text(title);
+        Text titleText = new Text(book.getTitle());
         titleText.getStyleClass().add(Styles.TITLE_4);
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 18;");
+        titleText.setWrappingWidth(280);
         
         // Content preview (limit to 3 lines)
-        Text contentText = new Text(content);
+        Text contentText = new Text(book.getPreview());
         contentText.setStyle("-fx-fill: -color-fg-muted; -fx-font-size: 14;");
         contentText.setWrappingWidth(280);
         
@@ -303,7 +310,7 @@ public class HomePage implements IHomeView {
         statusBar.setStyle("-fx-padding: 8 0 0 0; -fx-border-color: -color-border-muted; -fx-border-width: 1 0 0 0;");
         
         // Date
-        Text dateText = new Text(date.format(DateTimeFormatter.ofPattern("MMM d, yyyy")));
+        Text dateText = new Text(book.getUpdatedDate());
         dateText.setStyle("-fx-fill: -color-fg-muted; -fx-font-size: 12;");
         
         // Spacer
@@ -318,13 +325,19 @@ public class HomePage implements IHomeView {
         deleteButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT, Styles.DANGER);
         deleteButton.setOnAction(e -> {
             // Handle delete action
-            System.out.println("Delete card: " + title);
+            if (this.onDeleteBtnClick != null)
+                this.onDeleteBtnClick.apply(book);
         });
         
         statusBar.getChildren().addAll(dateText, spacer, deleteButton);
         
         // Add all components to card
         card.getChildren().addAll(titleText, contentText, statusBar);
+
+        card.setOnMouseClicked(e -> {
+            if (this.booksOnSelect != null)
+                this.booksOnSelect.apply(book);
+        });
         
         return card;
     }
@@ -332,5 +345,41 @@ public class HomePage implements IHomeView {
     @Override
     public Parent getView() {
         return root;
+    }
+
+    @Override
+    public void setSidebarItems(List<String> items) {
+        this.sidebar.setItems(items);
+    }
+
+    @Override
+    public void setSidebarItemOnSelect(BiFunction<Integer, String, Void> onSelect) {
+        this.sidebar.setOnSelect(onSelect);
+    }
+
+    @Override
+    public SearchControlsDto getSidebarSearchControls() {
+        return sidebar.getSearchControls();
+    }
+
+    @Override
+    public SearchControlsDto getSearchControls() {
+        return new SearchControlsDto(this.searchField, this.sortByToggle, this.sortOrderToggle);
+    }
+
+    @Override
+    public void setBooks(List<BookDto> books) {
+        this.books.clear();
+        this.books.addAll(books);
+    }
+
+    @Override
+    public void setBooksOnSelect(Function<BookDto, Void> onSelect) {
+        this.booksOnSelect = onSelect;
+    }
+
+    @Override
+    public void setOnCardsDeleteBtnClick(Function<BookDto, Void> onDeleteBtnClick) {
+        this.onDeleteBtnClick = onDeleteBtnClick;
     }
 }
