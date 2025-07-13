@@ -15,4 +15,8 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes;
     exports com.doruk.dnotes.views;
     exports com.doruk.dnotes.views.components;
+    exports com.doruk.dnotes.controllers;
+    exports com.doruk.dnotes.MarkdownEditor;
+    exports com.doruk.dnotes.dto;
+    exports com.doruk.dnotes.interfaces;
 }
