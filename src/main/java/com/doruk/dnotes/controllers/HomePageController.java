@@ -3,6 +3,7 @@ package com.doruk.dnotes.controllers;
 
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
+import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.interfaces.IHomeView;
 import javafx.scene.Parent;
 
@@ -25,6 +26,8 @@ public class HomePageController implements IController {
     private void setupActions() {
         homePageView.setBooksOnSelect(book -> {
             System.out.println("Book selected: " + book.getTitle());
+            BookStore.setSelectedBook(book);
+            this.navigationController.goToBooksPage();
             return null;
         });
 
@@ -37,10 +40,5 @@ public class HomePageController implements IController {
             System.out.println("Book deleted: " + book.getTitle());
             return null;
         });
-
-
-        // homePageView.getBookButton().setOnAction(event -> {
-        //     this.navigationController.goToBooksPage();
-        // });
     }
 }

@@ -7,6 +7,7 @@ import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
+import com.doruk.dnotes.store.BookStore;
 
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -24,6 +25,15 @@ public class BookController implements IController {
         Platform.runLater(() -> {
             this.view.setSelectedSidebarItem(new CollectionDto("5", "Work Tasks", "2025-07-14"));
         });
+
+        // open the book
+        var book = BookStore.getSelectedBook();
+        if (!book.isPresent()) {
+            System.out.println("No book selected, not opening anything");
+            return;
+        }
+
+        System.out.println("Opening book: " + book.get().getTitle());
     }
 
     @Override

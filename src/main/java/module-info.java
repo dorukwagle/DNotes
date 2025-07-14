@@ -20,4 +20,5 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.dto;
     exports com.doruk.dnotes.interfaces;
     exports com.doruk.dnotes.enums;
+    exports com.doruk.dnotes.store;
 }
