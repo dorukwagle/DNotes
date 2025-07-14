@@ -8,6 +8,7 @@ import java.util.function.Function;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.dto.BookDto;
+import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.views.components.FAB;
@@ -348,12 +349,12 @@ public class HomePage implements IHomeView {
     }
 
     @Override
-    public void setSidebarItems(List<String> items) {
+    public void setSidebarItems(List<CollectionDto> items) {
         this.sidebar.setItems(items);
     }
 
     @Override
-    public void setSidebarItemOnSelect(BiFunction<Integer, String, Void> onSelect) {
+    public void setSidebarItemOnSelect(Function<CollectionDto, Void> onSelect) {
         this.sidebar.setOnSelect(onSelect);
     }
 

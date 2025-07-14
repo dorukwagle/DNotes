@@ -1,5 +1,6 @@
 package com.doruk.dnotes.controllers;
 
+
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IHomeView;
@@ -22,6 +23,18 @@ public class HomePageController implements IController {
     }
 
     private void setupActions() {
+        homePageView.setBooksOnSelect(book -> {
+            System.out.println("Book selected: " + book.getTitle());
+            return null;
+        });
+        homePageView.setSidebarItemOnSelect(collectionDto -> {
+            System.out.println("Sidebar item selected: " + collectionDto.getName());
+            return null;
+        });
+        homePageView.setOnCardsDeleteBtnClick(book -> {
+            System.out.println("Book deleted: " + book.getTitle());
+            return null;
+        });
         // homePageView.getBookButton().setOnAction(event -> {
         //     this.navigationController.goToBooksPage();
         // });

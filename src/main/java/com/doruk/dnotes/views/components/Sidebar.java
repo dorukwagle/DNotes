@@ -10,21 +10,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.SearchControlsDto;
 
 import atlantafx.base.theme.Styles;
 
 public class Sidebar {
     private final VBox root;
-    ObservableList<String> items;
+    ObservableList<CollectionDto> items;
     private TextField searchField;
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
-    private BiFunction<Integer, String, Void> onSelect;
+    private Function<CollectionDto, Void> onSelect;
 
     public Sidebar() {
         this.root = new VBox();
@@ -41,7 +42,7 @@ public class Sidebar {
         Node searchBar = createSearchBar();
 
         // Create list view
-        ListView<String> listView = createListView();
+        ListView<CollectionDto> listView = createListView();
 
         // Add all components to the sidebar
         this.root.getChildren().addAll(searchBar, listView);
@@ -113,35 +114,35 @@ public class Sidebar {
         return container;
     }
 
-    private ListView<String> createListView() {
-        ListView<String> listView = new ListView<>();
+    private ListView<CollectionDto> createListView() {
+        ListView<CollectionDto> listView = new ListView<>();
 
         // listView.getStyleClass().add("sidebar-list text danger");
         listView.setFocusTraversable(false);
 
         // Add some dummy data
         items = FXCollections.observableArrayList(
-                "Meeting Notes",
-                "Project Ideas",
-                "Shopping List",
-                "Book Summaries",
-                "Work Tasks",
-                "Personal Goals",
-                "Recipes",
-                "Travel Plans",
-                "Learning Resources",
-                "Daily Journal");
+                new CollectionDto("1", "Meeting Notes", "2025-07-14"),
+                new CollectionDto("2", "Project Ideas", "2025-07-14"),
+                new CollectionDto("3", "Shopping List", "2025-07-14"),
+                new CollectionDto("4", "Book Summaries", "2025-07-14"),
+                new CollectionDto("5", "Work Tasks", "2025-07-14"),
+                new CollectionDto("6", "Personal Goals", "2025-07-14"),
+                new CollectionDto("7", "Recipes", "2025-07-14"),
+                new CollectionDto("8", "Travel Plans", "2025-07-14"),
+                new CollectionDto("9", "Learning Resources", "2025-07-14"),
+                new CollectionDto("10", "Daily Journal", "2025-07-14"));
 
         listView.setItems(items);
         listView.setCellFactory(lv -> new ListCell<>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(CollectionDto item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                     return;
                 }
-                setText(item);
+                setText(item.getName());
                 setPadding(new Insets(10));
                 setStyle("-fx-background-radius: 4; -fx-font-size: 16px; -fx-cursor: hand;");
                 setOnMouseEntered(e -> {
@@ -162,7 +163,7 @@ public class Sidebar {
                     setStyle(getStyle() + "-fx-background-color: -color-accent-7; -fx-font-weight: bold;");
 
                     if (onSelect != null)
-                        onSelect.apply(this.getIndex(), getItem());
+                        onSelect.apply(item);
                 });
             }
         });
@@ -170,7 +171,7 @@ public class Sidebar {
         return listView;
     }
 
-    public void setOnSelect(BiFunction<Integer, String, Void> onSelect) {
+    public void setOnSelect(Function<CollectionDto, Void> onSelect) {
         this.onSelect = onSelect;
     }
 
@@ -178,7 +179,7 @@ public class Sidebar {
         return this.root;
     }
 
-    public void setItems(List<String> newItems) {
+    public void setItems(List<CollectionDto> newItems) {
         this.items.clear();
         this.items.addAll(newItems);
     }
