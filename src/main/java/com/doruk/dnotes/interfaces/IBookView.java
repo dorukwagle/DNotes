@@ -17,4 +17,5 @@ public interface IBookView extends IView {
     void setSidebarItems(List<CollectionDto> items);
     void setSidebarItemOnSelect(Function<CollectionDto, Void> onSelect);
     SearchControlsDto getSidebarSearchControls();
+    void setSelectedSidebarItem(CollectionDto item);
 }

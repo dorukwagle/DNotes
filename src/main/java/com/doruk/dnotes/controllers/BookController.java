@@ -1,12 +1,14 @@
 package com.doruk.dnotes.controllers;
 
 import com.doruk.dnotes.ControllerFactory;
+import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 
 public class BookController implements IController {
@@ -19,6 +21,9 @@ public class BookController implements IController {
         this.view = view;
         this.navigationController = navigationController;
         setupActions();
+        Platform.runLater(() -> {
+            this.view.setSelectedSidebarItem(new CollectionDto("5", "Work Tasks", "2025-07-14"));
+        });
     }
 
     @Override

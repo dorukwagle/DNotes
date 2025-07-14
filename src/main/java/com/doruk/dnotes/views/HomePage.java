@@ -382,4 +382,9 @@ public class HomePage implements IHomeView {
     public void setOnCardsDeleteBtnClick(Function<BookDto, Void> onDeleteBtnClick) {
         this.onDeleteBtnClick = onDeleteBtnClick;
     }
+
+    @Override
+    public void setSelectedSidebarItem(CollectionDto item) {
+        this.sidebar.setSelectedItem(item);
+    }
 }

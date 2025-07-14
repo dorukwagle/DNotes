@@ -2,12 +2,12 @@ package com.doruk.dnotes.dto;
 
 public class CollectionDto {
     private String name;
-    private String collectionId;
+    private String id;
     private String updatedDate;
 
-    public CollectionDto(String collectionId, String name, String updatedDate) {
+    public CollectionDto(String id, String name, String updatedDate) {
         this.name = name;
-        this.collectionId = collectionId;
+        this.id = id;
         this.updatedDate = updatedDate;
     }
 
@@ -15,8 +15,8 @@ public class CollectionDto {
         return name;
     }
 
-    public String getCollectionId() {
-        return collectionId;
+    public String getId() {
+        return id;
     }
 
     public String getUpdatedDate() {

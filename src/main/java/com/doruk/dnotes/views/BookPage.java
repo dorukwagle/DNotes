@@ -127,4 +127,9 @@ public class BookPage implements IBookView {
     public SearchControlsDto getSidebarSearchControls() {
         return sidebar.getSearchControls();
     }
+
+    @Override
+    public void setSelectedSidebarItem(CollectionDto item) {
+        this.sidebar.setSelectedItem(item);
+    }
 }

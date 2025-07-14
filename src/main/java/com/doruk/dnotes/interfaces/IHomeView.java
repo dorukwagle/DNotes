@@ -15,4 +15,5 @@ public interface IHomeView extends IView {
     void setBooks(List<BookDto> books);
     void setBooksOnSelect(Function<BookDto, Void> onSelect);
     void setOnCardsDeleteBtnClick(Function<BookDto, Void> onDeleteBtnClick);
+    void setSelectedSidebarItem(CollectionDto item);
 }

@@ -26,6 +26,7 @@ public class Sidebar {
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
     private Function<CollectionDto, Void> onSelect;
+    private ListView<CollectionDto> listView;
 
     public Sidebar() {
         this.root = new VBox();
@@ -115,7 +116,7 @@ public class Sidebar {
     }
 
     private ListView<CollectionDto> createListView() {
-        ListView<CollectionDto> listView = new ListView<>();
+        listView = new ListView<>();
 
         // listView.getStyleClass().add("sidebar-list text danger");
         listView.setFocusTraversable(false);
@@ -184,5 +185,16 @@ public class Sidebar {
 
     public SearchControlsDto getSearchControls() {
         return new SearchControlsDto(this.searchField, this.sortByToggle, this.sortOrderToggle);
+    }
+
+    public void setSelectedItem(CollectionDto item) {
+        if (item == null)
+            return;
+        var givenItem = this.items.stream()
+            .filter(i -> i.getId().equals(item.getId()))
+            .findFirst()
+            .orElse(null);
+        
+        this.listView.getSelectionModel().select(givenItem);
     }
 }
