@@ -4,4 +4,5 @@ import javafx.scene.Parent;
 
 public interface IView {
     Parent getView();
+    void setPlaceholder(String txt);
 }

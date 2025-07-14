@@ -140,4 +140,9 @@ public class PreferencePage implements IPreferenceView {
     public Button getBackButton() {
         return this.backButton;
     }
+
+    @Override
+    public void setPlaceholder(String txt) {
+        
+    }
 }

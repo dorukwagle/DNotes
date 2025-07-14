@@ -132,4 +132,9 @@ public class BookPage implements IBookView {
     public void setSelectedSidebarItem(CollectionDto item) {
         this.sidebar.setSelectedItem(item);
     }
+
+    @Override
+    public void setPlaceholder(String txt) {
+        
+    }
 }

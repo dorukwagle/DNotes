@@ -387,4 +387,9 @@ public class HomePage implements IHomeView {
     public void setSelectedSidebarItem(CollectionDto item) {
         this.sidebar.setSelectedItem(item);
     }
+
+    @Override
+    public void setPlaceholder(String txt) {
+        
+    }
 }
