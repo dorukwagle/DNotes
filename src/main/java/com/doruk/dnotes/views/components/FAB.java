@@ -41,12 +41,12 @@ public class FAB extends Button {
         Button addCollectionBtn = createMenuItem("mdi2f-folder-plus", "Collection");
 
         // Add click handlers
-        addBookBtn.setOnAction(e -> {
+        addBookBtn.setOnAction(_ -> {
             this.forceClose();
             if (this.onAddBook != null)
                 this.onAddBook.run();
         });
-        addCollectionBtn.setOnAction(e -> {
+        addCollectionBtn.setOnAction(_ -> {
             this.forceClose();
             if (this.onAddCollection != null)
                 this.onAddCollection.run();
@@ -73,17 +73,17 @@ public class FAB extends Button {
         plusIcon.setScaleY(2.3);
         this.setGraphic(plusIcon);
 
-        this.setOnMouseEntered(e -> {
+        this.setOnMouseEntered(_ -> {
             this.isFabHovering = true;
             this.openMenu();
         });
-        this.setOnMouseExited(e -> {
+        this.setOnMouseExited(_ -> {
             this.isFabHovering = false;
             this.closeMenu();
         });
 
-        this.itemsPane.setOnMouseEntered(e -> this.isItemsHovering = true);
-        this.itemsPane.setOnMouseExited(e -> {
+        this.itemsPane.setOnMouseEntered(_ -> this.isItemsHovering = true);
+        this.itemsPane.setOnMouseExited(_ -> {
             this.isItemsHovering = false;
             this.closeMenu();
         });
@@ -127,7 +127,7 @@ public class FAB extends Button {
                         "-fx-cursor: hand;");
 
         // Add hover effect
-        menuItem.hoverProperty().addListener((obs, oldVal, isHovering) -> {
+        menuItem.hoverProperty().addListener((_, _, isHovering) -> {
             menuItem.setStyle(
                     "-fx-padding: 8 12; " +
                             "-fx-background-radius: 4; " +

@@ -19,4 +19,5 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.MarkdownEditor;
     exports com.doruk.dnotes.dto;
     exports com.doruk.dnotes.interfaces;
+    exports com.doruk.dnotes.enums;
 }

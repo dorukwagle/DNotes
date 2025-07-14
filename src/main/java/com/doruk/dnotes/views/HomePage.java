@@ -2,7 +2,6 @@ package com.doruk.dnotes.views;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -107,7 +106,7 @@ public class HomePage implements IHomeView {
         sortByToggle.setGraphic(new FontIcon("mdi2c-calendar-month-outline"));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
-        sortByToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        sortByToggle.selectedProperty().addListener((_, _, newVal) -> {
             sortByToggle.setGraphic(new FontIcon(newVal ? "mdi2a-alphabetical-variant" : "mdi2c-calendar-month-outline"));
         });
         
@@ -116,7 +115,7 @@ public class HomePage implements IHomeView {
         sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-ascending"));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
-        sortOrderToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
             sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-descending" : "mdi2s-sort-ascending"));
         });
         
@@ -192,7 +191,7 @@ public class HomePage implements IHomeView {
                 "-fx-font-size: 16px;"
             );
 
-            menuItem.setOnAction(e -> System.out.println(itemData[0] + " clicked"));
+            menuItem.setOnAction(_ -> System.out.println(itemData[0] + " clicked"));
             menuButton.getItems().add(menuItem);
         }
         
@@ -271,7 +270,7 @@ public class HomePage implements IHomeView {
         );
         
         // Add hover effect
-        card.setOnMouseEntered(e -> card.setStyle(
+        card.setOnMouseEntered(_ -> card.setStyle(
             "-fx-background-color: -color-bg-subtle;" +
             "-fx-background-radius: 12;" +
             "-fx-border-width: 1;" +
@@ -282,7 +281,7 @@ public class HomePage implements IHomeView {
             "-fx-scale-y: 1.05;"
         ));
         
-        card.setOnMouseExited(e -> card.setStyle(
+        card.setOnMouseExited(_ -> card.setStyle(
             "-fx-background-color: -color-bg-default;" +
             "-fx-background-radius: 12;" +
             "-fx-border-color: -color-border-muted;" +
@@ -324,7 +323,7 @@ public class HomePage implements IHomeView {
         deleteIcon.setIconSize(16);
         deleteButton.setGraphic(deleteIcon);
         deleteButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT, Styles.DANGER);
-        deleteButton.setOnAction(e -> {
+        deleteButton.setOnAction(_ -> {
             // Handle delete action
             if (this.onDeleteBtnClick != null)
                 this.onDeleteBtnClick.apply(book);
@@ -335,7 +334,7 @@ public class HomePage implements IHomeView {
         // Add all components to card
         card.getChildren().addAll(titleText, contentText, statusBar);
 
-        card.setOnMouseClicked(e -> {
+        card.setOnMouseClicked(_ -> {
             if (this.booksOnSelect != null)
                 this.booksOnSelect.apply(book);
         });

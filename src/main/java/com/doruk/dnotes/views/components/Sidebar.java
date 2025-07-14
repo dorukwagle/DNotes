@@ -93,7 +93,7 @@ public class Sidebar {
         sortByToggle.setGraphic(new FontIcon("mdi2c-calendar-month-outline"));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
-        sortByToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        sortByToggle.selectedProperty().addListener((_, _, newVal) -> {
             sortByToggle
                     .setGraphic(new FontIcon(newVal ? "mdi2a-alphabetical-variant" : "mdi2c-calendar-month-outline"));
         });
@@ -103,7 +103,7 @@ public class Sidebar {
         sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-ascending"));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
-        sortOrderToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
             sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-descending" : "mdi2s-sort-ascending"));
         });
 
@@ -134,7 +134,7 @@ public class Sidebar {
                 new CollectionDto("10", "Daily Journal", "2025-07-14"));
 
         listView.setItems(items);
-        listView.setCellFactory(lv -> new ListCell<>() {
+        listView.setCellFactory(_ -> new ListCell<>() {
             @Override
             protected void updateItem(CollectionDto item, boolean empty) {
                 super.updateItem(item, empty);
@@ -145,18 +145,18 @@ public class Sidebar {
                 setText(item.getName());
                 setPadding(new Insets(10));
                 setStyle("-fx-background-radius: 4; -fx-font-size: 16px; -fx-cursor: hand;");
-                setOnMouseEntered(e -> {
+                setOnMouseEntered(_ -> {
                     if (this.isSelected())
                         return;
                     setStyle(getStyle() + "-fx-background-color: -color-bg-subtle;");
                 });
-                setOnMouseExited(e -> {
+                setOnMouseExited(_ -> {
                     if (this.isSelected())
                         return;
                     setStyle(getStyle() + "-fx-background-color: transparent;");
                 });
 
-                setOnMouseClicked((e) -> {
+                setOnMouseClicked((_) -> {
                     System.out.println(getItem());
                     // this.requestFocus();
                     listView.getSelectionModel().select(this.getIndex());

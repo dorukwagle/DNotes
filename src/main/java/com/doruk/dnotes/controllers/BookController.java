@@ -27,11 +27,11 @@ public class BookController implements IController {
     }
 
     private void setupActions() {
-        this.view.getBackButton().setOnAction(event -> {
+        this.view.getBackButton().setOnAction(_ -> {
             this.navigationController.goToHomePage();
         });
 
-        this.view.getEditorButton().setOnAction(event -> {
+        this.view.getEditorButton().setOnAction(_ -> {
             // close editorController gracefully
             if (this.editorController != null)
                 this.editorController.close();

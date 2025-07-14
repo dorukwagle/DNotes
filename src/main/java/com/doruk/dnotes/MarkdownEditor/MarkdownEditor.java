@@ -32,6 +32,6 @@ public class MarkdownEditor implements IMarkdownEditor {
     @Override
     public void setOnClose(Runnable onClose) {
         this.editorView.getCloseButton()
-            .setOnAction(event -> onClose.run());
+            .setOnAction(_ -> onClose.run());
     }
 }

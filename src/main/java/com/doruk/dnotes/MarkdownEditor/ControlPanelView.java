@@ -7,9 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 
@@ -19,7 +16,6 @@ import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignL;
 
@@ -203,13 +199,12 @@ public class ControlPanelView {
         colorBox.setFill(picker.getValue());
 
         // Bind fill to the color picker's value
-        picker.valueProperty().addListener((obs, old, newColor) -> {
+        picker.valueProperty().addListener((_, _, newColor) -> {
             colorBox.setFill(newColor);
         });
 
         StackPane wrapper = new StackPane(colorBox, picker);
         wrapper.setStyle("-fx-cursor: hand;");
-
         return wrapper;
     }
     

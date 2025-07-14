@@ -21,7 +21,7 @@ public class PreferenceController implements IController {
     }
 
     private void setupActions() {
-        this.view.getBackButton().setOnAction(event -> {
+        this.view.getBackButton().setOnAction(_ -> {
             this.navigationController.goToHomePage();
         });
     }

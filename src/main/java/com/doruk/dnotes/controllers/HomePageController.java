@@ -35,6 +35,7 @@ public class HomePageController implements IController {
             System.out.println("Book deleted: " + book.getTitle());
             return null;
         });
+
         // homePageView.getBookButton().setOnAction(event -> {
         //     this.navigationController.goToBooksPage();
         // });

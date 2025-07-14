@@ -1,7 +1,5 @@
 package com.doruk.dnotes.views;
 
-import java.util.Stack;
-
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.interfaces.IBookView;
@@ -66,7 +64,7 @@ public class BookPage implements IBookView {
         VBox.setVgrow(editorContainer, Priority.ALWAYS);
 
         // shrink, expang fab while hover
-        fabButton.hoverProperty().addListener((obs, oldVal, newVal) -> {
+        fabButton.hoverProperty().addListener((_, _, newVal) -> {
             if (newVal)
                 fabButton.setStyle(fabButton.getStyle() + "-fx-scale-x: 0.9; -fx-scale-y: 0.9;");
             else

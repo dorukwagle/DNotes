@@ -1,14 +1,8 @@
 package com.doruk.dnotes.MarkdownEditor;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.IndexRange;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
-
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
 import org.fxmisc.richtext.model.*;
@@ -240,10 +234,6 @@ public class RichTextFX {
     private TextStyle getCurrentTextStyle() {
         int pos = area.getCaretPosition();
         return pos > 0 ? area.getStyleOfChar(pos - 1) : TextStyle.EMPTY;
-    }
-
-    private static SegmentOps<String, TextStyle> styledTextOps() {
-        return SegmentOps.styledTextOps();
     }
 
     private static void applyParagraphStyle(TextFlow flow, ParagraphStyle style) {
