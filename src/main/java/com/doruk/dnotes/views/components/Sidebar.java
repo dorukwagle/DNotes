@@ -157,8 +157,6 @@ public class Sidebar {
                 });
 
                 setOnMouseClicked((_) -> {
-                    System.out.println(getItem());
-                    // this.requestFocus();
                     listView.getSelectionModel().select(this.getIndex());
                     setStyle(getStyle() + "-fx-background-color: -color-accent-7; -fx-font-weight: bold;");
 

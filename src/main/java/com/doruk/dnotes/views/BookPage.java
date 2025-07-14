@@ -1,7 +1,12 @@
 package com.doruk.dnotes.views;
 
+import java.util.List;
+import java.util.function.Function;
+
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import com.doruk.dnotes.dto.CollectionDto;
+import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.views.components.Sidebar;
 
@@ -23,13 +28,14 @@ public class BookPage implements IBookView {
     private Button backButton, editorButton;
     private BorderPane root;
     private VBox editorContainer;
+    private Sidebar sidebar;
 
     public BookPage() {
         root = new BorderPane();
         editorContainer = new VBox();
 
         // add sidebar to the left
-        Sidebar sidebar = new Sidebar();
+        sidebar = new Sidebar();
         root.setLeft(sidebar.getView());
 
         // create a main container
@@ -105,5 +111,20 @@ public class BookPage implements IBookView {
         this.editorContainer.getChildren().clear();
         VBox.setVgrow(editorView, Priority.ALWAYS);
         this.editorContainer.getChildren().add(editorView);
+    }
+
+    @Override
+    public void setSidebarItems(List<CollectionDto> items) {
+        this.sidebar.setItems(items);
+    }
+
+    @Override
+    public void setSidebarItemOnSelect(Function<CollectionDto, Void> onSelect) {
+        this.sidebar.setOnSelect(onSelect);
+    }
+
+    @Override
+    public SearchControlsDto getSidebarSearchControls() {
+        return sidebar.getSearchControls();
     }
 }

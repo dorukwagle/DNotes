@@ -39,5 +39,10 @@ public class BookController implements IController {
             this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR, this.navigationController);
             this.view.displayEditor(this.editorController.getView());
         });
+
+        this.view.setSidebarItemOnSelect(collectionDto -> {
+            System.out.println("page selected: " + collectionDto.getName());
+            return null;
+        });
     }
 }
