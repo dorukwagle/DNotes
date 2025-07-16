@@ -1,14 +1,19 @@
 package com.doruk.dnotes.views;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignE;
 
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.SearchControlsDto;
+import com.doruk.dnotes.enums.MenuItems;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.views.components.FAB;
 import com.doruk.dnotes.views.components.Sidebar;
@@ -46,6 +51,7 @@ public class HomePage implements IHomeView {
     private final ObservableList<BookDto> books;
     private Function<BookDto, Void> booksOnSelect;
     private Function<BookDto, Void> onDeleteBtnClick;
+    private Consumer<MenuItems> menuItemsOnClick;
     private PlaceholderView placeholderView;
 
     public HomePage() {
@@ -170,16 +176,15 @@ public class HomePage implements IHomeView {
 
     private void createMenuList(MenuButton menuButton) {
         // Add menu items with icons
-        String[][] menuData = {
-            {"Backup", "mdi2e-export"},
-            {"Restore", "mdi2b-backup-restore"},
-            {"View Trash", "mdi2d-delete"},
-            {"Preferences", "mdi2a-account-cog"}
-        };
+        Map<MenuItems, String>  menuData = new HashMap<>();
+        menuData.put(MenuItems.Backup, "mdi2e-export");
+        menuData.put(MenuItems.Restore, "mdi2b-backup-restore");
+        menuData.put(MenuItems.Trash, "mdi2d-delete");
+        menuData.put(MenuItems.Preferences, "mdi2a-account-cog");
         
-        for (String[] itemData : menuData) {
-            MenuItem menuItem = new MenuItem(itemData[0]);
-            FontIcon icon = new FontIcon(itemData[1]);
+        for (MenuItems item : menuData.keySet()) {
+            MenuItem menuItem = new MenuItem(item.name());
+            FontIcon icon = new FontIcon(menuData.get(item));
             icon.setIconSize(30);
             menuItem.setGraphic(icon);
             menuItem.getStyleClass().addAll(Styles.ACCENT);
@@ -193,7 +198,10 @@ public class HomePage implements IHomeView {
                 "-fx-font-size: 16px;"
             );
 
-            menuItem.setOnAction(_ -> System.out.println(itemData[0] + " clicked"));
+            menuItem.setOnAction(_ -> {
+                if (this.menuItemsOnClick != null)
+                    this.menuItemsOnClick.accept(item);
+            });
             menuButton.getItems().add(menuItem);
         }
         
@@ -393,5 +401,10 @@ public class HomePage implements IHomeView {
     @Override
     public void setPlaceholder(String txt) {
         this.placeholderView.setPlaceholder(txt);
+    }
+
+    @Override
+    public void setMenuItemsOnClick(Consumer<MenuItems> onClick) {
+        this.menuItemsOnClick = onClick;
     }
 }
