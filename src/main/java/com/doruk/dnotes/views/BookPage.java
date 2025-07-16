@@ -2,7 +2,6 @@ package com.doruk.dnotes.views;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -21,8 +20,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 public class BookPage implements IBookView {
 
