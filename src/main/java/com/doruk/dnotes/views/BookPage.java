@@ -25,10 +25,11 @@ import javafx.scene.text.Text;
 
 public class BookPage implements IBookView {
 
-    private Button backButton, editorButton;
+    private Button backButton;
     private BorderPane root;
     private VBox editorContainer;
     private Sidebar sidebar;
+    private BorderPane topBar;
 
     public BookPage() {
         root = new BorderPane();
@@ -38,9 +39,22 @@ public class BookPage implements IBookView {
         sidebar = new Sidebar();
         root.setLeft(sidebar.getView());
 
-        // create a main container
+        // Create top bar
+        topBar = new BorderPane();
+        topBar.getStyleClass().add("top-bar");
+        topBar.setStyle(
+            "-fx-background-color: -color-bg-subtle;" +
+            "-fx-padding: 10 20;" +
+            "-fx-border-color: -color-border-default;" +
+            "-fx-border-width: 0 0 1 0;"
+        );
+        
+        // Set up main container with top bar
+        VBox mainContent = new VBox();
         StackPane mainContainer = new StackPane();
-        root.setCenter(mainContainer);
+        mainContent.getChildren().addAll(topBar, mainContainer);
+        VBox.setVgrow(mainContainer, Priority.ALWAYS);
+        root.setCenter(mainContent);
 
         // create a fab button
         Button fabButton = new Button();
@@ -82,13 +96,23 @@ public class BookPage implements IBookView {
         editorContainer.getChildren().add(bookText);
         BorderPane.setAlignment(bookText, Pos.CENTER);
 
-        backButton = new Button("Back");
-        editorContainer.getChildren().add(backButton);
-        BorderPane.setAlignment(backButton, Pos.BOTTOM_LEFT);
+        // Create and style back button
+        backButton = new Button();
+        FontIcon backIcon = new FontIcon("mdi2b-backspace");
+        backIcon.setIconSize(20);
+        backIcon.setScaleX(1.3);
+        backIcon.setScaleY(1.3);
+        backButton.setGraphic(backIcon);
+        backButton.setMinWidth(50);
+        backButton.setStyle(backButton.getStyle() + "-fx-cursor: hand;");
+        backButton.getStyleClass().addAll(Styles.DANGER, Styles.BUTTON_ICON);
+        backButton.setTooltip(new Tooltip("Go back"));
+        
+        // Add button to top right
+        topBar.setRight(backButton);
+        BorderPane.setAlignment(backButton, Pos.CENTER_RIGHT);
+        BorderPane.setMargin(backButton, new Insets(0, 0, 0, 10));
 
-        editorButton = new Button("Editor");
-        editorContainer.getChildren().add(editorButton);
-        BorderPane.setAlignment(editorButton, Pos.BOTTOM_RIGHT);
     }
 
     @Override
@@ -100,12 +124,7 @@ public class BookPage implements IBookView {
     public Button getBackButton() {
         return backButton;
     }
-
-    @Override
-    public Button getEditorButton() {
-        return editorButton;
-    }
-
+    
     @Override
     public void displayEditor(Parent editorView) {
         this.editorContainer.getChildren().clear();

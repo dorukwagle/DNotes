@@ -46,17 +46,15 @@ public class BookController implements IController {
             this.navigationController.goToHomePage();
         });
 
-        this.view.getEditorButton().setOnAction(_ -> {
-            // close editorController gracefully
-            if (this.editorController != null)
-                this.editorController.close();
-
-            this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR, this.navigationController);
-            this.view.displayEditor(this.editorController.getView());
-        });
-
         this.view.setSidebarItemOnSelect(collectionDto -> {
             System.out.println("page selected: " + collectionDto.getName());
+
+            // open the page
+            if (this.editorController != null)
+                this.editorController.close();
+            
+            this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR, this.navigationController);
+            this.view.displayEditor(this.editorController.getView());
             return null;
         });
     }

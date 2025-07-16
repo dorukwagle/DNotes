@@ -12,7 +12,6 @@ import javafx.scene.Parent;
 
 public interface IBookView extends IView {
     Button getBackButton();
-    Button getEditorButton();
     void displayEditor(Parent editorView);
     void setSidebarItems(List<CollectionDto> items);
     void setSidebarItemOnSelect(Function<CollectionDto, Void> onSelect);
