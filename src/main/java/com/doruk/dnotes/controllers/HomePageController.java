@@ -1,9 +1,12 @@
 package com.doruk.dnotes.controllers;
 
 
+import java.util.Optional;
+
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.store.BookStore;
+import com.doruk.dnotes.views.components.ConfirmationModal;
 import com.doruk.dnotes.interfaces.IHomeView;
 import javafx.scene.Parent;
 
@@ -35,7 +38,7 @@ public class HomePageController implements IController {
         });
         
         homePageView.setOnCardsDeleteBtnClick(book -> {
-            System.out.println("Book deleted: " + book.getTitle());
+           
         });
     }
 }
