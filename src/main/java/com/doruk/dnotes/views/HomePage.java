@@ -46,9 +46,11 @@ public class HomePage implements IHomeView {
     private final ObservableList<BookDto> books;
     private Function<BookDto, Void> booksOnSelect;
     private Function<BookDto, Void> onDeleteBtnClick;
+    private PlaceholderView placeholderView;
 
     public HomePage() {
         this.books = FXCollections.observableArrayList();
+        this.placeholderView = new PlaceholderView();
         
         // Create main layout
         root = new BorderPane();
@@ -390,6 +392,6 @@ public class HomePage implements IHomeView {
 
     @Override
     public void setPlaceholder(String txt) {
-        
+        this.placeholderView.setPlaceholder(txt);
     }
 }
