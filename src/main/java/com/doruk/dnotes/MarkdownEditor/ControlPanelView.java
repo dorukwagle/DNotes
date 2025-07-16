@@ -158,6 +158,7 @@ public class ControlPanelView {
         backButton.setTooltip(new Tooltip("Back"));
         backButton.getStyleClass().addAll(Styles.MEDIUM, Styles.DANGER);
         backButton.setGraphic(new FontIcon(MaterialDesignB.BACKSPACE));
+        backButton.setStyle(backButton.getStyle() + "-fx-cursor: hand;");
         backButton.setPrefWidth(40);
          
         addButtonGroup(backButton);
@@ -172,6 +173,7 @@ public class ControlPanelView {
         button.setGraphic(fontIcon);
         
         button.getStyleClass().addAll("tool-button");
+        button.setStyle(button.getStyle() + "-fx-cursor: hand;");
         button.setTooltip(new Tooltip(tooltip));
         
         // Add hover and selected states using AtlantFX styles
