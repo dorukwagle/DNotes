@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -25,7 +25,7 @@ public class Sidebar {
     private TextField searchField;
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
-    private Function<CollectionDto, Void> onSelect;
+    private Consumer<CollectionDto> onSelect;
     private ListView<CollectionDto> listView;
 
     public Sidebar() {
@@ -162,7 +162,7 @@ public class Sidebar {
                     setStyle(getStyle() + "-fx-background-color: -color-accent-7; -fx-font-weight: bold;");
 
                     if (onSelect != null)
-                        onSelect.apply(item);
+                        onSelect.accept(item);
                 });
             }
         });
@@ -170,7 +170,7 @@ public class Sidebar {
         return listView;
     }
 
-    public void setOnSelect(Function<CollectionDto, Void> onSelect) {
+    public void setOnSelect(Consumer<CollectionDto> onSelect) {
         this.onSelect = onSelect;
     }
 

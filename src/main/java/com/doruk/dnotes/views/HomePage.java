@@ -49,8 +49,8 @@ public class HomePage implements IHomeView {
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
     private final ObservableList<BookDto> books;
-    private Function<BookDto, Void> booksOnSelect;
-    private Function<BookDto, Void> onDeleteBtnClick;
+    private Consumer<BookDto> booksOnSelect;
+    private Consumer<BookDto> onDeleteBtnClick;
     private Consumer<MenuItems> menuItemsOnClick;
     private PlaceholderView placeholderView;
 
@@ -336,7 +336,7 @@ public class HomePage implements IHomeView {
         deleteButton.setOnAction(_ -> {
             // Handle delete action
             if (this.onDeleteBtnClick != null)
-                this.onDeleteBtnClick.apply(book);
+                this.onDeleteBtnClick.accept(book);
         });
         
         statusBar.getChildren().addAll(dateText, spacer, deleteButton);
@@ -346,7 +346,7 @@ public class HomePage implements IHomeView {
 
         card.setOnMouseClicked(_ -> {
             if (this.booksOnSelect != null)
-                this.booksOnSelect.apply(book);
+                this.booksOnSelect.accept(book);
         });
         
         return card;
@@ -363,7 +363,7 @@ public class HomePage implements IHomeView {
     }
 
     @Override
-    public void setSidebarItemOnSelect(Function<CollectionDto, Void> onSelect) {
+    public void setSidebarItemOnSelect(Consumer<CollectionDto> onSelect) {
         this.sidebar.setOnSelect(onSelect);
     }
 
@@ -384,12 +384,12 @@ public class HomePage implements IHomeView {
     }
 
     @Override
-    public void setBooksOnSelect(Function<BookDto, Void> onSelect) {
+    public void setBooksOnSelect(Consumer<BookDto> onSelect) {
         this.booksOnSelect = onSelect;
     }
 
     @Override
-    public void setOnCardsDeleteBtnClick(Function<BookDto, Void> onDeleteBtnClick) {
+    public void setOnCardsDeleteBtnClick(Consumer<BookDto> onDeleteBtnClick) {
         this.onDeleteBtnClick = onDeleteBtnClick;
     }
 

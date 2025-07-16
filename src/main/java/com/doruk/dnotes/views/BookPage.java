@@ -1,6 +1,7 @@
 package com.doruk.dnotes.views;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -135,10 +136,10 @@ public class BookPage implements IBookView {
     }
 
     @Override
-    public void setSidebarItemOnSelect(Function<CollectionDto, Void> onSelect) {
+    public void setSidebarItemOnSelect(Consumer<CollectionDto> onSelect) {
         this.sidebar.setOnSelect(onSelect);
     }
-
+    
     @Override
     public SearchControlsDto getSidebarSearchControls() {
         return sidebar.getSearchControls();

@@ -28,17 +28,14 @@ public class HomePageController implements IController {
             System.out.println("Book selected: " + book.getTitle());
             BookStore.setSelectedBook(book);
             this.navigationController.goToBooksPage();
-            return null;
         });
 
         homePageView.setSidebarItemOnSelect(collectionDto -> {
             System.out.println("Sidebar item selected: " + collectionDto.getName());
-            return null;
         });
         
         homePageView.setOnCardsDeleteBtnClick(book -> {
             System.out.println("Book deleted: " + book.getTitle());
-            return null;
         });
     }
 }
