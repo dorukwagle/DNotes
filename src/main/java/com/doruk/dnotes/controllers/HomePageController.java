@@ -1,6 +1,7 @@
 package com.doruk.dnotes.controllers;
 
 
+import com.doruk.dnotes.enums.MenuItems;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.store.BookStore;
@@ -36,6 +37,16 @@ public class HomePageController implements IController {
         
         homePageView.setOnCardsDeleteBtnClick(book -> {
             System.out.println("Book deleted: " + book.getTitle());
+        });
+
+        homePageView.setMenuItemsOnClick(menuItem -> {
+            System.out.println("Menu item clicked: " + menuItem.name());
+            switch (menuItem) {
+                case MenuItems.Backup -> System.out.println("navigating to backup page");
+                case MenuItems.Restore -> System.out.println("navigating to restore page");
+                case MenuItems.Trash -> System.out.println("navigating to trash page");
+                case MenuItems.Preferences -> this.navigationController.goToPreferencePage();
+            }
         });
     }
 }
