@@ -30,6 +30,7 @@ public class BookPage implements IBookView {
     private VBox editorContainer;
     private Sidebar sidebar;
     private BorderPane topBar;
+    private PlaceholderView placeholderView;
 
     public BookPage() {
         root = new BorderPane();
@@ -48,13 +49,14 @@ public class BookPage implements IBookView {
             "-fx-border-color: -color-border-default;" +
             "-fx-border-width: 0 0 1 0;"
         );
+        editorContainer.getChildren().add(topBar);
+
+        placeholderView = new PlaceholderView();
+        editorContainer.getChildren().add(placeholderView.getView());
         
         // Set up main container with top bar
-        VBox mainContent = new VBox();
         StackPane mainContainer = new StackPane();
-        mainContent.getChildren().addAll(topBar, mainContainer);
-        VBox.setVgrow(mainContainer, Priority.ALWAYS);
-        root.setCenter(mainContent);
+        root.setCenter(mainContainer);
 
         // create a fab button
         Button fabButton = new Button();
@@ -91,11 +93,6 @@ public class BookPage implements IBookView {
                 fabButton.setStyle(fabButton.getStyle().replace("-fx-scale-x: 0.9; -fx-scale-y: 0.9;", ""));
         });
 
-        Text bookText = new Text("Click on a page to view/edit");
-        bookText.setFont(new Font(24));
-        editorContainer.getChildren().add(bookText);
-        BorderPane.setAlignment(bookText, Pos.CENTER);
-
         // Create and style back button
         backButton = new Button();
         FontIcon backIcon = new FontIcon("mdi2b-backspace");
@@ -124,7 +121,7 @@ public class BookPage implements IBookView {
     public Button getBackButton() {
         return backButton;
     }
-    
+
     @Override
     public void displayEditor(Parent editorView) {
         this.editorContainer.getChildren().clear();
@@ -154,6 +151,6 @@ public class BookPage implements IBookView {
 
     @Override
     public void setPlaceholder(String txt) {
-        
+        this.placeholderView.setPlaceholder(txt);
     }
 }

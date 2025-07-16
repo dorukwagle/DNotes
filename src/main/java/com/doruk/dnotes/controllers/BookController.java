@@ -34,6 +34,8 @@ public class BookController implements IController {
         }
 
         System.out.println("Opening book: " + book.get().getTitle());
+
+        this.view.setPlaceholder("Click on a page to view/edit.");
     }
 
     @Override
@@ -49,7 +51,7 @@ public class BookController implements IController {
         this.view.setSidebarItemOnSelect(collectionDto -> {
             System.out.println("page selected: " + collectionDto.getName());
 
-            // open the page
+            // gracefully close the existing editor
             if (this.editorController != null)
                 this.editorController.close();
             
