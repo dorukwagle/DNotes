@@ -9,6 +9,7 @@ import com.doruk.dnotes.controllers.BookController;
 import com.doruk.dnotes.controllers.EditorController;
 import com.doruk.dnotes.controllers.HomePageController;
 import com.doruk.dnotes.controllers.PreferenceController;
+import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.IBookView;
@@ -50,11 +51,11 @@ public class App extends Application {
         navigationController.goToHomePage();
         
         // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
-        ThemeManager.getInstance().applyGlobalTheme(Themes.DRACULA);
+        ThemeManager.getInstance().applyGlobalTheme();
 
         // from settings, editor color
         // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_SUBTLE);
-        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);d 
+        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);
     }
 
     public static void main(String[] args) {

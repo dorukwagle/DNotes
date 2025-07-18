@@ -6,9 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 
+import com.doruk.dnotes.enums.EditorColor;
+import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.interfaces.IPreferenceView;
 import atlantafx.base.theme.Styles;
 
@@ -52,11 +58,10 @@ public class PreferencePage implements IPreferenceView {
         
         // Section 1: Global Themes
         VBox themeSection = createSection("Global Themes", 
-            "Cupertino Dark", "Cupertino Light", "Primer Dark", 
-            "Primer Light", "Nord Dark", "Nord Light", "Dracula");
+            Arrays.stream(Themes.values()).collect(Collectors.toMap(Themes::getId, Themes::name)));
         
         // Section 2: Editor Color
-        VBox editorSection = createSection("Editor Color", "Subtle", "Muted");
+        VBox editorSection = createSection("Editor Color", Arrays.stream(EditorColor.values()).collect(Collectors.toMap(EditorColor::getId, EditorColor::name)));
         
         VBox centerContainer = new VBox(30, themeSection, editorSection);
         centerContainer.setAlignment(Pos.TOP_CENTER);
@@ -79,7 +84,7 @@ public class PreferencePage implements IPreferenceView {
         );
     }
     
-    private VBox createSection(String title, String... options) {
+    private VBox createSection(String title, Map<Integer, String> options) {
         VBox section = new VBox(15);
         section.setAlignment(Pos.TOP_LEFT);
         section.setMaxWidth(600);
@@ -116,8 +121,8 @@ public class PreferencePage implements IPreferenceView {
         
         ToggleGroup toggleGroup = new ToggleGroup();
         
-        for (String option : options) {
-            RadioButton radioButton = new RadioButton(option);
+        for (var key : options.keySet()) {
+            RadioButton radioButton = new RadioButton(options.get(key));
             radioButton.setToggleGroup(toggleGroup);
             radioButton.setStyle(
                 "-fx-font-size: 1.2em;" +
