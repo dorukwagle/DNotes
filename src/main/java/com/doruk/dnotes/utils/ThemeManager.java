@@ -35,6 +35,13 @@ public class ThemeManager {
             Themes.NordLight, new NordLight(),
             Themes.Dracula, new Dracula()
         );
+
+        // observe the preferance changes
+        prefs.addListener(Preference.Theme, (Integer id) -> {
+            var theme = Themes.fromId(id);
+            var style = themeCollection.get(theme);
+            Application.setUserAgentStylesheet(style.getUserAgentStylesheet());
+        });
     }
 
     public static ThemeManager getInstance() {
