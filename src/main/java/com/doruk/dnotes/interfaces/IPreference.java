@@ -1,5 +1,7 @@
 package com.doruk.dnotes.interfaces;
 
+import java.util.function.Consumer;
+
 import com.doruk.dnotes.enums.Preference;
 
 public interface IPreference {
@@ -15,4 +17,7 @@ public interface IPreference {
     long loadLong(Preference prefKey, long defaultValue);
     boolean loadBoolean(Preference prefKey, boolean defaultValue);
     double loadDouble(Preference prefKey, double defaultValue);
+
+    <T> void addListener(Preference prefKey, Consumer<T> listener);
+    <T> void notifyListeners(Preference prefKey, T value);
 }
