@@ -9,6 +9,7 @@ import com.doruk.dnotes.controllers.BookController;
 import com.doruk.dnotes.controllers.EditorController;
 import com.doruk.dnotes.controllers.HomePageController;
 import com.doruk.dnotes.controllers.PreferenceController;
+import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
@@ -50,12 +51,26 @@ public class App extends Application {
         var navigationController = NavigationController.getInstance(stage);
         navigationController.goToHomePage();
         
+        // save default settings in first run
+        saveDefaultSettings();
+
         // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
         ThemeManager.getInstance().applyGlobalTheme();
 
         // from settings, editor color
         // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_SUBTLE);
         // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);
+    }
+
+    private static void saveDefaultSettings() {
+        var prefs = DIFactory.createGlobalPreference();
+        // only run if it's first run
+        if (!prefs.loadBoolean(Preference.IsFirstRun, true)) 
+            return;
+        
+        prefs.saveLong(Preference.Theme, Themes.CupertinoDark.getId());
+        prefs.saveLong(Preference.EditorColor, EditorColor.Muted.getId());
+        prefs.saveBoolean(Preference.IsFirstRun, false);
     }
 
     public static void main(String[] args) {
