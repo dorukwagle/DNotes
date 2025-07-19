@@ -91,7 +91,7 @@ public class RichTextFX {
                     if (style.backgroundColor != null)
                         css.append("-rtfx-background-color: ").append(toRgba(style.backgroundColor)).append(";");
                     
-                    // set text color is given
+                    // set text color if given
                     css.append("-fx-fill: ").append(style.textColor != null ? toRgba(style.textColor) : "-color-fg-default").append(";");
 
                     text.setStyle(css.toString());

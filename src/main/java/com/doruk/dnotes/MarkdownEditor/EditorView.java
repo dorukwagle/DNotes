@@ -2,6 +2,7 @@ package com.doruk.dnotes.MarkdownEditor;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
+import com.doruk.dnotes.enums.EditorColor;
 
 import atlantafx.base.theme.Styles;
 import javafx.geometry.Insets;
@@ -17,6 +18,7 @@ public class EditorView implements View {
     
     private VBox root;
     private ControlPanelView controlPanel;
+    private HBox reference;
 
     public EditorView() {
         root = new VBox();
@@ -37,8 +39,7 @@ public class EditorView implements View {
         root.getChildren().add(scrollPane);
         
         // just a color reference for area
-        var reference = new HBox();
-        reference.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);
+        reference = new HBox();
         reference.setMaxHeight(0.0001);
         root.getChildren().add(reference);
         editor.getArea().backgroundProperty().bind(reference.backgroundProperty());
@@ -70,5 +71,14 @@ public class EditorView implements View {
     @Override
     public Button getCloseButton() {
         return controlPanel.getBackButton();
+    }
+
+    @Override
+    public void setEditorBackground(EditorColor color) {
+        reference.getStyleClass().remove(Styles.BG_NEUTRAL_SUBTLE);
+        reference.getStyleClass().remove(Styles.BG_NEUTRAL_MUTED);
+
+        var selected = color == EditorColor.Muted ? Styles.BG_NEUTRAL_MUTED : Styles.BG_NEUTRAL_SUBTLE;
+        reference.getStyleClass().add(selected);
     }
 }

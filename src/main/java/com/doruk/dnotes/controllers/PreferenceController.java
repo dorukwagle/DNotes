@@ -51,7 +51,6 @@ public class PreferenceController implements IController {
 
         this.view.setEditorColorOnSelect(id -> {
             this.preference.saveLong(Preference.EditorColor, id);
-            this.preference.notifyListeners(Preference.EditorColor, id);
         });
     }
 }
