@@ -3,12 +3,23 @@ package com.doruk.dnotes.views;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+
+import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 
+import com.doruk.dnotes.enums.EditorColor;
+import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.interfaces.IPreferenceView;
 import atlantafx.base.theme.Styles;
 
@@ -16,6 +27,11 @@ public class PreferencePage implements IPreferenceView {
     private BorderPane root;
     private Button backButton;
     private VBox contentBox;
+    private ToggleGroup themeToggleGroup;
+    private ToggleGroup editorToggleGroup;
+    private Consumer<Integer> themeOnSelect;
+    private Consumer<Integer> editorColorOnSelect;
+    
     
     public PreferencePage() {
         // Main layout
@@ -50,17 +66,42 @@ public class PreferencePage implements IPreferenceView {
         contentBox.setMaxWidth(800);
         contentBox.getStyleClass().add(Styles.ACCENT);
         
-        // Section 1: Global Themes
-        VBox themeSection = createSection("Global Themes", 
-            "Cupertino Dark", "Cupertino Light", "Primer Dark", 
-            "Primer Light", "Nord Dark", "Nord Light", "Dracula");
-        
-        // Section 2: Editor Color
-        VBox editorSection = createSection("Editor Color", "Subtle", "Muted");
-        
-        VBox centerContainer = new VBox(30, themeSection, editorSection);
+        // center container for all sections
+        VBox centerContainer = new VBox(30);
         centerContainer.setAlignment(Pos.TOP_CENTER);
         centerContainer.setMaxWidth(600);
+
+        // Section 1: Global Themes
+        var themeSection = createSection(centerContainer, "Global Themes");
+        themeToggleGroup = new ToggleGroup();
+        
+        for (var theme : Themes.values()) {
+            RadioButton radioButton = new RadioButton(theme.name());
+            radioButton.setToggleGroup(themeToggleGroup);
+            radioButton.setUserData(theme.getId());
+            radioButton.setStyle(
+                "-fx-font-size: 1.2em;" +
+                "-fx-text-fill: -color-fg-default;"
+            );
+            radioButton.setOnMouseClicked(_ -> themeOnSelect.accept(theme.getId()));
+            themeSection.getChildren().add(radioButton);
+        }
+        
+        // Section 2: Editor Color
+        var editorSection = createSection(centerContainer, "Editor Color");
+        editorToggleGroup = new ToggleGroup();
+        
+        for (var color : EditorColor.values()) {
+            RadioButton radioButton = new RadioButton(color.name());
+            radioButton.setToggleGroup(editorToggleGroup);
+            radioButton.setUserData(color.getId());
+            radioButton.setStyle(
+                "-fx-font-size: 1.2em;" +
+                "-fx-text-fill: -color-fg-default;"
+            );
+            radioButton.setOnMouseClicked(_ -> editorColorOnSelect.accept(color.getId()));
+            editorSection.getChildren().add(radioButton);
+        }
         
         contentBox.getChildren().add(centerContainer);
         scrollPane.setContent(contentBox);
@@ -79,11 +120,11 @@ public class PreferencePage implements IPreferenceView {
         );
     }
     
-    private VBox createSection(String title, String... options) {
-        VBox section = new VBox(15);
-        section.setAlignment(Pos.TOP_LEFT);
-        section.setMaxWidth(600);
-        section.setStyle(
+    private VBox createSection(VBox parent, String title) {
+        parent.setSpacing(15);
+        parent.setAlignment(Pos.TOP_LEFT);
+        parent.setMaxWidth(600);
+        parent.setStyle(
             "-fx-background-color: -color-bg-default;" +
             "-fx-background-radius: 8;" +
             "-fx-padding: 20;" +
@@ -114,20 +155,8 @@ public class PreferencePage implements IPreferenceView {
         VBox optionsBox = new VBox(10);
         optionsBox.setPadding(new Insets(10, 0, 0, 0));
         
-        ToggleGroup toggleGroup = new ToggleGroup();
-        
-        for (String option : options) {
-            RadioButton radioButton = new RadioButton(option);
-            radioButton.setToggleGroup(toggleGroup);
-            radioButton.setStyle(
-                "-fx-font-size: 1.2em;" +
-                "-fx-text-fill: -color-fg-default;"
-            );
-            optionsBox.getChildren().add(radioButton);
-        }
-        
-        section.getChildren().addAll(header, optionsBox);
-        return section;
+        parent.getChildren().addAll(header, optionsBox);
+        return parent;
     }
 
     @Override
@@ -142,7 +171,33 @@ public class PreferencePage implements IPreferenceView {
     }
 
     @Override
+    public void setThemeOnSelect(Consumer<Integer> themeOnSelect) {
+        this.themeOnSelect = themeOnSelect;
+    }
+
+    @Override
+    public void setEditorColorOnSelect(Consumer<Integer> editorColorOnSelect) {
+        this.editorColorOnSelect = editorColorOnSelect;
+    }
+
+    @Override
+    public void setSelectedTheme(Themes theme) {
+        var toggle = this.themeToggleGroup.getToggles()
+            .filtered(t -> t.getUserData().equals(theme.getId()))
+            .get(0);
+        this.themeToggleGroup.selectToggle(toggle);
+    }
+
+    @Override
+    public void setSelectedEditorColor(EditorColor color) {
+        var toggle = this.editorToggleGroup.getToggles()
+            .filtered(t -> t.getUserData().equals(color.getId()))
+            .get(0);
+        this.editorToggleGroup.selectToggle(toggle);
+    }
+
+    @Override
     public void setPlaceholder(String txt) {
-        
+        // no placeholder neede here
     }
 }
