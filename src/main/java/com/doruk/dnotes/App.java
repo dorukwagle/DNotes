@@ -59,7 +59,7 @@ public class App extends Application {
 
         // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
         ThemeManager.getInstance().applyGlobalTheme();
-
+       
         // initialize database if not already
         try {
             DatabaseInitializer.initialize();
