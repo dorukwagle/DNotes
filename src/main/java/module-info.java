@@ -9,6 +9,9 @@ module com.doruk.dnotes {
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.materialdesign2;
 
+    requires java.sql;
+    requires org.xerial.sqlitejdbc;
+
     requires org.fxmisc.flowless;
     requires org.fxmisc.richtext;
     requires reactfx;
