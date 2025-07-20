@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 public class DatabaseConnector {
     private static DatabaseConnector instance;
     private Connection connection;
@@ -26,13 +27,13 @@ public class DatabaseConnector {
         }
     }
 
-    public static DatabaseConnector getInstance() {
+    private static DatabaseConnector getInstance() throws RuntimeException {
         if (instance == null) 
             instance = new DatabaseConnector();
         return instance;
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() throws RuntimeException {
         return getInstance().connection;
     }
 }

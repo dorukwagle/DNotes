@@ -1,5 +1,6 @@
 package com.doruk.dnotes;
 
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -19,10 +20,12 @@ import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreferenceView;
 import com.doruk.dnotes.interfaces.IView;
+import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
 import com.doruk.dnotes.views.BookPage;
 import com.doruk.dnotes.views.HomePage;
 import com.doruk.dnotes.views.PreferencePage;
+import com.doruk.dnotes.views.components.ConfirmationModal;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -57,9 +60,15 @@ public class App extends Application {
         // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
         ThemeManager.getInstance().applyGlobalTheme();
 
-        // from settings, editor color
-        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_SUBTLE);
-        // editorContainer.getStyleClass().add(Styles.BG_NEUTRAL_MUTED);
+        // initialize database if not already
+        try {
+            DatabaseInitializer.initialize();
+        } catch (RuntimeException | SQLException e) {
+            var confirm = new ConfirmationModal(e.getCause().toString(), e.getMessage());
+            confirm.setOnOk(() -> System.exit(1));
+            confirm.setOnCancel(() -> System.exit(1));
+            confirm.show();
+        }
     }
 
     private static void saveDefaultSettings() {

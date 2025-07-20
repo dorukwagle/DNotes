@@ -3,12 +3,12 @@ package com.doruk.dnotes.dto;
 public class CollectionDto {
     private String name;
     private String id;
-    private String updatedDate;
+    private String updatedAt;
 
-    public CollectionDto(String id, String name, String updatedDate) {
+    public CollectionDto(String id, String name, String updatedAt) {
         this.name = name;
         this.id = id;
-        this.updatedDate = updatedDate;
+        this.updatedAt = updatedAt;
     }
 
     public String getName() {
@@ -19,7 +19,7 @@ public class CollectionDto {
         return id;
     }
 
-    public String getUpdatedDate() {
-        return updatedDate;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 }

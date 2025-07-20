@@ -318,7 +318,7 @@ public class HomePage implements IHomeView {
         statusBar.setStyle("-fx-padding: 8 0 0 0; -fx-border-color: -color-border-muted; -fx-border-width: 1 0 0 0;");
         
         // Date
-        Text dateText = new Text(book.getUpdatedDate());
+        Text dateText = new Text(book.getUpdatedAt());
         dateText.setStyle("-fx-fill: -color-fg-muted; -fx-font-size: 12;");
         
         // Spacer

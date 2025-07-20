@@ -3,14 +3,14 @@ package com.doruk.dnotes.dto;
 public class BookDto {
     private String title;
     private String preview;
-    private String bookId;
-    private String updatedDate;
+    private String id;
+    private String updatedAt;
 
-    public BookDto(String bookId, String title, String preview, String updatedDate) {
-        this.bookId = bookId;
+    public BookDto(String id, String title, String preview, String updatedAt) {
+        this.id = id;
         this.title = title;
         this.preview = preview;
-        this.updatedDate = updatedDate;
+        this.updatedAt = updatedAt;
     }
 
     public String getTitle() {
@@ -21,11 +21,11 @@ public class BookDto {
         return preview;
     }
 
-    public String getBookId() {
-        return bookId;
+    public String getId() {
+        return id;
     }
 
-    public String getUpdatedDate() {
-        return updatedDate;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 }
