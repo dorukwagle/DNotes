@@ -405,4 +405,14 @@ public class HomePage implements IHomeView {
     public void setMenuItemsOnClick(Consumer<MenuItems> onClick) {
         this.menuItemsOnClick = onClick;
     }
+
+    @Override
+    public ObservableList<CollectionDto> getSidebarItems() {
+        return this.sidebar.getItems();
+    }
+
+    @Override
+    public ObservableList<BookDto> getBookItems() {
+        return this.books;
+    }
 }

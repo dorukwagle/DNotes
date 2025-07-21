@@ -197,4 +197,8 @@ public class Sidebar {
         
         this.listView.getSelectionModel().select(givenItem);
     }
+
+    public ObservableList<CollectionDto> getItems() {
+        return this.items;
+    }
 }
