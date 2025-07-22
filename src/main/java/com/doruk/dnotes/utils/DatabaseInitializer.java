@@ -77,6 +77,8 @@ public class DatabaseInitializer {
             "CREATE INDEX IF NOT EXISTS idx_book_page_book_id ON bookPages (bookId);",
 
             "CREATE INDEX IF NOT EXISTS idx_book_page_name ON bookPages (name);",
+            "CREATE INDEX IF NOT EXISTS idx_collection_name ON collections (name);",
+            "CREATE INDEX IF NOT EXISTS idx_book_title ON books (title);"
         };
 
         var statement = connection.createStatement();
