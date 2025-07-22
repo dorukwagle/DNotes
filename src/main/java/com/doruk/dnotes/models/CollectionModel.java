@@ -2,10 +2,11 @@ package com.doruk.dnotes.models;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.doruk.dnotes.dto.CollectionDto;
+import com.doruk.dnotes.dto.PaginationParams;
 import com.doruk.dnotes.enums.SortBy;
 import com.doruk.dnotes.enums.SortOrder;
 import com.doruk.dnotes.exceptions.DataAccessException;
@@ -22,11 +23,18 @@ public class CollectionModel implements IModel<CollectionDto> {
     @Override
     public CollectionDto add(CollectionDto collectionDto) {
         try {
-            var stmt = connection.prepareStatement("INSERT INTO collections (name) VALUES (?)");
+            var stmt = connection.prepareStatement("INSERT INTO collections (name) VALUES (?) RETURNING id, updatedAt");
             stmt.setString(1, collectionDto.getName());
-            stmt.executeUpdate();
+            var rs = stmt.executeQuery();
 
-            return collectionDto;
+            // since only one row returned
+            rs.next();
+
+            return new CollectionDto(
+                String.valueOf(rs.getInt("id")),
+                collectionDto.getName(),
+                rs.getDate("updatedAt").toString()
+            );
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create new collection", e);
         }
@@ -34,15 +42,69 @@ public class CollectionModel implements IModel<CollectionDto> {
 
     @Override
     public CollectionDto update(CollectionDto collectionDto) {
-        return null;
+        try {
+            var stmt = connection.prepareStatement("UPDATE collections SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt");
+            stmt.setString(1, collectionDto.getName());
+            stmt.setString(2, collectionDto.getId());
+            var rs = stmt.executeQuery();
+
+            // since only one row returned
+            rs.next();
+
+            return new CollectionDto(
+                collectionDto.getId(),
+                collectionDto.getName(),
+                rs.getDate("updatedAt").toString()
+            );
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update collection", e);
+        }
     }
 
     @Override
     public void delete(String id) {
+        try {
+            var stmt = connection.prepareStatement("DELETE FROM collections WHERE id = ?");
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete collection", e);
+        }
     }
 
     @Override
-    public List<CollectionDto> getAll(Optional<SortBy> sortBy, Optional<SortOrder> sortOrder) {
-        return null;
+    public List<CollectionDto> getAll(PaginationParams params) {
+        var sortBy = params.getSortBy().orElse(SortBy.Date);
+        var sortOrder = params.getSortOrder().orElse(SortOrder.Descending);
+        var search = params.getSearch().orElse("");
+
+        StringBuilder query = new StringBuilder("SELECT * FROM collections");
+        if (!search.isEmpty())
+            query.append(" WHERE name LIKE ?");
+        
+        query.append(" ORDER BY");
+        query.append(sortBy == SortBy.Date ? " updatedAt" : " name");
+        query.append(sortOrder == SortOrder.Descending ? " DESC" : " ASC");
+                
+        try {
+            var stmt = connection.prepareStatement(query.toString());
+            if (!search.isEmpty())
+                stmt.setString(1, "%" + search + "%");
+            var rs = stmt.executeQuery();
+
+            // add to list
+            List<CollectionDto> collections = new ArrayList<>();
+            while (rs.next()) {
+                collections.add(new CollectionDto(
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("name"),
+                    rs.getDate("updatedAt").toString()
+                ));
+            }
+
+            return collections;
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get all collections", e);
+        }
     }
 }
