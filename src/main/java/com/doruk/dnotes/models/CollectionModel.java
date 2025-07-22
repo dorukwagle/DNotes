@@ -19,6 +19,48 @@ public class CollectionModel implements IModel<CollectionDto> {
     public CollectionModel() {
         this.connection = DatabaseConnector.getConnection();
     }
+
+    private List<CollectionDto> getCollections(boolean deleted, PaginationParams params) {
+        var sortBy = params.getSortBy().orElse(SortBy.Date);
+        var sortOrder = params.getSortOrder().orElse(SortOrder.Descending);
+        var search = params.getSearch().orElse("");
+
+        // for deleted
+        // SELECT * FROM collections WHERE deletedAt IS NOT NULL
+        StringBuilder query = new StringBuilder("SELECT * FROM" + (deleted ? " collections" : " collectionView") + " where");
+
+        if (!search.isEmpty())
+            query.append(" name LIKE ?");
+
+        if (deleted)
+            query.append(search.isEmpty() ? "" : " and" + " deletedAt IS NOT NULL");
+            
+        
+        query.append(" ORDER BY");
+        query.append(sortBy == SortBy.Date ? " updatedAt" : " name");
+        query.append(sortOrder == SortOrder.Descending ? " DESC" : " ASC");
+                
+        try {
+            var stmt = connection.prepareStatement(query.toString());
+            if (!search.isEmpty())
+                stmt.setString(1, "%" + search + "%");
+            var rs = stmt.executeQuery();
+
+            // add to list
+            List<CollectionDto> collections = new ArrayList<>();
+            while (rs.next()) {
+                collections.add(new CollectionDto(
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("name"),
+                    rs.getDate("updatedAt").toString()
+                ));
+            }
+
+            return collections;
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get all collections from database", e);
+        }
+    }
     
     @Override
     public CollectionDto add(CollectionDto collectionDto) {
@@ -73,38 +115,43 @@ public class CollectionModel implements IModel<CollectionDto> {
     }
 
     @Override
-    public List<CollectionDto> getAll(PaginationParams params) {
-        var sortBy = params.getSortBy().orElse(SortBy.Date);
-        var sortOrder = params.getSortOrder().orElse(SortOrder.Descending);
-        var search = params.getSearch().orElse("");
-
-        StringBuilder query = new StringBuilder("SELECT * FROM collections");
-        if (!search.isEmpty())
-            query.append(" WHERE name LIKE ?");
-        
-        query.append(" ORDER BY");
-        query.append(sortBy == SortBy.Date ? " updatedAt" : " name");
-        query.append(sortOrder == SortOrder.Descending ? " DESC" : " ASC");
-                
+    public void softDelete(String id) {
         try {
-            var stmt = connection.prepareStatement(query.toString());
-            if (!search.isEmpty())
-                stmt.setString(1, "%" + search + "%");
+            var stmt = connection.prepareStatement("UPDATE collections SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete collection", e);
+        }
+    }
+
+    @Override
+    public List<CollectionDto> getAll(PaginationParams params) {
+        return getCollections(false, params);
+    }
+
+    @Override
+    public List<CollectionDto> getAllDeleted(PaginationParams params) {
+        return getCollections(true, params);
+    }
+
+    @Override
+    public CollectionDto restore(String id) {
+        try {
+            var stmt = connection.prepareStatement("UPDATE collections SET deletedAt = NULL WHERE id = ? RETURNING name, updatedAt");
+            stmt.setString(1, id);
             var rs = stmt.executeQuery();
 
-            // add to list
-            List<CollectionDto> collections = new ArrayList<>();
-            while (rs.next()) {
-                collections.add(new CollectionDto(
-                    String.valueOf(rs.getInt("id")),
-                    rs.getString("name"),
-                    rs.getDate("updatedAt").toString()
-                ));
-            }
+            // since only one row returned
+            rs.next();
 
-            return collections;
+            return new CollectionDto(
+                id,
+                rs.getString("name"),
+                rs.getDate("updatedAt").toString()
+            );
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to get all collections", e);
+            throw new DataAccessException("Failed to restore collection", e);
         }
     }
 }

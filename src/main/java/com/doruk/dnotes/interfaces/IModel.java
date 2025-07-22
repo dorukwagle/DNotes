@@ -9,5 +9,8 @@ public interface IModel<T> {
     T add(T t) throws DataAccessException;
     T update(T t) throws DataAccessException;
     void delete(String id) throws DataAccessException;
+    void softDelete(String id) throws DataAccessException;
     List<T> getAll(PaginationParams paginationParams) throws DataAccessException;
+    List<T> getAllDeleted(PaginationParams paginationParams) throws DataAccessException;
+    T restore(String id) throws DataAccessException;
 }
