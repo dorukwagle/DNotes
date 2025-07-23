@@ -106,6 +106,15 @@ public class CollectionModel implements IModel<CollectionDto> {
     @Override
     public void delete(String id) {
         try {
+            // also delete the child tables data i.e. books and bookPages
+            var bookPages = connection.prepareStatement("DELETE FROM bookPages WHERE bookId IN (SELECT id FROM books WHERE collectionId = ?)");
+            bookPages.setString(1, id);
+            bookPages.executeUpdate();
+
+            var books = connection.prepareStatement("DELETE FROM books WHERE collectionId = ?");
+            books.setString(1, id);
+            books.executeUpdate();
+
             var stmt = connection.prepareStatement("DELETE FROM collections WHERE id = ?");
             stmt.setString(1, id);
             stmt.executeUpdate();
