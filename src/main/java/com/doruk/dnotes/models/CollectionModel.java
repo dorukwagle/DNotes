@@ -12,54 +12,13 @@ import com.doruk.dnotes.enums.SortOrder;
 import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.IModel;
 import com.doruk.dnotes.utils.DatabaseConnector;
+import com.doruk.dnotes.utils.PaginateQuery;
 
 public class CollectionModel implements IModel<CollectionDto> {
     private Connection connection;
     
     public CollectionModel() {
         this.connection = DatabaseConnector.getConnection();
-    }
-
-    private List<CollectionDto> getCollections(boolean deleted, PaginationParams params) {
-        var sortBy = params.getSortBy().orElse(SortBy.Date);
-        var sortOrder = params.getSortOrder().orElse(SortOrder.Descending);
-        var search = params.getSearch().orElse("");
-
-        // for deleted
-        // SELECT * FROM collections WHERE deletedAt IS NOT NULL
-        StringBuilder query = new StringBuilder("SELECT * FROM" + (deleted ? " collections" : " collectionView") + " where");
-
-        if (!search.isEmpty())
-            query.append(" name LIKE ?");
-
-        if (deleted)
-            query.append(search.isEmpty() ? "" : " and" + " deletedAt IS NOT NULL");
-            
-        
-        query.append(" ORDER BY");
-        query.append(sortBy == SortBy.Date ? " updatedAt" : " name");
-        query.append(sortOrder == SortOrder.Descending ? " DESC" : " ASC");
-                
-        try {
-            var stmt = connection.prepareStatement(query.toString());
-            if (!search.isEmpty())
-                stmt.setString(1, "%" + search + "%");
-            var rs = stmt.executeQuery();
-
-            // add to list
-            List<CollectionDto> collections = new ArrayList<>();
-            while (rs.next()) {
-                collections.add(new CollectionDto(
-                    String.valueOf(rs.getInt("id")),
-                    rs.getString("name"),
-                    rs.getDate("updatedAt").toString()
-                ));
-            }
-
-            return collections;
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to get all collections from database", e);
-        }
     }
     
     @Override
@@ -136,12 +95,51 @@ public class CollectionModel implements IModel<CollectionDto> {
 
     @Override
     public List<CollectionDto> getAll(PaginationParams params) {
-        return getCollections(false, params);
+        try {
+            var rs = new PaginateQuery("collectionView", params)
+                .select("id, name, updatedAt")
+                .prepareStatement()
+                .executeQuery();
+
+            // add to list
+            List<CollectionDto> collections = new ArrayList<>();
+            while (rs.next()) {
+                collections.add(new CollectionDto(
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("name"),
+                    rs.getDate("updatedAt").toString()
+                ));
+            }
+
+            return collections;
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get all collections from database", e);
+        }
     }
 
     @Override
     public List<CollectionDto> getAllDeleted(PaginationParams params) {
-        return getCollections(true, params);
+        try {
+            var rs = new PaginateQuery("collections", params)
+                .where("deletedAt IS NOT NULL")
+                .select("id, name, updatedAt")
+                .prepareStatement()
+                .executeQuery();
+
+            // add to list
+            List<CollectionDto> collections = new ArrayList<>();
+            while (rs.next()) {
+                collections.add(new CollectionDto(
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("name"),
+                    rs.getDate("updatedAt").toString()
+                ));
+            }
+
+            return collections;
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get all deleted collections from database", e);
+        }
     }
 
     @Override
