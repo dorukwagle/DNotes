@@ -43,7 +43,7 @@ public class HomePageController implements IController {
         homePageView.setSidebarItemOnRightClick(collectionDto -> {
             System.out.println("Sidebar item right clicked: " + collectionDto.getName());
             OptionsModal optionsModal = new OptionsModal();
-            optionsModal.show();
+            optionsModal.showAndWait();
         });
 
         homePageView.setMenuItemsOnClick(menuItem -> {
