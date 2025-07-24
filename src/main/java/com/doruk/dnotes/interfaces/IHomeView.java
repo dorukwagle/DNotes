@@ -13,11 +13,12 @@ import javafx.collections.ObservableList;
 public interface IHomeView extends IView {
     void setSidebarItems(List<CollectionDto> items);
     void setSidebarItemOnSelect(Consumer<CollectionDto> onSelect);
+    void setSidebarItemOnRightClick(Consumer<CollectionDto> onRightClick);
     SearchControlsDto getSidebarSearchControls();
     SearchControlsDto getSearchControls();
     void setBooks(List<BookDto> books);
     void setBooksOnSelect(Consumer<BookDto> onSelect);
-    void setOnCardsDeleteBtnClick(Consumer<BookDto> onDeleteBtnClick);
+    void setOnCardOptionsClick(Consumer<BookDto> onDeleteBtnClick);
     void setSelectedSidebarItem(CollectionDto item);
     void setMenuItemsOnClick(Consumer<MenuItems> onClick);
     ObservableList<CollectionDto> getSidebarItems();

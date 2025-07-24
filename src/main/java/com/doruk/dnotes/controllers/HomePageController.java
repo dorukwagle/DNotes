@@ -5,6 +5,7 @@ import com.doruk.dnotes.enums.MenuItems;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.store.BookStore;
+import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.interfaces.IHomeView;
 import javafx.scene.Parent;
 
@@ -35,8 +36,14 @@ public class HomePageController implements IController {
             System.out.println("Sidebar item selected: " + collectionDto.getName());
         });
         
-        homePageView.setOnCardsDeleteBtnClick(_ -> {
+        homePageView.setOnCardOptionsClick(_ -> {
            
+        });
+
+        homePageView.setSidebarItemOnRightClick(collectionDto -> {
+            System.out.println("Sidebar item right clicked: " + collectionDto.getName());
+            OptionsModal optionsModal = new OptionsModal();
+            optionsModal.show();
         });
 
         homePageView.setMenuItemsOnClick(menuItem -> {
