@@ -6,6 +6,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
 
+import com.doruk.dnotes.interfaces.IOptionsModal;
+
 import atlantafx.base.theme.Styles;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,7 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class OptionsModal {
+public class OptionsModal implements IOptionsModal{
     private final Stage dialog;
     private final TextField inputField;
     private final CheckBox confirmCheckbox;
@@ -132,23 +134,28 @@ public class OptionsModal {
         dialog.setScene(scene);
     }
     
+    @Override
     public void setOnDeleteAction(Runnable action) {
         this.onDeleteAction = action;
     }
     
+    @Override
     public void setOnUpdateAction(Runnable action) {
         this.onUpdateAction = action;
     }
     
+    @Override
     public String getInputText() {
         return inputField.getText();
     }
     
+    @Override
     public void setInputText(String text) {
         inputField.setText(text);
     }
     
-    public void show() {
+    @Override
+    public void showAndWait() {
         // Clear previous state
         inputField.clear();
         confirmCheckbox.setSelected(false);
@@ -157,8 +164,13 @@ public class OptionsModal {
         dialog.showAndWait();
         dialog.centerOnScreen();
     }
+
+    @Override
+    public boolean isConfirmationChecked() {
+        return confirmCheckbox.isSelected();
+    }
     
-    public void close() {
+    private void close() {
         dialog.close();
     }
 }
