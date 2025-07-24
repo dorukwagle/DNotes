@@ -1,10 +1,8 @@
 package com.doruk.dnotes.views.components;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
 
@@ -129,7 +127,7 @@ public class OptionsModal {
             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
             """);
         
-        // Create scene with proper styling
+        // Create a new scene
         Scene scene = new Scene(container);
         dialog.setScene(scene);
     }
