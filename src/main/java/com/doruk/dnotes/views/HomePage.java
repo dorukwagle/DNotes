@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
@@ -48,8 +51,9 @@ public class HomePage implements IHomeView {
     private ToggleButton sortOrderToggle;
     private final ObservableList<BookDto> books;
     private Consumer<BookDto> booksOnSelect;
-    private Consumer<BookDto> onDeleteBtnClick;
+    private Consumer<BookDto> onCardOptionsClick;
     private Consumer<MenuItems> menuItemsOnClick;
+    private Consumer<CollectionDto> onSidebarItemRightClick;
     private PlaceholderView placeholderView;
 
     public HomePage() {
@@ -326,18 +330,20 @@ public class HomePage implements IHomeView {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
         // Delete button
-        Button deleteButton = new Button();
-        FontIcon deleteIcon = new FontIcon("mdi2d-delete");
-        deleteIcon.setIconSize(16);
-        deleteButton.setGraphic(deleteIcon);
-        deleteButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT, Styles.DANGER);
-        deleteButton.setOnAction(_ -> {
+        Button optionsButton = new Button();
+        FontIcon optionIcon = new FontIcon(MaterialDesignD.DOTS_VERTICAL_CIRCLE);
+        optionIcon.setIconSize(24);
+        optionsButton.setGraphic(optionIcon);
+        optionIcon.setScaleX(1.3);
+        optionIcon.setScaleY(1.3);
+        optionsButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT, Styles.ACCENT);
+        optionsButton.setOnAction(_ -> {
             // Handle delete action
-            if (this.onDeleteBtnClick != null)
-                this.onDeleteBtnClick.accept(book);
+            if (this.onCardOptionsClick != null)
+                this.onCardOptionsClick.accept(book);
         });
         
-        statusBar.getChildren().addAll(dateText, spacer, deleteButton);
+        statusBar.getChildren().addAll(dateText, spacer, optionsButton);
         
         // Add all components to card
         card.getChildren().addAll(titleText, contentText, statusBar);
@@ -366,6 +372,11 @@ public class HomePage implements IHomeView {
     }
 
     @Override
+    public void setSidebarItemOnRightClick(Consumer<CollectionDto> onRightClick) {
+        this.sidebar.setOnRightClick(onRightClick);
+    }
+
+    @Override
     public SearchControlsDto getSidebarSearchControls() {
         return sidebar.getSearchControls();
     }
@@ -387,8 +398,8 @@ public class HomePage implements IHomeView {
     }
 
     @Override
-    public void setOnCardsDeleteBtnClick(Consumer<BookDto> onDeleteBtnClick) {
-        this.onDeleteBtnClick = onDeleteBtnClick;
+    public void setOnCardOptionsClick(Consumer<BookDto> onClick) {
+        this.onCardOptionsClick = onClick;
     }
 
     @Override

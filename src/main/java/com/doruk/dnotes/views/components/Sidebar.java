@@ -2,11 +2,14 @@ package com.doruk.dnotes.views.components;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.util.List;
@@ -26,6 +29,7 @@ public class Sidebar {
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
     private Consumer<CollectionDto> onSelect;
+    private Consumer<CollectionDto> onRightClick;
     private ListView<CollectionDto> listView;
 
     public Sidebar() {
@@ -157,7 +161,12 @@ public class Sidebar {
                     setStyle(getStyle() + "-fx-background-color: transparent;");
                 });
 
-                setOnMouseClicked((_) -> {
+                setOnMouseClicked((MouseEvent event) -> {
+                    var btn = event.getButton();
+                    if (btn == MouseButton.SECONDARY) {
+                        if (onRightClick != null)
+                            onRightClick.accept(item);
+                    }
                     listView.getSelectionModel().select(this.getIndex());
                     setStyle(getStyle() + "-fx-background-color: -color-accent-7; -fx-font-weight: bold;");
 
@@ -172,6 +181,10 @@ public class Sidebar {
 
     public void setOnSelect(Consumer<CollectionDto> onSelect) {
         this.onSelect = onSelect;
+    }
+
+    public void setOnRightClick(Consumer<CollectionDto> onRightClick) {
+        this.onRightClick = onRightClick;
     }
 
     public Parent getView() {

@@ -35,8 +35,12 @@ public class HomePageController implements IController {
             System.out.println("Sidebar item selected: " + collectionDto.getName());
         });
         
-        homePageView.setOnCardsDeleteBtnClick(_ -> {
+        homePageView.setOnCardOptionsClick(_ -> {
            
+        });
+
+        homePageView.setSidebarItemOnRightClick(collectionDto -> {
+            System.out.println("Sidebar item right clicked: " + collectionDto.getName());
         });
 
         homePageView.setMenuItemsOnClick(menuItem -> {
