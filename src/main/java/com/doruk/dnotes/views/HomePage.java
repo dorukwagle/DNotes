@@ -1,6 +1,5 @@
 package com.doruk.dnotes.views;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,10 +51,12 @@ public class HomePage implements IHomeView {
     private Consumer<BookDto> onCardOptionsClick;
     private Consumer<MenuItems> menuItemsOnClick;
     private PlaceholderView placeholderView;
+    private ScrollPane cardGrid;
 
     public HomePage() {
         this.books = FXCollections.observableArrayList();
         this.placeholderView = new PlaceholderView();
+        this.placeholderView.getView().setVisible(false);
         
         // Create main layout
         root = new BorderPane();
@@ -145,12 +146,11 @@ public class HomePage implements IHomeView {
         navBar.setRight(menuButton);
         
         // Create card grid
-        ScrollPane cardGrid = createCardGrid();
+        cardGrid = createCardGrid();
         VBox.setVgrow(cardGrid, Priority.ALWAYS);
-
         
         // Add components to main content
-        mainContent.getChildren().addAll(navBar, cardGrid);
+        mainContent.getChildren().addAll(navBar, cardGrid, placeholderView.getView());
         
         // Main content is wrapped in StackPane with FAB
         StackPane contentWrapper = new StackPane();
@@ -171,6 +171,10 @@ public class HomePage implements IHomeView {
         // Make the main content grow to fill available space
         VBox.setVgrow(mainContent, Priority.ALWAYS);
         HBox.setHgrow(mainContent, Priority.ALWAYS);
+
+        // set placeholder and card grids to adjust their space when hidden
+        this.placeholderView.getView().managedProperty().bind(this.placeholderView.getView().visibleProperty());
+        this.cardGrid.managedProperty().bind(this.cardGrid.visibleProperty());
     }
 
     private void createMenuList(MenuButton menuButton) {
@@ -238,18 +242,6 @@ public class HomePage implements IHomeView {
             Platform.runLater(() -> flowPane.getChildren().add(card));
         });
     });
-
-    // Add cards to flow pane
-    this.books.addAll(
-        new BookDto("1", "Project Ideas that will nevver cease to exist", "Brainstorming for new project ideas and potential features...", LocalDate.now().toString()),
-        new BookDto("2", "Meeting Notes", "Discussed project timeline and assigned tasks to team members...", LocalDate.now().toString()),
-        new BookDto("3", "Shopping List", "Milk, eggs, bread, fruits, vegetables, and snacks...", LocalDate.now().toString()),
-        new BookDto("4", "Book Summaries", "Atomic Habits by James Clear - key takeaways and action items...", LocalDate.now().toString()),
-        new BookDto("5", "Work Tasks", "Complete UI redesign, fix critical bugs, prepare presentation...", LocalDate.now().toString()),
-        new BookDto("6", "Personal Goals", "Learn JavaFX, Exercise 3x a week, Read 10 books this year...", LocalDate.now().toString()),
-        new BookDto("7", "Recipes", "Pasta Carbonara: Ingredients - pasta, eggs, pancetta, parmesan...", LocalDate.now().toString()),
-        new BookDto("8", "Travel Plans", "Book flights, reserve hotel, create itinerary for Japan trip...", LocalDate.now().toString())
-    );
         
         // Bind flow pane width to scroll pane width
         flowPane.prefWrapLengthProperty().bind(
@@ -406,6 +398,14 @@ public class HomePage implements IHomeView {
 
     @Override
     public void setPlaceholder(String txt) {
+        if (txt == null){
+            this.placeholderView.getView().setVisible(false);
+            this.cardGrid.setVisible(true);
+            return;
+        }
+        
+        this.placeholderView.getView().setVisible(true);
+        this.cardGrid.setVisible(false);
         this.placeholderView.setPlaceholder(txt);
     }
 

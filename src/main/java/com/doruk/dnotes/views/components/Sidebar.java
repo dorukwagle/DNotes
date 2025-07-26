@@ -125,17 +125,7 @@ public class Sidebar {
         listView.setFocusTraversable(false);
 
         // Add some dummy data
-        items = FXCollections.observableArrayList(
-                new CollectionDto("1", "Meeting Notes", "2025-07-14"),
-                new CollectionDto("2", "Project Ideas", "2025-07-14"),
-                new CollectionDto("3", "Shopping List", "2025-07-14"),
-                new CollectionDto("4", "Book Summaries", "2025-07-14"),
-                new CollectionDto("5", "Work Tasks", "2025-07-14"),
-                new CollectionDto("6", "Personal Goals", "2025-07-14"),
-                new CollectionDto("7", "Recipes", "2025-07-14"),
-                new CollectionDto("8", "Travel Plans", "2025-07-14"),
-                new CollectionDto("9", "Learning Resources", "2025-07-14"),
-                new CollectionDto("10", "Daily Journal", "2025-07-14"));
+        items = FXCollections.observableArrayList();
 
         listView.setItems(items);
         listView.setCellFactory(_ -> new ListCell<>() {

@@ -43,7 +43,7 @@ public class FileLogger implements ILogger {
 
     @Override
     public void info(String message) {
-        write("info: " + new Date().toString());
+        write("Info: " + new Date().toString());
         write("message: " + message);
         write("--------------------------------");
     }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.dto.PaginationParams;
 import com.doruk.dnotes.enums.SortBy;
 import com.doruk.dnotes.enums.SortOrder;
@@ -41,17 +42,23 @@ public class PaginateQuery {
             this.select + 
             " FROM " + 
             this.model + 
-            " WHERE " + 
-            this.where +
+            (this.where.isEmpty() ? "" : " WHERE " + this.where) +
             " " +
             "ORDER BY " +
             this.orderBy;
 
+        var logger = DIFactory.createLogger();
+        logger.info(statement);
+        logger.info("model: " + this.model);
+        logger.info("select: " + this.select);
+        logger.info("where: " + this.where);
+        logger.info("orderBy: " + this.orderBy);
         var stmt = this.connection.prepareStatement(statement);
 
         if (this.where.contains("?"))
             stmt.setString(1, "%" + this.params.getSearch().get() + "%");
 
+        // log the query
         return stmt;
     }
 
