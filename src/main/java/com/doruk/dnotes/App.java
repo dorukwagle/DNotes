@@ -15,6 +15,7 @@ import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
+import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.IHomeView;
@@ -78,12 +79,11 @@ public class App extends Application {
         try {
             DatabaseInitializer.initialize();
         } catch (RuntimeException | SQLException e) {
-            DIFactory.createLogger().error(Thread.currentThread(), (Exception) e);
-            var confirm = DIFactory.createConfirmationModal(e.getCause().toString(), e.getMessage());
-            confirm.setOnOk(() -> System.exit(1));
-            confirm.setOnCancel(() -> System.exit(1));
-            confirm.showAndWait();
+            throw new DataAccessException("Failed to initialize the database. Application cannot run without it.", e);
         }
+
+        // execute listeners for cleanup before shut down
+        stage.setOnCloseRequest(_ -> DIFactory.createShutdownManager().executeListeners());
     }
 
     private static void saveDefaultSettings() {
