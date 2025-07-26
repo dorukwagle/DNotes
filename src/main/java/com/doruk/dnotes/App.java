@@ -25,7 +25,6 @@ import com.doruk.dnotes.utils.ThemeManager;
 import com.doruk.dnotes.views.BookPage;
 import com.doruk.dnotes.views.HomePage;
 import com.doruk.dnotes.views.PreferencePage;
-import com.doruk.dnotes.views.components.ConfirmationModal;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -64,7 +63,7 @@ public class App extends Application {
         try {
             DatabaseInitializer.initialize();
         } catch (RuntimeException | SQLException e) {
-            var confirm = new ConfirmationModal(e.getCause().toString(), e.getMessage());
+            var confirm = DIFactory.createConfirmationModal(e.getCause().toString(), e.getMessage());
             confirm.setOnOk(() -> System.exit(1));
             confirm.setOnCancel(() -> System.exit(1));
             confirm.showAndWait();
