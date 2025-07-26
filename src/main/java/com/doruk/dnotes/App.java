@@ -67,7 +67,7 @@ public class App extends Application {
             var confirm = new ConfirmationModal(e.getCause().toString(), e.getMessage());
             confirm.setOnOk(() -> System.exit(1));
             confirm.setOnCancel(() -> System.exit(1));
-            confirm.show();
+            confirm.showAndWait();
         }
     }
 

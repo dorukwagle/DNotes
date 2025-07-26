@@ -1,10 +1,12 @@
 package com.doruk.dnotes.views.components;
 
+import com.doruk.dnotes.interfaces.IConfirmationModal;
+
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ButtonBar.ButtonData;
 
-public class ConfirmationModal {
+public class ConfirmationModal implements IConfirmationModal {
     private Dialog<ButtonType> dialog;
     private ButtonType okBtn;
     private Runnable onOk;
@@ -19,17 +21,20 @@ public class ConfirmationModal {
         this.dialog.getDialogPane().getButtonTypes().add(okBtn);
     }
 
+    @Override
     public void setOnOk(Runnable onOk) {
         this.onOk = onOk;
     }
 
+    @Override
     public void setOnCancel(Runnable onCancel) {
         var btn = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
         this.dialog.getDialogPane().getButtonTypes().add(btn);
         this.onCancel = onCancel;
     }
 
-    public void show() {
+    @Override
+    public void showAndWait() {
         var btn = this.dialog.showAndWait();
 
         if (btn.isPresent() && btn.get() == this.okBtn) {

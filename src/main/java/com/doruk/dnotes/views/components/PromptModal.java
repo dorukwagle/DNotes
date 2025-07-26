@@ -1,8 +1,12 @@
 package com.doruk.dnotes.views.components;
 
+import java.util.Optional;
+
+import com.doruk.dnotes.interfaces.IPromptModal;
+
 import javafx.scene.control.TextInputDialog;
 
-public class PromptModal {
+public class PromptModal implements IPromptModal {
     private TextInputDialog dialog;
 
     public PromptModal(String title, String message, String field) {
@@ -13,7 +17,8 @@ public class PromptModal {
 
     }
 
-    public void show() {
-        this.dialog.showAndWait();
+    @Override
+    public Optional<String> showAndWait() {
+        return dialog.showAndWait();
     }
 }

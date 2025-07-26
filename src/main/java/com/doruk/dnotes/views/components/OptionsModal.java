@@ -26,7 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class OptionsModal implements IOptionsModal{
+public class OptionsModal implements IOptionsModal {
     private final Stage dialog;
     private final TextField inputField;
     private final CheckBox confirmCheckbox;
