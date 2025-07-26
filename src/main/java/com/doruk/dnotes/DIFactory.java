@@ -1,9 +1,12 @@
 package com.doruk.dnotes;
 
+import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.interfaces.IConfirmationModal;
+import com.doruk.dnotes.interfaces.IModel;
 import com.doruk.dnotes.interfaces.IOptionsModal;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.interfaces.IPromptModal;
+import com.doruk.dnotes.models.CollectionModel;
 import com.doruk.dnotes.prefs.EditorPreference;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.views.components.ConfirmationModal;
@@ -29,5 +32,9 @@ public class DIFactory {
 
     public static IOptionsModal createOptionsModal() {
         return new OptionsModal();
+    }
+
+    public static IModel<CollectionDto> createCollectionModel() {
+        return new CollectionModel();
     }
 }
