@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.interfaces.ILogger;
 
 public class FileLogger implements ILogger {
@@ -16,14 +17,22 @@ public class FileLogger implements ILogger {
 
     private FileLogger() {
         try {
-            this.flw = new PrintWriter(new FileWriter(path, true));
+            this.flw = new PrintWriter(new FileWriter(path, true), true);
             this.console = new PrintWriter(System.out, true);
+
+             // also add cleanup code here
+            DIFactory.createShutdownManager().register(() -> {
+                flw.flush();
+                console.flush();
+                flw.close();
+                console.close();
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize file logger", e);
         }
     }
     
-    private void write(String data) {
+    private synchronized void write(String data) {
         try {
             console.println(data);
             flw.println(data);
