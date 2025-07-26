@@ -1,5 +1,6 @@
 package com.doruk.dnotes;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -27,13 +28,28 @@ import com.doruk.dnotes.views.HomePage;
 import com.doruk.dnotes.views.PreferencePage;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 
 public class App extends Application {
 
+    private static final UncaughtExceptionHandler exceptionHandler = (t, e) -> {
+        DIFactory.createLogger().error(t, (Exception) e);
+        Platform.runLater(() -> {
+            var confirm = DIFactory.createConfirmationModal("Do you want to exit?", e.getMessage());
+            confirm.setOnOk(() -> System.exit(1));
+            confirm.setOnCancel(() -> {});
+            confirm.showAndWait();
+        });
+    };
+
     @Override
     public void start(Stage stage) {
+        // set default javafx exception handler
+        Platform.setImplicitExit(false);
+        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+
         Map<ViewPage, Supplier<IView>> viewMap = Map.of(
             ViewPage.HOME, HomePage::new,
             ViewPage.BOOK, BookPage::new,
@@ -63,6 +79,7 @@ public class App extends Application {
         try {
             DatabaseInitializer.initialize();
         } catch (RuntimeException | SQLException e) {
+            DIFactory.createLogger().error(Thread.currentThread(), (Exception) e);
             var confirm = DIFactory.createConfirmationModal(e.getCause().toString(), e.getMessage());
             confirm.setOnOk(() -> System.exit(1));
             confirm.setOnCancel(() -> System.exit(1));
@@ -82,6 +99,8 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        // catch all uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
         launch();
     }
 }
