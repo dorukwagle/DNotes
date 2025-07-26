@@ -7,8 +7,6 @@ import java.util.List;
 
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.PaginationParams;
-import com.doruk.dnotes.enums.SortBy;
-import com.doruk.dnotes.enums.SortOrder;
 import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.IModel;
 import com.doruk.dnotes.utils.DatabaseConnector;
