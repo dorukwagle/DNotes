@@ -35,7 +35,7 @@ public class DIFactory {
     }
     
     public static ILogger createLogger() {
-        return new FileLogger();
+        return FileLogger.getInstance();
     }
 
     public static IShutdownManager createShutdownManager() {

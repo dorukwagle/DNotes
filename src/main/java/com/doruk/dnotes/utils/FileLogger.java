@@ -3,22 +3,32 @@ package com.doruk.dnotes.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import com.doruk.dnotes.interfaces.ILogger;
 
 public class FileLogger implements ILogger {
+    private final String path = PathUtils.getLogDir() + File.separator + "dNotes.log";
+    private final static FileLogger instance = new FileLogger();
+    private final PrintWriter flw, console;
+
+    private FileLogger() {
+        try {
+            this.flw = new PrintWriter(new FileWriter(path, true));
+            this.console = new PrintWriter(System.out, true);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize file logger", e);
+        }
+    }
     
     private void write(String data) {
-        var path = PathUtils.getLogDir() + File.separator + "log.txt";
-        try (
-            PrintWriter flw = new PrintWriter(new FileWriter(path, true));
-            PrintWriter console = new PrintWriter(System.out);
-            ) {
-            flw.println(data);
+        try {
             console.println(data);
+            flw.println(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to write to file", e);
         }
     }
 
@@ -36,7 +46,11 @@ public class FileLogger implements ILogger {
         write("Exception: " + e.getClass().getName());
         write("Message: " + e.getMessage());
         write("Caused By: " + e.getCause());
-        write("StackTrace: " + e.getStackTrace().toString());
+        write("StackTrace: " + Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining("\n")));
         write("--------------------------------");
+    }
+
+    public static FileLogger getInstance() {
+        return instance;
     }
 }

@@ -37,6 +37,7 @@ public class App extends Application {
 
     private static final UncaughtExceptionHandler exceptionHandler = (t, e) -> {
         DIFactory.createLogger().error(t, (Exception) e);
+        System.out.println("Exception caught by the global exception handler ");
         Platform.runLater(() -> {
             var confirm = DIFactory.createConfirmationModal("Do you want to exit?", e.getMessage());
             confirm.setOnOk(() -> System.exit(1));
@@ -65,10 +66,7 @@ public class App extends Application {
         );
         
         ControllerFactory.init(viewMap, controllerMap);
-        
-        var navigationController = NavigationController.getInstance(stage);
-        navigationController.goToHomePage();
-        
+     
         // save default settings in first run
         saveDefaultSettings();
 
@@ -84,6 +82,15 @@ public class App extends Application {
 
         // execute listeners for cleanup before shut down
         stage.setOnCloseRequest(_ -> DIFactory.createShutdownManager().executeListeners());
+
+        // finally start the home page
+        // make sure to catch even the startup exceptions
+        try {
+            var navigationController = NavigationController.getInstance(stage);
+            navigationController.goToHomePage();
+        } catch (Exception e) {
+            exceptionHandler.uncaughtException(Thread.currentThread(), e);
+        }
     }
 
     private static void saveDefaultSettings() {
