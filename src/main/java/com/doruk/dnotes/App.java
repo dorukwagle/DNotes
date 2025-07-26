@@ -47,7 +47,6 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         // set default javafx exception handler
-        Platform.setImplicitExit(false);
         Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
 
         Map<ViewPage, Supplier<IView>> viewMap = Map.of(

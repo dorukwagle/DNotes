@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
@@ -53,7 +51,6 @@ public class HomePage implements IHomeView {
     private Consumer<BookDto> booksOnSelect;
     private Consumer<BookDto> onCardOptionsClick;
     private Consumer<MenuItems> menuItemsOnClick;
-    private Consumer<CollectionDto> onSidebarItemRightClick;
     private PlaceholderView placeholderView;
 
     public HomePage() {
