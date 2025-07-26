@@ -23,7 +23,7 @@ public class PathUtils {
             baseDir = System.getProperty("user.home") + "/.local/share";
         }
 
-        return createDirRecursive(baseDir + File.separator + "com.doruk.dnotes");
+        return createDirRecursive(baseDir + File.separator + "com.doruk.dNotes");
     }
 
     public static String getNotesDir() {
@@ -32,5 +32,9 @@ public class PathUtils {
 
     public static String getDatabaseDir() {
         return createDirRecursive(getDataDir() + File.separator + "database");
+    }
+
+    public static String getLogDir() {
+        return createDirRecursive(System.getProperty("user.home") + File.separator + "dNotes");
     }
 }

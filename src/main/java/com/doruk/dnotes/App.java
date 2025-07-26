@@ -1,5 +1,6 @@
 package com.doruk.dnotes;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -14,6 +15,7 @@ import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
+import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.IHomeView;
@@ -27,13 +29,27 @@ import com.doruk.dnotes.views.HomePage;
 import com.doruk.dnotes.views.PreferencePage;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 
 public class App extends Application {
 
+    private static final UncaughtExceptionHandler exceptionHandler = (t, e) -> {
+        DIFactory.createLogger().error(t, (Exception) e);
+        Platform.runLater(() -> {
+            var confirm = DIFactory.createConfirmationModal("Do you want to exit?", e.getMessage());
+            confirm.setOnOk(() -> System.exit(1));
+            confirm.setOnCancel(() -> {});
+            confirm.showAndWait();
+        });
+    };
+
     @Override
     public void start(Stage stage) {
+        // set default javafx exception handler
+        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+
         Map<ViewPage, Supplier<IView>> viewMap = Map.of(
             ViewPage.HOME, HomePage::new,
             ViewPage.BOOK, BookPage::new,
@@ -63,11 +79,11 @@ public class App extends Application {
         try {
             DatabaseInitializer.initialize();
         } catch (RuntimeException | SQLException e) {
-            var confirm = DIFactory.createConfirmationModal(e.getCause().toString(), e.getMessage());
-            confirm.setOnOk(() -> System.exit(1));
-            confirm.setOnCancel(() -> System.exit(1));
-            confirm.showAndWait();
+            throw new DataAccessException("Failed to initialize the database. Application cannot run without it.", e);
         }
+
+        // execute listeners for cleanup before shut down
+        stage.setOnCloseRequest(_ -> DIFactory.createShutdownManager().executeListeners());
     }
 
     private static void saveDefaultSettings() {
@@ -82,6 +98,8 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        // catch all uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
         launch();
     }
 }
