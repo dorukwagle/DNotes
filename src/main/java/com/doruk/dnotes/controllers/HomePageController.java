@@ -28,6 +28,11 @@ public class HomePageController implements IController {
     private List<BookDto> books;
     private CollectionDto selectedCollection;
 
+    private enum UpdateStateAction {
+        Update,
+        Delete
+    }
+
     public HomePageController(IHomeView view, INavigationController navigationController) {
         this.homePageView = view;
         this.navigationController = navigationController;
@@ -49,35 +54,39 @@ public class HomePageController implements IController {
         this.homePageView.setSidebarItems(this.collections);
     }
 
-    private void addToCollection(CollectionDto collection) {
+    private void addToCollectionState(CollectionDto collection) {
         this.collections.addFirst(collection);
         this.homePageView.setSidebarItems(this.collections);
     }
 
-    private void addToBooks(BookDto book) {
+    private void addToBookState(BookDto book) {
         this.books.addFirst(book);
         this.homePageView.setBooks(this.books);
     }
 
-    private void updateCollection(CollectionDto collection) {
+    private void updateCollectionState(CollectionDto collection, UpdateStateAction action) {
         // remove the duplicate collection
         this.collections = this.collections.stream()
         .filter(c -> !c.getId().equals(collection.getId()))
         .collect(Collectors.toList());
         
         // add updated collection to first
-        this.collections.addFirst(collection);
+        if (action == UpdateStateAction.Update)
+            this.collections.addFirst(collection);
+
         this.homePageView.setSidebarItems(this.collections);
     }
 
-    private void updateBook(BookDto book) {
+    private void updateBookState(BookDto book, UpdateStateAction action) {
         // remove the duplicate book
         this.books = this.books.stream()
             .filter(b -> !b.getId().equals(book.getId()))
             .collect(Collectors.toList());
         
         // add updated book to first
-        this.books.addFirst(book);
+        if (action == UpdateStateAction.Update)
+            this.books.addFirst(book);
+        
         this.homePageView.setBooks(this.books);
     }
 
