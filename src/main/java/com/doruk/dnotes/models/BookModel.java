@@ -161,6 +161,5 @@ public class BookModel implements IModel<BookDto> {
         } catch (SQLException e) {
             throw new DataAccessException("Failed to restore book", e);
         }
-    }
-    
+    } 
 }

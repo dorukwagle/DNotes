@@ -4,6 +4,7 @@ package com.doruk.dnotes.controllers;
 import java.util.List;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.PaginationParams;
 import com.doruk.dnotes.enums.MenuItems;
@@ -21,18 +22,22 @@ public class HomePageController implements IController {
     private final IHomeView homePageView;
     private final INavigationController navigationController;
     private final IModel<CollectionDto> collectionModel;
+    private final IModel<BookDto> bookModel;
     private List<CollectionDto> collections;
+    private List<BookDto> books;
+    private CollectionDto selectedCollection;
 
     public HomePageController(IHomeView view, INavigationController navigationController) {
         this.homePageView = view;
         this.navigationController = navigationController;
         this.collectionModel = DIFactory.createCollectionModel();
+        this.bookModel = DIFactory.createBookModel();
 
-        init();
+        renderCollections();
         setupActions();
     }
     
-    private void init() {
+    private void renderCollections() {
         this.collections = this.collectionModel.getAll(new PaginationParams());
 
         if (this.collections.isEmpty())
@@ -44,8 +49,15 @@ public class HomePageController implements IController {
     }
 
     private void openCollection(CollectionDto collectionDto) {
-        // again if no books, show placeholder: No books found!, Create one to get started...
-        // otherwise show books
+        this.books = this.bookModel.getAll(new PaginationParams());
+
+        if (this.books.isEmpty())
+            this.homePageView.setPlaceholder("No books found!, Create one to get started...");
+        else
+            this.homePageView.setPlaceholder(null); // remove the placeholder
+        
+        this.homePageView.setBooks(this.books);
+        this.selectedCollection = collectionDto;
     }
     
     private void setupActions() {
@@ -55,16 +67,13 @@ public class HomePageController implements IController {
             this.navigationController.goToBooksPage();
         });
         
-        homePageView.setSidebarItemOnSelect(collectionDto -> {
-            System.out.println("Sidebar item selected: " + collectionDto.getName());
-        });
+        homePageView.setSidebarItemOnSelect(this::openCollection);
         
         homePageView.setOnCardOptionsClick(_ -> {
             
         });
         
         homePageView.setSidebarItemOnRightClick(collectionDto -> {
-            System.out.println("Sidebar item right clicked: " + collectionDto.getName());
             OptionsModal optionsModal = new OptionsModal();
             optionsModal.showAndWait();
         });
