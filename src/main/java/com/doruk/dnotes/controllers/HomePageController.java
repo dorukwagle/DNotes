@@ -2,6 +2,7 @@ package com.doruk.dnotes.controllers;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.dto.BookDto;
@@ -46,6 +47,38 @@ public class HomePageController implements IController {
             this.homePageView.setPlaceholder("Select a collection to view it's books...!");
         
         this.homePageView.setSidebarItems(this.collections);
+    }
+
+    private void addToCollection(CollectionDto collection) {
+        this.collections.addFirst(collection);
+        this.homePageView.setSidebarItems(this.collections);
+    }
+
+    private void addToBooks(BookDto book) {
+        this.books.addFirst(book);
+        this.homePageView.setBooks(this.books);
+    }
+
+    private void updateCollection(CollectionDto collection) {
+        // remove the duplicate collection
+        this.collections = this.collections.stream()
+        .filter(c -> !c.getId().equals(collection.getId()))
+        .collect(Collectors.toList());
+        
+        // add updated collection to first
+        this.collections.addFirst(collection);
+        this.homePageView.setSidebarItems(this.collections);
+    }
+
+    private void updateBook(BookDto book) {
+        // remove the duplicate book
+        this.books = this.books.stream()
+            .filter(b -> !b.getId().equals(book.getId()))
+            .collect(Collectors.toList());
+        
+        // add updated book to first
+        this.books.addFirst(book);
+        this.homePageView.setBooks(this.books);
     }
 
     private void openCollection(CollectionDto collectionDto) {
