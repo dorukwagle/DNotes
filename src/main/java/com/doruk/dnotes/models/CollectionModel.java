@@ -14,26 +14,27 @@ import com.doruk.dnotes.utils.PaginateQuery;
 
 public class CollectionModel implements IModel<CollectionDto> {
     private Connection connection;
-    
+
     public CollectionModel() {
         this.connection = DatabaseConnector.getConnection();
     }
-    
+
     @Override
     public CollectionDto add(CollectionDto collectionDto) {
-        try {
-            var stmt = connection.prepareStatement("INSERT INTO collections (name) VALUES (?) RETURNING id, updatedAt");
+        try  {
+            var stmt = connection
+                .prepareStatement("INSERT INTO collections (name) VALUES (?) RETURNING id, updatedAt");
             stmt.setString(1, collectionDto.getName());
-            var rs = stmt.executeQuery();
 
-            // since only one row returned
-            rs.next();
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
 
-            return new CollectionDto(
-                String.valueOf(rs.getInt("id")),
-                collectionDto.getName(),
-                rs.getDate("updatedAt").toString()
-            );
+                return new CollectionDto(
+                    String.valueOf(rs.getInt("id")),
+                    collectionDto.getName(),
+                    rs.getDate("updatedAt").toString());
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create new collection", e);
         }
@@ -42,19 +43,20 @@ public class CollectionModel implements IModel<CollectionDto> {
     @Override
     public CollectionDto update(CollectionDto collectionDto) {
         try {
-            var stmt = connection.prepareStatement("UPDATE collections SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt");
+            var query = "UPDATE collections SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt";
+            var stmt = connection.prepareStatement(query);
             stmt.setString(1, collectionDto.getName());
             stmt.setString(2, collectionDto.getId());
-            var rs = stmt.executeQuery();
 
-            // since only one row returned
-            rs.next();
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
 
-            return new CollectionDto(
-                collectionDto.getId(),
-                collectionDto.getName(),
-                rs.getDate("updatedAt").toString()
-            );
+                return new CollectionDto(
+                    collectionDto.getId(),
+                    collectionDto.getName(),
+                    rs.getDate("updatedAt").toString());
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to update collection", e);
         }
@@ -64,7 +66,8 @@ public class CollectionModel implements IModel<CollectionDto> {
     public void delete(String id) {
         try {
             // also delete the child tables data i.e. books and bookPages
-            var bookPages = connection.prepareStatement("DELETE FROM bookPages WHERE bookId IN (SELECT id FROM books WHERE collectionId = ?)");
+            var bookPages = connection.prepareStatement(
+                    "DELETE FROM bookPages WHERE bookId IN (SELECT id FROM books WHERE collectionId = ?)");
             bookPages.setString(1, id);
             bookPages.executeUpdate();
 
@@ -95,20 +98,18 @@ public class CollectionModel implements IModel<CollectionDto> {
     public List<CollectionDto> getAll(PaginationParams params) {
         try {
             var rs = new PaginateQuery("collectionView", params)
-                .select("id, name, updatedAt")
-                .prepareStatement()
-                .executeQuery();
+                    .select("id, name, updatedAt")
+                    .prepareStatement()
+                    .executeQuery();
 
             // add to list
             List<CollectionDto> collections = new ArrayList<>();
             while (rs.next()) {
                 collections.add(new CollectionDto(
-                    String.valueOf(rs.getInt("id")),
-                    rs.getString("name"),
-                    rs.getDate("updatedAt").toString()
-                ));
+                        String.valueOf(rs.getInt("id")),
+                        rs.getString("name"),
+                        rs.getDate("updatedAt").toString()));
             }
-
             return collections;
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get all collections from database", e);
@@ -119,21 +120,19 @@ public class CollectionModel implements IModel<CollectionDto> {
     public List<CollectionDto> getAllDeleted(PaginationParams params) {
         try {
             var rs = new PaginateQuery("collections", params)
-                .where("deletedAt IS NOT NULL")
-                .select("id, name, updatedAt")
-                .prepareStatement()
-                .executeQuery();
+                    .where("deletedAt IS NOT NULL")
+                    .select("id, name, updatedAt")
+                    .prepareStatement()
+                    .executeQuery();
 
             // add to list
             List<CollectionDto> collections = new ArrayList<>();
             while (rs.next()) {
                 collections.add(new CollectionDto(
-                    String.valueOf(rs.getInt("id")),
-                    rs.getString("name"),
-                    rs.getDate("updatedAt").toString()
-                ));
+                        String.valueOf(rs.getInt("id")),
+                        rs.getString("name"),
+                        rs.getDate("updatedAt").toString()));
             }
-
             return collections;
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get all deleted collections from database", e);
@@ -145,16 +144,15 @@ public class CollectionModel implements IModel<CollectionDto> {
         try {
             var stmt = connection.prepareStatement("UPDATE collections SET deletedAt = NULL WHERE id = ? RETURNING name, updatedAt");
             stmt.setString(1, id);
-            var rs = stmt.executeQuery();
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
 
-            // since only one row returned
-            rs.next();
-
-            return new CollectionDto(
-                id,
-                rs.getString("name"),
-                rs.getDate("updatedAt").toString()
-            );
+                return new CollectionDto(
+                    id,
+                    rs.getString("name"),
+                    rs.getDate("updatedAt").toString());
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to restore collection", e);
         }
