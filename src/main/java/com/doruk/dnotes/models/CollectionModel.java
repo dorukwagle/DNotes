@@ -157,4 +157,9 @@ public class CollectionModel implements IModel<CollectionDto> {
             throw new DataAccessException("Failed to restore collection", e);
         }
     }
+
+    @Override
+    public IModel<CollectionDto> ofParentId(String parentId) {
+        return this;
+    }
 }

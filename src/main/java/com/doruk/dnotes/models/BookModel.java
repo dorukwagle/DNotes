@@ -14,6 +14,7 @@ import com.doruk.dnotes.utils.PaginateQuery;
 
 public class BookModel implements IModel<BookDto> {
     private Connection connection;
+    private String parentId;
     
     public BookModel() {
         this.connection = DatabaseConnector.getConnection();
@@ -21,8 +22,8 @@ public class BookModel implements IModel<BookDto> {
 
     @Override
     public BookDto add(BookDto book) {
-        try {
-            var stmt = connection.prepareStatement("INSERT INTO books (title, collectionId) VALUES (?, ?) RETURNING id, updatedAt");
+        var query = "INSERT INTO books (title, collectionId) VALUES (?, ?) RETURNING id, updatedAt";
+        try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getCollectionId());
             
@@ -44,8 +45,8 @@ public class BookModel implements IModel<BookDto> {
 
     @Override
     public BookDto update(BookDto book) {
-        try {
-            var stmt = connection.prepareStatement("UPDATE books SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt");
+        var query = "UPDATE books SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt";
+        try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getId());
             
@@ -76,6 +77,9 @@ public class BookModel implements IModel<BookDto> {
             var stmt = connection.prepareStatement("DELETE FROM books WHERE id = ?");
             stmt.setString(1, id);
             stmt.executeUpdate();
+
+            bookPages.close();
+            stmt.close();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to delete book", e);
         }
@@ -87,6 +91,8 @@ public class BookModel implements IModel<BookDto> {
             var stmt = connection.prepareStatement("UPDATE books SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
             stmt.setString(1, id);
             stmt.executeUpdate();
+
+            stmt.close();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to delete book", e);
         }
@@ -95,10 +101,12 @@ public class BookModel implements IModel<BookDto> {
     @Override
     public List<BookDto> getAll(PaginationParams paginationParams) {
         try {
-            var rs = new PaginateQuery("bookView", paginationParams)
+            var stmt = new PaginateQuery("bookView", paginationParams)
+                .where(this.parentId != null ? "collectionId = " + this.parentId : "")
                 .select("id, collectionId, title, pages, preview, updatedAt")
-                .prepareStatement()
-                .executeQuery();
+                .prepareStatement();
+
+            var rs = stmt.executeQuery();
 
             // add to list
             List<BookDto> books = new ArrayList<>();
@@ -112,6 +120,8 @@ public class BookModel implements IModel<BookDto> {
                     rs.getInt("pages")
                 ));
             }
+
+            stmt.close();
             return books;
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get all books from database", e);
@@ -121,11 +131,12 @@ public class BookModel implements IModel<BookDto> {
     @Override
     public List<BookDto> getAllDeleted(PaginationParams paginationParams) {
         try {
-            var rs = new PaginateQuery("books", paginationParams)
+            var stmt = new PaginateQuery("books", paginationParams)
                 .where("deletedAt IS NOT NULL")
                 .select("id, collectionId, title, updatedAt")
-                .prepareStatement()
-                .executeQuery();
+                .prepareStatement();
+
+            var rs = stmt.executeQuery();
 
             // add to list
             List<BookDto> books = new ArrayList<>();
@@ -138,6 +149,7 @@ public class BookModel implements IModel<BookDto> {
                 ));
             }
 
+            stmt.close();
             return books;
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get all deleted books from database", e);
@@ -149,11 +161,17 @@ public class BookModel implements IModel<BookDto> {
         try {
             var stmt = connection.prepareStatement("UPDATE books SET deletedAt = NULL WHERE id = ? RETURNING collectionId, title, updatedAt");
             stmt.setString(1, id);
+
             
             try (var rs = stmt.executeQuery()) {
                 // since only one row returned
                 rs.next();
-
+                
+                // also restore parent collection
+                var collectionStmt = connection.prepareStatement("UPDATE collections SET deletedAt = NULL WHERE id = ?");
+                collectionStmt.setString(1, rs.getString("collectionId"));
+                collectionStmt.executeUpdate();
+                
                 return new BookDto(
                     id,
                     rs.getString("collectionId"),
@@ -165,4 +183,10 @@ public class BookModel implements IModel<BookDto> {
             throw new DataAccessException("Failed to restore book", e);
         }
     } 
+
+    @Override
+    public IModel<BookDto> ofParentId(String parentId) {
+        this.parentId = parentId;
+        return this;
+    }
 }

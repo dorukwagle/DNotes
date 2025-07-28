@@ -55,11 +55,23 @@ public class HomePageController implements IController {
     }
 
     private void addToCollectionState(CollectionDto collection) {
+        // check if first entry, need to rerender the views
+        if (this.collections.isEmpty()){
+            this.renderCollections();
+            return;
+        }
+
         this.collections.addFirst(collection);
         this.homePageView.setSidebarItems(this.collections);
     }
 
     private void addToBookState(BookDto book) {
+        // check if first entry, need to rerender the views
+        if (this.books.isEmpty()){
+            this.openCollection(this.selectedCollection);
+            return;
+        }
+        
         this.books.addFirst(book);
         this.homePageView.setBooks(this.books);
     }
@@ -74,6 +86,10 @@ public class HomePageController implements IController {
         if (action == UpdateStateAction.Update)
             this.collections.addFirst(collection);
 
+        // check if it was the last item
+        if (action == UpdateStateAction.Delete && this.collections.isEmpty())
+            this.renderCollections();
+
         this.homePageView.setSidebarItems(this.collections);
     }
 
@@ -87,6 +103,10 @@ public class HomePageController implements IController {
         if (action == UpdateStateAction.Update)
             this.books.addFirst(book);
         
+        // check if it was the last item
+        if (action == UpdateStateAction.Delete && this.books.isEmpty())
+            this.openCollection(this.selectedCollection);
+
         this.homePageView.setBooks(this.books);
     }
 
@@ -132,7 +152,8 @@ public class HomePageController implements IController {
     }
 
     private void openCollection(CollectionDto collectionDto) {        
-        this.books = this.bookModel.getAll(new PaginationParams());
+        this.books = this.bookModel.ofParentId(collectionDto.getId())
+            .getAll(new PaginationParams());
 
         if (this.books.isEmpty())
             this.homePageView.setPlaceholder("No books found!, Create one to get started...");
