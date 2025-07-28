@@ -25,17 +25,18 @@ public class BookModel implements IModel<BookDto> {
             var stmt = connection.prepareStatement("INSERT INTO books (title, collectionId) VALUES (?, ?) RETURNING id, updatedAt");
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getCollectionId());
-            var rs = stmt.executeQuery();
+            
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
 
-            // since only one row returned
-            rs.next();
-
-            return new BookDto(
-                String.valueOf(rs.getInt("id")),
-                book.getCollectionId(),
-                book.getTitle(),
-                rs.getDate("updatedAt").toString()
-            );
+                return new BookDto(
+                    String.valueOf(rs.getInt("id")),
+                    book.getCollectionId(),
+                    book.getTitle(),
+                    rs.getDate("updatedAt").toString()
+                );
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create new book", e);
         }
@@ -47,17 +48,18 @@ public class BookModel implements IModel<BookDto> {
             var stmt = connection.prepareStatement("UPDATE books SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt");
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getId());
-            var rs = stmt.executeQuery();
+            
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
 
-            // since only one row returned
-            rs.next();
-
-            return new BookDto(
-                book.getId(),
-                book.getCollectionId(),
-                book.getTitle(),
-                rs.getDate("updatedAt").toString()
-            );
+                return new BookDto(
+                    book.getId(),
+                    book.getCollectionId(),
+                    book.getTitle(),
+                    rs.getDate("updatedAt").toString()
+                );
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to update book", e);
         }
@@ -147,17 +149,18 @@ public class BookModel implements IModel<BookDto> {
         try {
             var stmt = connection.prepareStatement("UPDATE books SET deletedAt = NULL WHERE id = ? RETURNING collectionId, title, updatedAt");
             stmt.setString(1, id);
-            var rs = stmt.executeQuery();
+            
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
 
-            // since only one row returned
-            rs.next();
-
-            return new BookDto(
-                id,
-                rs.getString("collectionId"),
-                rs.getString("title"),
-                rs.getDate("updatedAt").toString()
-            );
+                return new BookDto(
+                    id,
+                    rs.getString("collectionId"),
+                    rs.getString("title"),
+                    rs.getDate("updatedAt").toString()
+                );
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to restore book", e);
         }
