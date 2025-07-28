@@ -1,6 +1,7 @@
 package com.doruk.dnotes.controllers;
 
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,7 +91,14 @@ public class HomePageController implements IController {
     }
 
     private void createCollection() {
+        var model = DIFactory.createPromptModal("Create Collection", "Enter collection name", "Name: ");
+        var res = model.showAndWait();
 
+        if (!res.isPresent() || res.get().trim().isEmpty())
+            return;
+
+        var collection = this.collectionModel.add(new CollectionDto("", res.get(), ""));
+        this.addToCollectionState(collection);
     }
 
     private void createBook() {
@@ -98,6 +106,21 @@ public class HomePageController implements IController {
             DIFactory.createConfirmationModal("No Collection Selected", "Please select a collection to create a book").showAndWait();
             return;
         }
+
+        var model = DIFactory.createPromptModal("Create Book", "Enter book name", "My Book");
+        var res = model.showAndWait();
+
+        if (!res.isPresent() || res.get().trim().isEmpty())
+            return;
+
+        var book = this.bookModel.add(new BookDto(
+            "", 
+            this.selectedCollection.getId(), 
+            res.get(), 
+            ""
+        ));
+
+        this.addToBookState(book);
     }
 
     private void handleCollectionRightClick(CollectionDto collectionDto) {
@@ -131,7 +154,7 @@ public class HomePageController implements IController {
         homePageView.setOnAddBook(this::createBook);
         homePageView.setOnAddCollection(this::createCollection);
         homePageView.setOnCardOptionsClick(this::handleCardsOptionsClick);
-        
+
         homePageView.setMenuItemsOnClick(menuItem -> {
             switch (menuItem) {
                 case MenuItems.Backup -> System.out.println("navigating to backup page");

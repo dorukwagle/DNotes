@@ -17,7 +17,7 @@ public class ConfirmationModal implements IConfirmationModal {
         dialog.setTitle(title);
         dialog.setContentText(" " + message);
 
-        this.okBtn = new ButtonType("Proceed", ButtonData.OK_DONE);
+        this.okBtn = new ButtonType("Okay", ButtonData.OK_DONE);
         this.dialog.getDialogPane().getButtonTypes().add(okBtn);
     }
 
