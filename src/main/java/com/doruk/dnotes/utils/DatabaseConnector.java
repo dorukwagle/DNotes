@@ -19,6 +19,7 @@ public class DatabaseConnector {
             String dbUrl = "jdbc:sqlite:" + dbPath;
 
             connection = DriverManager.getConnection(dbUrl);
+            connection.setAutoCommit(true);
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("SQLite JDBC driver not found", e);
