@@ -12,7 +12,6 @@ import com.doruk.dnotes.enums.MenuItems;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.store.BookStore;
-import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.IModel;
 
@@ -90,7 +89,26 @@ public class HomePageController implements IController {
         this.homePageView.setBooks(this.books);
     }
 
-    private void openCollection(CollectionDto collectionDto) {
+    private void createCollection() {
+
+    }
+
+    private void createBook() {
+        if (this.selectedCollection == null) {
+            DIFactory.createConfirmationModal("No Collection Selected", "Please select a collection to create a book").showAndWait();
+            return;
+        }
+    }
+
+    private void handleCollectionRightClick(CollectionDto collectionDto) {
+        
+    }
+
+    private void handleCardsOptionsClick(BookDto bookDto) {
+        
+    }
+
+    private void openCollection(CollectionDto collectionDto) {        
         this.books = this.bookModel.getAll(new PaginationParams());
 
         if (this.books.isEmpty())
@@ -104,24 +122,17 @@ public class HomePageController implements IController {
     
     private void setupActions() {
         homePageView.setBooksOnSelect(book -> {
-            System.out.println("Book selected: " + book.getTitle());
             BookStore.setSelectedBook(book);
             this.navigationController.goToBooksPage();
         });
         
         homePageView.setSidebarItemOnSelect(this::openCollection);
-        
-        homePageView.setOnCardOptionsClick(_ -> {
-            
-        });
-        
-        homePageView.setSidebarItemOnRightClick(collectionDto -> {
-            OptionsModal optionsModal = new OptionsModal();
-            optionsModal.showAndWait();
-        });
+        homePageView.setSidebarItemOnRightClick(this::handleCollectionRightClick);
+        homePageView.setOnAddBook(this::createBook);
+        homePageView.setOnAddCollection(this::createCollection);
+        homePageView.setOnCardOptionsClick(this::handleCardsOptionsClick);
         
         homePageView.setMenuItemsOnClick(menuItem -> {
-            System.out.println("Menu item clicked: " + menuItem.name());
             switch (menuItem) {
                 case MenuItems.Backup -> System.out.println("navigating to backup page");
                 case MenuItems.Restore -> System.out.println("navigating to restore page");

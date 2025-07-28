@@ -52,6 +52,8 @@ public class HomePage implements IHomeView {
     private Consumer<MenuItems> menuItemsOnClick;
     private PlaceholderView placeholderView;
     private ScrollPane cardGrid;
+    private Runnable onAddBook;
+    private Runnable onAddCollection;
 
     public HomePage() {
         this.books = FXCollections.observableArrayList();
@@ -157,7 +159,17 @@ public class HomePage implements IHomeView {
 
         // Create floating action button
         FAB fab = new FAB();
+        fab.setOnAddBook(() -> {
+            if (this.onAddBook != null)
+                this.onAddBook.run();
+        });
+        fab.setOnAddCollection(() -> {
+            if (this.onAddCollection != null)
+                this.onAddCollection.run();
+        });
+
         contentWrapper.getChildren().addAll(mainContent, fab);
+        
         fab.setActionsParent(contentWrapper);
 
         // Position FAB in bottom-right corner
@@ -422,5 +434,15 @@ public class HomePage implements IHomeView {
     @Override
     public ObservableList<BookDto> getBookItems() {
         return this.books;
+    }
+
+    @Override
+    public void setOnAddBook(Runnable onAddBook) {
+        this.onAddBook = onAddBook;
+    }
+
+    @Override
+    public void setOnAddCollection(Runnable onAddCollection) {
+        this.onAddCollection = onAddCollection;
     }
 }

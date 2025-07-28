@@ -23,4 +23,6 @@ public interface IHomeView extends IView {
     void setMenuItemsOnClick(Consumer<MenuItems> onClick);
     ObservableList<CollectionDto> getSidebarItems();
     ObservableList<BookDto> getBookItems();
+    void setOnAddBook(Runnable onAddBook);
+    void setOnAddCollection(Runnable onAddCollection);
 }
