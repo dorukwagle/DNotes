@@ -134,6 +134,11 @@ public class Sidebar {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
+                    setStyle(""); // Reset all styles
+                    setPadding(Insets.EMPTY); // Reset padding
+                    setOnMouseEntered(null);
+                    setOnMouseExited(null);
+                    setOnMouseClicked(null);
                     return;
                 }
                 setText(item.getName());
@@ -157,7 +162,7 @@ public class Sidebar {
                             onRightClick.accept(item);
                     }
                     listView.getSelectionModel().select(this.getIndex());
-                    setStyle(getStyle() + "-fx-background-color: -color-accent-7; -fx-font-weight: bold;");
+                    setStyle(getStyle() + "-fx-font-weight: bold;");
 
                     if (onSelect != null)
                         onSelect.accept(item);

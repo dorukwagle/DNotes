@@ -1,7 +1,6 @@
 package com.doruk.dnotes.controllers;
 
 
-import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +59,6 @@ public class HomePageController implements IController {
             this.renderCollections();
             return;
         }
-
         this.collections.addFirst(collection);
         this.homePageView.setSidebarItems(this.collections);
     }
@@ -77,10 +75,13 @@ public class HomePageController implements IController {
     }
 
     private void updateCollectionState(CollectionDto collection, UpdateStateAction action) {
+        System.out.println("lenthg before: " + this.collections.size());
         // remove the duplicate collection
         this.collections = this.collections.stream()
         .filter(c -> !c.getId().equals(collection.getId()))
         .collect(Collectors.toList());
+
+        System.out.println("lenthg after: " + this.collections.size());
         
         // add updated collection to first
         if (action == UpdateStateAction.Update)
@@ -144,7 +145,27 @@ public class HomePageController implements IController {
     }
 
     private void handleCollectionRightClick(CollectionDto collectionDto) {
-        
+        var modal = DIFactory.createOptionsModal();
+        modal.setInputText(collectionDto.getName());
+
+        modal.setOnDeleteAction(() -> {
+            if (!modal.isConfirmationChecked())
+                return;
+            
+            this.collectionModel.softDelete(collectionDto.getId());
+            this.updateCollectionState(collectionDto, UpdateStateAction.Delete);
+        });
+
+        modal.setOnUpdateAction(() -> {
+            var collection = this.collectionModel.update(new CollectionDto(
+                collectionDto.getId()   , 
+                modal.getInputText(), 
+                ""
+            ));
+            this.updateCollectionState(collection, UpdateStateAction.Update);
+        });
+
+        modal.showAndWait();
     }
 
     private void handleCardsOptionsClick(BookDto bookDto) {

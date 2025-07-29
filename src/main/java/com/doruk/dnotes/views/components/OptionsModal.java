@@ -9,6 +9,7 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignI;
 import com.doruk.dnotes.interfaces.IOptionsModal;
 
 import atlantafx.base.theme.Styles;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -151,7 +152,7 @@ public class OptionsModal implements IOptionsModal {
     
     @Override
     public void setInputText(String text) {
-        inputField.setText(text);
+        Platform.runLater(() -> inputField.setText(text));
     }
     
     @Override
