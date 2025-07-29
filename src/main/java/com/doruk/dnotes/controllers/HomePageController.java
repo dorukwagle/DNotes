@@ -59,8 +59,11 @@ public class HomePageController implements IController {
             this.renderCollections();
             return;
         }
+
         this.collections.addFirst(collection);
         this.homePageView.setSidebarItems(this.collections);
+        this.homePageView.setSelectedSidebarItem(collection);
+        this.openCollection(collection);
     }
 
     private void addToBookState(BookDto book) {
@@ -181,6 +184,13 @@ public class HomePageController implements IController {
         else
             this.homePageView.setPlaceholder(null); // remove the placeholder
         
+        // check if the recently clicked collection is deleted
+        if (this.collections.indexOf(collectionDto) == -1){
+            this.homePageView.setSelectedSidebarItem(null);
+            this.homePageView.setPlaceholder("Opps!, The collection is deleted, please select a new one.");
+            return;
+        }
+
         this.homePageView.setBooks(this.books);
         this.selectedCollection = collectionDto;
     }

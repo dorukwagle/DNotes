@@ -162,11 +162,14 @@ public class Sidebar {
                             onRightClick.accept(item);
                     }
                     listView.getSelectionModel().select(this.getIndex());
-                    setStyle(getStyle() + "-fx-font-weight: bold;");
 
                     if (onSelect != null)
                         onSelect.accept(item);
                 });
+
+                // when selected, bold the text
+                if (isSelected())
+                    setStyle(getStyle() + "-fx-font-weight: bold;");
             }
         });
 
@@ -195,8 +198,11 @@ public class Sidebar {
     }
 
     public void setSelectedItem(CollectionDto item) {
-        if (item == null)
+        if (item == null) {
+            this.listView.getSelectionModel().clearSelection();
             return;
+        }
+        
         var givenItem = this.items.stream()
             .filter(i -> i.getId().equals(item.getId()))
             .findFirst()
