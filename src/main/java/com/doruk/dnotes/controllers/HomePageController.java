@@ -172,7 +172,28 @@ public class HomePageController implements IController {
     }
 
     private void handleCardsOptionsClick(BookDto bookDto) {
+        var modal = DIFactory.createOptionsModal();
+        modal.setInputText(bookDto.getTitle());
 
+        modal.setOnDeleteAction(() -> {
+            if (!modal.isConfirmationChecked())
+                return;
+
+            this.bookModel.softDelete(bookDto.getId());
+            this.updateBookState(bookDto, UpdateStateAction.Delete);
+        });
+
+        modal.setOnUpdateAction(() -> {
+            var book = this.bookModel.update(new BookDto(
+                bookDto.getId(),
+                this.selectedCollection.getId(),
+                modal.getInputText(),
+                ""
+            ));
+            this.updateBookState(book, UpdateStateAction.Update);
+        });
+
+        modal.showAndWait();
     }
 
     private void openCollection(CollectionDto collectionDto) {
