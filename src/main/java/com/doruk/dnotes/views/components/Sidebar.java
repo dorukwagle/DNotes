@@ -104,11 +104,11 @@ public class Sidebar {
 
         // Sort order toggle (Ascending/Descending)
         sortOrderToggle = new ToggleButton("");
-        sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-ascending"));
+        sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-descending"));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
         sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
-            sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-descending" : "mdi2s-sort-ascending"));
+            sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-ascending" : "mdi2s-sort-descending"));
         });
 
         sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);

@@ -7,6 +7,7 @@ import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.PaginationParams;
+import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.MenuItems;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
@@ -225,6 +226,14 @@ public class HomePageController implements IController {
         this.selectedCollection = collectionDto;
     }
 
+    private void searchBooks(SearchControlsDto controls) {
+        
+    }
+
+    private void searchCollections(SearchControlsDto controls) {
+        
+    }
+
     private void setupActions() {
         homePageView.setBooksOnSelect(book -> {
             BookStore.setSelectedBook(book);
@@ -245,6 +254,23 @@ public class HomePageController implements IController {
                 case MenuItems.Preferences -> this.navigationController.goToPreferencePage();
             }
         });
+
+        // set search bar controls actions
+        var sidebarSearchControls = homePageView.getSidebarSearchControls();
+        sidebarSearchControls.getSearchField()
+            .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
+        sidebarSearchControls.getSortByToggle()
+            .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
+        sidebarSearchControls.getSortOrderToggle()
+            .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
+
+        var searchControls = homePageView.getSearchControls();
+        searchControls.getSearchField()
+            .setOnAction(_ -> this.searchBooks(searchControls));
+        searchControls.getSortByToggle()
+            .setOnAction(_ -> this.searchBooks(searchControls));
+        searchControls.getSortOrderToggle()
+            .setOnAction(_ -> this.searchBooks(searchControls));
     }
 
     private void clickOnCollection(CollectionDto collectionDto) {
