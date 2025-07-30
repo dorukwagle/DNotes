@@ -62,10 +62,7 @@ public class HomePageController implements IController {
 
         this.collections.addFirst(collection);
         this.homePageView.setSidebarItems(this.collections);
-        Platform.runLater(() -> {
-            this.homePageView.setSelectedSidebarItem(collection);
-            this.openCollection(collection);
-        });
+        this.clickOnCollection(collection); // open the collection
     }
 
     private void addToBookState(BookDto book) {
@@ -202,8 +199,6 @@ public class HomePageController implements IController {
             this.homePageView.setPlaceholder("No books found!, Create one to get started...");
         else
             this.homePageView.setPlaceholder(null); // remove the placeholder
-            
-
 
         this.homePageView.setBooks(this.books);
         this.selectedCollection = collectionDto;
@@ -228,6 +223,13 @@ public class HomePageController implements IController {
                 case MenuItems.Trash -> System.out.println("navigating to trash page");
                 case MenuItems.Preferences -> this.navigationController.goToPreferencePage();
             }
+        });
+    }
+
+    private void clickOnCollection(CollectionDto collectionDto) {
+        Platform.runLater(() -> {
+            this.homePageView.setSelectedSidebarItem(collectionDto);
+            this.openCollection(collectionDto);
         });
     }
 
