@@ -112,7 +112,6 @@ public class Sidebar {
         });
 
         sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);
-        // searchContainer.getChildren().addAll(sortByToggle, sortOrderToggle);
         searchContainer.getChildren().add(sortControls);
         container.getChildren().addAll(searchContainer);
         return container;

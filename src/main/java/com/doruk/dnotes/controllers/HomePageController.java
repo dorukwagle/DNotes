@@ -1,6 +1,5 @@
 package com.doruk.dnotes.controllers;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,7 @@ import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.IModel;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 
 public class HomePageController implements IController {
@@ -41,7 +41,7 @@ public class HomePageController implements IController {
         renderCollections();
         setupActions();
     }
-    
+
     private void renderCollections() {
         this.collections = this.collectionModel.getAll(new PaginationParams());
 
@@ -49,64 +49,68 @@ public class HomePageController implements IController {
             this.homePageView.setPlaceholder("No Collections found!, Create one to get started...");
         else
             this.homePageView.setPlaceholder("Select a collection to view it's books...!");
-        
+
         this.homePageView.setSidebarItems(this.collections);
     }
 
     private void addToCollectionState(CollectionDto collection) {
         // check if first entry, need to rerender the views
-        if (this.collections.isEmpty()){
+        if (this.collections.isEmpty()) {
             this.renderCollections();
             return;
         }
 
         this.collections.addFirst(collection);
         this.homePageView.setSidebarItems(this.collections);
-        this.homePageView.setSelectedSidebarItem(collection);
-        this.openCollection(collection);
+        Platform.runLater(() -> {
+            this.homePageView.setSelectedSidebarItem(collection);
+            this.openCollection(collection);
+        });
     }
 
     private void addToBookState(BookDto book) {
         // check if first entry, need to rerender the views
-        if (this.books.isEmpty()){
+        if (this.books.isEmpty()) {
             this.openCollection(this.selectedCollection);
             return;
         }
-        
+
         this.books.addFirst(book);
         this.homePageView.setBooks(this.books);
     }
 
     private void updateCollectionState(CollectionDto collection, UpdateStateAction action) {
-        System.out.println("lenthg before: " + this.collections.size());
         // remove the duplicate collection
         this.collections = this.collections.stream()
-        .filter(c -> !c.getId().equals(collection.getId()))
-        .collect(Collectors.toList());
+                .filter(c -> !c.getId().equals(collection.getId()))
+                .collect(Collectors.toList());
 
-        System.out.println("lenthg after: " + this.collections.size());
-        
+        // check if it was the last item, if so render collections
+        if (action == UpdateStateAction.Delete && this.collections.isEmpty()) {
+            this.renderCollections();
+            return;
+        }
+
         // add updated collection to first
         if (action == UpdateStateAction.Update)
             this.collections.addFirst(collection);
 
-        // check if it was the last item
-        if (action == UpdateStateAction.Delete && this.collections.isEmpty())
-            this.renderCollections();
-
         this.homePageView.setSidebarItems(this.collections);
+        Platform.runLater(() -> 
+            this.homePageView.setSelectedSidebarItem(collection)
+        );
     }
 
     private void updateBookState(BookDto book, UpdateStateAction action) {
         // remove the duplicate book
         this.books = this.books.stream()
-            .filter(b -> !b.getId().equals(book.getId()))
-            .collect(Collectors.toList());
-        
+                .filter(b -> !b.getId().equals(book.getId()))
+                .collect(Collectors.toList());
+
         // add updated book to first
         if (action == UpdateStateAction.Update)
             this.books.addFirst(book);
-        
+
         // check if it was the last item
         if (action == UpdateStateAction.Delete && this.books.isEmpty())
             this.openCollection(this.selectedCollection);
@@ -127,7 +131,8 @@ public class HomePageController implements IController {
 
     private void createBook() {
         if (this.selectedCollection == null) {
-            DIFactory.createConfirmationModal("No Collection Selected", "Please select a collection to create a book").showAndWait();
+            DIFactory.createConfirmationModal("No Collection Selected", "Please select a collection to create a book")
+                    .showAndWait();
             return;
         }
 
@@ -138,11 +143,10 @@ public class HomePageController implements IController {
             return;
 
         var book = this.bookModel.add(new BookDto(
-            "", 
-            this.selectedCollection.getId(), 
-            res.get(), 
-            ""
-        ));
+                "",
+                this.selectedCollection.getId(),
+                res.get(),
+                ""));
 
         this.addToBookState(book);
     }
@@ -154,17 +158,16 @@ public class HomePageController implements IController {
         modal.setOnDeleteAction(() -> {
             if (!modal.isConfirmationChecked())
                 return;
-            
+
             this.collectionModel.softDelete(collectionDto.getId());
             this.updateCollectionState(collectionDto, UpdateStateAction.Delete);
         });
 
         modal.setOnUpdateAction(() -> {
             var collection = this.collectionModel.update(new CollectionDto(
-                collectionDto.getId()   , 
-                modal.getInputText(), 
-                ""
-            ));
+                    collectionDto.getId(),
+                    modal.getInputText(),
+                    ""));
             this.updateCollectionState(collection, UpdateStateAction.Update);
         });
 
@@ -172,35 +175,46 @@ public class HomePageController implements IController {
     }
 
     private void handleCardsOptionsClick(BookDto bookDto) {
-        
+
     }
 
-    private void openCollection(CollectionDto collectionDto) {        
-        this.books = this.bookModel.ofParentId(collectionDto.getId())
-            .getAll(new PaginationParams());
+    private void openCollection(CollectionDto collectionDto) {
+        // if collection is empty, just return
+        if (this.collections.isEmpty())
+            return;
 
-        if (this.books.isEmpty())
-            this.homePageView.setPlaceholder("No books found!, Create one to get started...");
-        else
-            this.homePageView.setPlaceholder(null); // remove the placeholder
-        
+        var col = this.collections.stream()
+            .filter(c -> c.getId().equals(collectionDto.getId()))
+            .findFirst()
+            .orElse(null);
+
         // check if the recently clicked collection is deleted
-        if (this.collections.indexOf(collectionDto) == -1){
+        if (col == null) {
             this.homePageView.setSelectedSidebarItem(null);
             this.homePageView.setPlaceholder("Opps!, The collection is deleted, please select a new one.");
             return;
         }
 
+        this.books = this.bookModel.ofParentId(collectionDto.getId())
+                .getAll(new PaginationParams());
+
+        if (this.books.isEmpty())
+            this.homePageView.setPlaceholder("No books found!, Create one to get started...");
+        else
+            this.homePageView.setPlaceholder(null); // remove the placeholder
+            
+
+
         this.homePageView.setBooks(this.books);
         this.selectedCollection = collectionDto;
     }
-    
+
     private void setupActions() {
         homePageView.setBooksOnSelect(book -> {
             BookStore.setSelectedBook(book);
             this.navigationController.goToBooksPage();
         });
-        
+
         homePageView.setSidebarItemOnSelect(this::openCollection);
         homePageView.setSidebarItemOnRightClick(this::handleCollectionRightClick);
         homePageView.setOnAddBook(this::createBook);
