@@ -14,6 +14,8 @@ public class PaginateQuery {
     private String where;
     private PaginationParams params;
     private String orderBy;
+    private String searchBy;
+    private String sortBy;
     private Connection connection;
 
     public PaginateQuery(String model, PaginationParams params) {
@@ -61,8 +63,18 @@ public class PaginateQuery {
         var search = params.getSearch().orElse("");
 
         if (!search.isEmpty())
-            this.where("name LIKE ?");
+            this.where(this.searchBy + " LIKE ?");
 
-        this.orderBy = (sortBy == SortBy.Date ? " updatedAt" : " name") + (sortOrder == SortOrder.Descending ? " DESC" : " ASC");
+        this.orderBy = (sortBy == SortBy.Date ? " updatedAt" : this.sortBy) + (sortOrder == SortOrder.Descending ? " DESC" : " ASC");
+    }
+
+    public PaginateQuery searchBy(String searchBy) {
+        this.searchBy = searchBy;
+        return this;
+    }
+
+    public PaginateQuery sortBy(String sortBy) {
+        this.sortBy = sortBy;
+        return this;
     }
 }

@@ -29,8 +29,10 @@ public class HomePageController implements IController {
     private List<CollectionDto> collections;
     private List<BookDto> books;
     private CollectionDto selectedCollection;
-    private PaginationParams paginationParams;
+    private PaginationParams collectionParams;
+    private PaginationParams bookParams;
     private boolean collectionLock = false;
+    private boolean bookLock = false;
 
     private enum UpdateStateAction {
         Update,
@@ -42,14 +44,15 @@ public class HomePageController implements IController {
         this.navigationController = navigationController;
         this.collectionModel = DIFactory.createCollectionModel();
         this.bookModel = DIFactory.createBookModel();
-        this.paginationParams = new PaginationParams();
+        this.collectionParams = new PaginationParams();
+        this.bookParams = new PaginationParams();
 
         renderCollections();
         setupActions();
     }
 
     private void renderCollections() {
-        this.collections = this.collectionModel.getAll(this.paginationParams);
+        this.collections = this.collectionModel.getAll(this.collectionParams);
 
         if (this.collections.isEmpty())
             this.homePageView.setPlaceholder("No Collections found!, Create one to get started...");
@@ -224,19 +227,32 @@ public class HomePageController implements IController {
         }
 
         this.books = this.bookModel.ofParentId(collectionDto.getId())
-                .getAll(new PaginationParams());
+                .getAll(this.bookParams);
 
         if (this.books.isEmpty())
             this.homePageView.setPlaceholder("No books found!, Create one to get started...");
         else
             this.homePageView.setPlaceholder(null); // remove the placeholder
+        
+        // if searching, override the placeholder
+        if (this.bookLock && this.books.isEmpty())
+            this.homePageView.setPlaceholder("No Matching book found...!");
 
         this.homePageView.setBooks(this.books);
         this.selectedCollection = collectionDto;
     }
 
     private void searchBooks(SearchControlsDto controls) {
-        
+        var params = new PaginationParams(
+            controls.getSearchField().getText(),
+            controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
+            controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
+        );
+
+        // if search field is empty, unlock the collection
+        this.bookLock = !controls.getSearchField().getText().trim().isEmpty();
+        this.bookParams = params;
+        this.openCollection(this.selectedCollection);
     }
 
     private void searchCollections(SearchControlsDto controls) {
@@ -248,7 +264,7 @@ public class HomePageController implements IController {
 
         // if search field is empty, unlock the collection
         this.collectionLock = !controls.getSearchField().getText().trim().isEmpty();
-        this.paginationParams = params;
+        this.collectionParams = params;
 
         this.selectedCollection = null;
         this.renderCollections();

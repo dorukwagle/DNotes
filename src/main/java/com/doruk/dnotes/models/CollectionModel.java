@@ -99,6 +99,8 @@ public class CollectionModel implements IModel<CollectionDto> {
         try {
             var rs = new PaginateQuery("collectionView", params)
                     .select("id, name, updatedAt")
+                    .searchBy("name")
+                    .sortBy("name")
                     .prepareStatement()
                     .executeQuery();
 
@@ -122,6 +124,8 @@ public class CollectionModel implements IModel<CollectionDto> {
             var rs = new PaginateQuery("collections", params)
                     .where("deletedAt IS NOT NULL")
                     .select("id, name, updatedAt")
+                    .searchBy("name")
+                    .sortBy("name")
                     .prepareStatement()
                     .executeQuery();
 

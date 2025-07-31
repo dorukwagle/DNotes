@@ -104,6 +104,8 @@ public class BookModel implements IModel<BookDto> {
             var stmt = new PaginateQuery("bookView", paginationParams)
                 .where(this.parentId != null ? "collectionId = " + this.parentId : "")
                 .select("id, collectionId, title, pages, preview, updatedAt")
+                .searchBy("title")
+                .sortBy("title")
                 .prepareStatement();
 
             var rs = stmt.executeQuery();
@@ -134,6 +136,8 @@ public class BookModel implements IModel<BookDto> {
             var stmt = new PaginateQuery("books", paginationParams)
                 .where("deletedAt IS NOT NULL")
                 .select("id, collectionId, title, updatedAt")
+                .searchBy("title")
+                .sortBy("title")
                 .prepareStatement();
 
             var rs = stmt.executeQuery();
