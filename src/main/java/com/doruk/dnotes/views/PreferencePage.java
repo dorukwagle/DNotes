@@ -258,6 +258,24 @@ public class PreferencePage implements IPreferenceView {
     }
 
     @Override
+    public void setSelectedAppStartup(AppStartup appStartup) {
+        var toggle = this.appStartupToggleGroup.getToggles()
+            .filtered(t -> t.getUserData().equals(appStartup.getId()))
+            .get(0);
+        this.appStartupToggleGroup.selectToggle(toggle);
+    }
+
+    @Override
+    public void setRememberAppState(Boolean rememberAppState) {
+        this.rememberAppStateCheckBox.setSelected(rememberAppState);
+    }
+
+    @Override
+    public void setRememberEditor(Boolean rememberEditor) {
+        this.rememberEditorCheckBox.setSelected(rememberEditor);
+    }
+
+    @Override
     public void setPlaceholder(String txt) {
         // no placeholder neede here
     }

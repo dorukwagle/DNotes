@@ -3,6 +3,7 @@ package com.doruk.dnotes.controllers;
 import javafx.scene.Parent;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.enums.AppStartup;
 import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
@@ -28,6 +29,13 @@ public class PreferenceController implements IController {
         this.view.setSelectedEditorColor(
                 EditorColor.fromId(
                         (int) this.preference.loadLong(Preference.EditorColor, 0)));
+        this.view.setSelectedAppStartup(
+                AppStartup.fromId(
+                        (int) this.preference.loadLong(Preference.AppStartup, 0)));
+        this.view.setRememberAppState(
+                this.preference.loadBoolean(Preference.RememberAppState, false));
+        this.view.setRememberEditor(
+                this.preference.loadBoolean(Preference.RememberEditor, false));
 
         // add listeners
         setupActions();

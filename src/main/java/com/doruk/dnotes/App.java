@@ -95,7 +95,6 @@ public class App extends Application {
 
             var navigationController = NavigationController.getInstance(stage);
 
-
             if (preferredPage == AppStartup.StartFresh) {
                 navigationController.goToHomePage();
                 return;
