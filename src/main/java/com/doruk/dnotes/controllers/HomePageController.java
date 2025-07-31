@@ -9,6 +9,8 @@ import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.PaginationParams;
 import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.MenuItems;
+import com.doruk.dnotes.enums.SortBy;
+import com.doruk.dnotes.enums.SortOrder;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.store.BookStore;
@@ -27,6 +29,8 @@ public class HomePageController implements IController {
     private List<CollectionDto> collections;
     private List<BookDto> books;
     private CollectionDto selectedCollection;
+    private PaginationParams paginationParams;
+    private boolean collectionLock = false;
 
     private enum UpdateStateAction {
         Update,
@@ -38,18 +42,23 @@ public class HomePageController implements IController {
         this.navigationController = navigationController;
         this.collectionModel = DIFactory.createCollectionModel();
         this.bookModel = DIFactory.createBookModel();
+        this.paginationParams = new PaginationParams();
 
         renderCollections();
         setupActions();
     }
 
     private void renderCollections() {
-        this.collections = this.collectionModel.getAll(new PaginationParams());
+        this.collections = this.collectionModel.getAll(this.paginationParams);
 
         if (this.collections.isEmpty())
             this.homePageView.setPlaceholder("No Collections found!, Create one to get started...");
         else
             this.homePageView.setPlaceholder("Select a collection to view it's books...!");
+
+        // if searching, override the placeholder
+        if (this.collectionLock)
+            this.homePageView.setPlaceholder("Search in Progress!. Click on a result to view...");
 
         this.homePageView.setSidebarItems(this.collections);
     }
@@ -231,7 +240,18 @@ public class HomePageController implements IController {
     }
 
     private void searchCollections(SearchControlsDto controls) {
-        
+        var params = new PaginationParams(
+            controls.getSearchField().getText(),
+            controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
+            controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
+        );
+
+        // if search field is empty, unlock the collection
+        this.collectionLock = !controls.getSearchField().getText().trim().isEmpty();
+        this.paginationParams = params;
+
+        this.selectedCollection = null;
+        this.renderCollections();
     }
 
     private void setupActions() {
