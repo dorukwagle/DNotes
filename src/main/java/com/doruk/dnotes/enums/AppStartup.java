@@ -2,8 +2,7 @@ package com.doruk.dnotes.enums;
 
 public enum AppStartup {
     FromLastOpened (1),
-    FromLastOpenedCollection (2),
-    StartFresh (3);
+    StartFresh (2);
 
     private final int id;
 

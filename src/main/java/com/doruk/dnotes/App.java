@@ -11,6 +11,8 @@ import com.doruk.dnotes.controllers.BookController;
 import com.doruk.dnotes.controllers.EditorController;
 import com.doruk.dnotes.controllers.HomePageController;
 import com.doruk.dnotes.controllers.PreferenceController;
+import com.doruk.dnotes.dto.BookDto;
+import com.doruk.dnotes.enums.AppStartup;
 import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
@@ -22,6 +24,7 @@ import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreferenceView;
 import com.doruk.dnotes.interfaces.IView;
+import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
 import com.doruk.dnotes.views.BookPage;
@@ -86,8 +89,30 @@ public class App extends Application {
         // finally start the home page
         // make sure to catch even the startup exceptions
         try {
+            var prefs = DIFactory.createGlobalPreference();
+            var preferredPageState = prefs.loadLong(Preference.AppStartup, AppStartup.StartFresh.getId());
+            var preferredPage = AppStartup.fromId((int)preferredPageState);
+
             var navigationController = NavigationController.getInstance(stage);
-            navigationController.goToHomePage();
+
+
+            if (preferredPage == AppStartup.StartFresh) {
+                navigationController.goToHomePage();
+                return;
+            }
+
+            var lastVisitedPage = prefs.loadLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
+            var page = ViewPage.fromId((int)lastVisitedPage);
+            switch (page) {
+                case HOME -> navigationController.goToHomePage();
+                case BOOK -> {
+                    var bookId = prefs.loadString(Preference.LastOpenedBookId, "");
+                    BookStore.setSelectedBook(new BookDto(bookId, "", "", ""));
+                    navigationController.goToBooksPage();
+                }
+                case PREFERENCE -> navigationController.goToPreferencePage();
+                default -> navigationController.goToHomePage();
+            }
         } catch (Exception e) {
             exceptionHandler.uncaughtException(Thread.currentThread(), e);
         }
@@ -103,6 +128,7 @@ public class App extends Application {
         prefs.saveLong(Preference.EditorColor, EditorColor.Muted.getId());
         prefs.saveBoolean(Preference.IsFirstRun, false);
         prefs.saveLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
+        prefs.saveLong(Preference.AppStartup, AppStartup.StartFresh.getId());
     }
 
     public static void main(String[] args) {
