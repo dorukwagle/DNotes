@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleGroup;
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 
+import com.doruk.dnotes.enums.AppStartup;
 import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.interfaces.IPreferenceView;
@@ -29,8 +31,14 @@ public class PreferencePage implements IPreferenceView {
     private VBox contentBox;
     private ToggleGroup themeToggleGroup;
     private ToggleGroup editorToggleGroup;
+    private ToggleGroup appStartupToggleGroup;
+    private CheckBox rememberAppStateCheckBox;
+    private CheckBox rememberEditorCheckBox;
     private Consumer<Integer> themeOnSelect;
     private Consumer<Integer> editorColorOnSelect;
+    private Consumer<Integer> appStartupOnSelect;
+    private Consumer<Boolean> rememberAppStateOnSelect;
+    private Consumer<Boolean> rememberEditorOnSelect;
     
     
     public PreferencePage() {
@@ -101,6 +109,44 @@ public class PreferencePage implements IPreferenceView {
             );
             radioButton.setOnMouseClicked(_ -> editorColorOnSelect.accept(color.getId()));
             editorSection.getChildren().add(radioButton);
+        }
+
+        // Section 3: App State
+        var appStateSection = createSection(centerContainer, "App State");
+        rememberAppStateCheckBox = new CheckBox("Remember Last Opened Collection ?");
+        rememberAppStateCheckBox.setSelected(false);
+        rememberAppStateCheckBox.setStyle(
+            "-fx-font-size: 1.2em;" +
+            "-fx-text-fill: -color-fg-default;"
+        );
+        rememberAppStateCheckBox.setOnMouseClicked(_ -> 
+            rememberAppStateOnSelect.accept(rememberAppStateCheckBox.isSelected()));
+        
+        rememberEditorCheckBox = new CheckBox("Open Last Edited Note (Disabled for privacy) ?");
+        rememberEditorCheckBox.setSelected(false);
+        rememberEditorCheckBox.setStyle(
+            "-fx-font-size: 1.2em;" +
+            "-fx-text-fill: -color-fg-default;"
+        );
+        rememberEditorCheckBox.setOnMouseClicked(_ -> 
+            rememberEditorOnSelect.accept(rememberEditorCheckBox.isSelected()));
+            
+        appStateSection.getChildren().addAll(rememberAppStateCheckBox, rememberEditorCheckBox);
+
+        // Section 4: App Startup
+        var appStartupSection = createSection(centerContainer, "App Startup");
+        appStartupToggleGroup = new ToggleGroup();
+        
+        for (var startup : AppStartup.values()) {
+            RadioButton radioButton = new RadioButton(startup.name());
+            radioButton.setToggleGroup(appStartupToggleGroup);
+            radioButton.setUserData(startup.getId());
+            radioButton.setStyle(
+                "-fx-font-size: 1.2em;" +
+                "-fx-text-fill: -color-fg-default;"
+            );
+            radioButton.setOnMouseClicked(_ -> appStartupOnSelect.accept(startup.getId()));
+            appStartupSection.getChildren().add(radioButton);
         }
         
         contentBox.getChildren().add(centerContainer);
@@ -194,6 +240,21 @@ public class PreferencePage implements IPreferenceView {
             .filtered(t -> t.getUserData().equals(color.getId()))
             .get(0);
         this.editorToggleGroup.selectToggle(toggle);
+    }
+
+    @Override
+    public void setAppStartupOnSelect(Consumer<Integer> appStartupOnSelect) {
+        this.appStartupOnSelect = appStartupOnSelect;
+    }
+
+    @Override
+    public void setRememberAppStateOnSelect(Consumer<Boolean> rememberAppStateOnSelect) {
+        this.rememberAppStateOnSelect = rememberAppStateOnSelect;
+    }
+
+    @Override
+    public void setRememberEditorOnSelect(Consumer<Boolean> rememberEditorOnSelect) {
+        this.rememberEditorOnSelect = rememberEditorOnSelect;
     }
 
     @Override

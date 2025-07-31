@@ -4,5 +4,12 @@ public enum Preference {
     Theme,
     EditorColor,
     DBInitialized,
-    IsFirstRun
+    IsFirstRun,
+    RememberAppState,
+    RememberEditor,
+    AppStartup,
+    LastVisitedPage,
+    LastOpenedCollectionId,
+    LastOpenedBookId,
+    LastOpenedNoteId
 }

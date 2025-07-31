@@ -102,6 +102,7 @@ public class App extends Application {
         prefs.saveLong(Preference.Theme, Themes.CupertinoDark.getId());
         prefs.saveLong(Preference.EditorColor, EditorColor.Muted.getId());
         prefs.saveBoolean(Preference.IsFirstRun, false);
+        prefs.saveLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
     }
 
     public static void main(String[] args) {

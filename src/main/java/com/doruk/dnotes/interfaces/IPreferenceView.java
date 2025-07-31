@@ -13,4 +13,7 @@ public interface IPreferenceView extends IView {
     void setEditorColorOnSelect(Consumer<Integer> editorColorOnSelect);
     void setSelectedTheme(Themes theme);
     void setSelectedEditorColor(EditorColor color);
+    void setAppStartupOnSelect(Consumer<Integer> appStartupOnSelect);
+    void setRememberAppStateOnSelect(Consumer<Boolean> rememberAppStateOnSelect);
+    void setRememberEditorOnSelect(Consumer<Boolean> rememberEditorOnSelect);
 }

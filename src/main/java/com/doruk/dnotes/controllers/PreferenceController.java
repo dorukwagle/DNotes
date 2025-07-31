@@ -52,5 +52,17 @@ public class PreferenceController implements IController {
         this.view.setEditorColorOnSelect(id -> {
             this.preference.saveLong(Preference.EditorColor, id);
         });
+
+        this.view.setAppStartupOnSelect(id -> {
+            this.preference.saveLong(Preference.AppStartup, id);
+        });
+
+        this.view.setRememberAppStateOnSelect(isEnabled -> {
+            this.preference.saveBoolean(Preference.RememberAppState, isEnabled);
+        });
+
+        this.view.setRememberEditorOnSelect(isEnabled -> {
+            this.preference.saveBoolean(Preference.RememberEditor, isEnabled);
+        });
     }
 }

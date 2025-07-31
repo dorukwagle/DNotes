@@ -1,7 +1,9 @@
 package com.doruk.dnotes;
 
+import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.INavigationController;
+import com.doruk.dnotes.interfaces.IPreference;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -15,8 +17,10 @@ public class NavigationController implements INavigationController {
     private static Scene scene;
     private final double defaultW;
     private final double defaultH;
+    private final IPreference preference;
 
     private NavigationController(Stage stage) {
+        this.preference = DIFactory.createGlobalPreference();
 
         // calculate screen size
         double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
@@ -57,16 +61,19 @@ public class NavigationController implements INavigationController {
 
     @Override
     public void goToHomePage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
         scene.setRoot(ControllerFactory.create(ViewPage.HOME, this).getView());
     }
 
     @Override
     public void goToBooksPage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.BOOK.getId());
         scene.setRoot(ControllerFactory.create(ViewPage.BOOK, this).getView());
     }
 
     @Override
     public void goToPreferencePage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.PREFERENCE.getId());
         scene.setRoot(ControllerFactory.create(ViewPage.PREFERENCE, this).getView());
     }
 }
