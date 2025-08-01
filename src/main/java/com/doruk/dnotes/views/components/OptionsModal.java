@@ -97,7 +97,6 @@ public class OptionsModal implements IOptionsModal {
             if (onDeleteAction != null) {
                 onDeleteAction.run();
             }
-            System.out.println("Delete button clicked");
             close();
         });
         
@@ -105,7 +104,6 @@ public class OptionsModal implements IOptionsModal {
             if (onUpdateAction != null) {
                 onUpdateAction.run();
             }
-            System.out.println("Update button clicked");
             close();
         });
         
