@@ -22,7 +22,7 @@ public class BookPagesModel implements IModel<BookPageDto> {
     }
 
     @Override
-    public IModel ofParentId(String parentId) {
+    public IModel<BookPageDto> ofParentId(String parentId) {
         this.parentId = parentId;
         return this;
     }
