@@ -118,6 +118,7 @@ public class DatabaseInitializer {
                 id,
                 bookId,
                 content,
+                name,
                 updatedAt,
                 createdAt
             FROM bookPages
