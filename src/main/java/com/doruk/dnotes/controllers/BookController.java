@@ -28,6 +28,7 @@ public class BookController implements IController {
     private IModel<BookPageDto> noteModel;
     private List<BookPageDto> notes;
     private PaginationParams noteParams = new PaginationParams();
+    private BookPageDto selectedNote;
 
     public BookController(IBookView view, INavigationController navigationController) {
         this.view = view;
@@ -40,21 +41,19 @@ public class BookController implements IController {
 
         this.openBook();
     }
-    
-    private void openBook() {
-        if (this.editorLock)
-            return; // locked: do not open it
 
+    private void openBook() {
         var book = BookStore.getSelectedBook();
-        if (book.isEmpty()) {
+        if (book.isEmpty() || book.get().getId().isEmpty()) {
             this.view.setPlaceholder("Selected book doesn't exist!");
             return;
         }
 
         this.notes = this.noteModel.ofParentId(book.get().getId())
-            .getAll(this.noteParams);
-        
-        var feed = this.notes.isEmpty() ? "No pages found! Create one to get started..." : "Click on a Note to view/edit.";
+                .getAll(this.noteParams);
+
+        var feed = this.notes.isEmpty() ? "No pages found! Create one to get started..."
+                : "Click on a Note to view/edit.";
         this.view.setPlaceholder(feed);
 
         this.view.setSidebarItems(this.notes);
@@ -63,25 +62,36 @@ public class BookController implements IController {
         this.preference.saveString(Preference.LastOpenedBookId, book.get().getId());
     }
 
+    private void openNote(BookPageDto note) {
+        if (this.editorLock)
+            return; // locked: do not open it
+
+        // gracefully close the existing editor
+        if (this.editorController != null)
+            this.editorController.close();
+
+        this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR,
+                this.navigationController);
+        this.view.displayEditor(this.editorController.getView());
+
+        this.selectedNote = note;
+        this.preference.saveString(Preference.LastOpenedNoteId, note.getId());
+    }
+
+    private void clickOnNote(BookPageDto note) {
+        this.editorLock = false;
+        this.view.setSelectedSidebarItem(note);
+        this.openNote(note);
+    }
+
     @Override
     public Parent getView() {
         return this.view.getView();
     }
 
     private void setupActions() {
-        this.view.getBackButton().setOnAction(_ -> {
-            this.navigationController.goToHomePage();
-        });
+        this.view.getBackButton().setOnAction(_ -> this.navigationController.goToHomePage());
 
-        this.view.setSidebarItemOnSelect(collectionDto -> {
-            System.out.println("page selected: " + collectionDto.getName());
-
-            // gracefully close the existing editor
-            if (this.editorController != null)
-                this.editorController.close();
-            
-            this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR, this.navigationController);
-            this.view.displayEditor(this.editorController.getView());
-        });
+        this.view.setSidebarItemOnSelect(this::openNote);
     }
 }
