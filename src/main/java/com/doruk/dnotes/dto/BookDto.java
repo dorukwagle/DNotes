@@ -1,5 +1,6 @@
 package com.doruk.dnotes.dto;
 
+
 public class BookDto {
     private String title;
     private String preview;

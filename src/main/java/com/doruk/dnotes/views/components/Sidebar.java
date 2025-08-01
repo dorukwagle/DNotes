@@ -18,18 +18,19 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.SearchControlsDto;
+import com.doruk.dnotes.interfaces.ISidebarItem;
 
 import atlantafx.base.theme.Styles;
 
-public class Sidebar {
+public class Sidebar <T extends ISidebarItem> {
     private final VBox root;
-    ObservableList<CollectionDto> items;
+    ObservableList<T> items;
     private TextField searchField;
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
-    private Consumer<CollectionDto> onSelect;
-    private Consumer<CollectionDto> onRightClick;
-    private ListView<CollectionDto> listView;
+    private Consumer<T> onSelect;
+    private Consumer<T> onRightClick;
+    private ListView<T> listView;
 
     public Sidebar() {
         this.root = new VBox();
@@ -46,7 +47,7 @@ public class Sidebar {
         Node searchBar = createSearchBar();
 
         // Create list view
-        ListView<CollectionDto> listView = createListView();
+        ListView<T> listView = createListView();
 
         // Add all components to the sidebar
         this.root.getChildren().addAll(searchBar, listView);
@@ -117,7 +118,7 @@ public class Sidebar {
         return container;
     }
 
-    private ListView<CollectionDto> createListView() {
+    private ListView<T> createListView() {
         listView = new ListView<>();
 
         // listView.getStyleClass().add("sidebar-list text danger");
@@ -129,7 +130,7 @@ public class Sidebar {
         listView.setItems(items);
         listView.setCellFactory(_ -> new ListCell<>() {
             @Override
-            protected void updateItem(CollectionDto item, boolean empty) {
+            protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -175,11 +176,11 @@ public class Sidebar {
         return listView;
     }
 
-    public void setOnSelect(Consumer<CollectionDto> onSelect) {
+    public void setOnSelect(Consumer<T> onSelect) {
         this.onSelect = onSelect;
     }
 
-    public void setOnRightClick(Consumer<CollectionDto> onRightClick) {
+    public void setOnRightClick(Consumer<T> onRightClick) {
         this.onRightClick = onRightClick;
     }
 
@@ -187,7 +188,7 @@ public class Sidebar {
         return this.root;
     }
 
-    public void setItems(List<CollectionDto> newItems) {
+    public void setItems(List<T> newItems) {
         this.items.clear();
         this.items.addAll(newItems);
     }
@@ -196,7 +197,7 @@ public class Sidebar {
         return new SearchControlsDto(this.searchField, this.sortByToggle, this.sortOrderToggle);
     }
 
-    public void setSelectedItem(CollectionDto item) {
+    public void setSelectedItem(T item) {
         if (item == null) {
             this.listView.getSelectionModel().clearSelection();
             return;
@@ -210,7 +211,7 @@ public class Sidebar {
         this.listView.getSelectionModel().select(givenItem);
     }
 
-    public ObservableList<CollectionDto> getItems() {
+    public ObservableList<T> getItems() {
         return this.items;
     }
 }

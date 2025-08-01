@@ -58,7 +58,7 @@ public class DIFactory {
         return new BookModel();
     }
 
-    public static IModel<BookPageDto> createBookPageModel() {
+    public static IModel<BookPageDto> createNoteModel() {
         return new BookPagesModel();
     }
 }

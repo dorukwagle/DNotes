@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import com.doruk.dnotes.dto.CollectionDto;
+import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.views.components.Sidebar;
@@ -26,7 +26,7 @@ public class BookPage implements IBookView {
     private Button backButton;
     private BorderPane root;
     private VBox editorContainer;
-    private Sidebar sidebar;
+    private Sidebar<BookPageDto> sidebar;
     private BorderPane topBar;
     private PlaceholderView placeholderView;
 
@@ -35,7 +35,7 @@ public class BookPage implements IBookView {
         editorContainer = new VBox();
 
         // add sidebar to the left
-        sidebar = new Sidebar();
+        sidebar = new Sidebar<>();
         root.setLeft(sidebar.getView());
 
         // Create top bar
@@ -128,12 +128,12 @@ public class BookPage implements IBookView {
     }
 
     @Override
-    public void setSidebarItems(List<CollectionDto> items) {
+    public void setSidebarItems(List<BookPageDto> items) {
         this.sidebar.setItems(items);
     }
 
     @Override
-    public void setSidebarItemOnSelect(Consumer<CollectionDto> onSelect) {
+    public void setSidebarItemOnSelect(Consumer<BookPageDto> onSelect) {
         this.sidebar.setOnSelect(onSelect);
     }
     
@@ -143,7 +143,7 @@ public class BookPage implements IBookView {
     }
 
     @Override
-    public void setSelectedSidebarItem(CollectionDto item) {
+    public void setSelectedSidebarItem(BookPageDto item) {
         this.sidebar.setSelectedItem(item);
     }
 

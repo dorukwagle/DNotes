@@ -1,6 +1,8 @@
 package com.doruk.dnotes.dto;
 
-public class BookPageDto {
+import com.doruk.dnotes.interfaces.ISidebarItem;
+
+public class BookPageDto implements ISidebarItem {
     private String id;
     private String bookId;
     private String name;
@@ -18,6 +20,7 @@ public class BookPageDto {
         this.updatedAt = updatedAt;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -34,6 +37,7 @@ public class BookPageDto {
         return updatedAt;
     }
 
+    @Override
     public String getName() {
         return name;
     }

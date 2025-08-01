@@ -42,7 +42,7 @@ import javafx.scene.control.Tooltip;
 
 public class HomePage implements IHomeView {
     private BorderPane root;
-    private Sidebar sidebar;
+    private Sidebar<CollectionDto> sidebar;
     private TextField searchField;
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
@@ -64,7 +64,7 @@ public class HomePage implements IHomeView {
         root = new BorderPane();
         
         // Create and add sidebar
-        sidebar = new Sidebar();
+        sidebar = new Sidebar<>();
         root.setLeft(sidebar.getView());
         
         // Create main content container

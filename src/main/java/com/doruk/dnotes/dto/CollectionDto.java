@@ -1,6 +1,8 @@
 package com.doruk.dnotes.dto;
 
-public class CollectionDto {
+import com.doruk.dnotes.interfaces.ISidebarItem;
+
+public class CollectionDto implements ISidebarItem {
     private String name;
     private String id;
     private String updatedAt;
@@ -11,10 +13,12 @@ public class CollectionDto {
         this.updatedAt = updatedAt;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getId() {
         return id;
     }
