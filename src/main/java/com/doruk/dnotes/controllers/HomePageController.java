@@ -9,10 +9,12 @@ import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.PaginationParams;
 import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.MenuItems;
+import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.SortBy;
 import com.doruk.dnotes.enums.SortOrder;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
+import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.IModel;
@@ -34,6 +36,8 @@ public class HomePageController implements IController {
     private boolean collectionLock = false;
     private boolean bookLock = false;
 
+    private IPreference preference;
+
     private enum UpdateStateAction {
         Update,
         Delete
@@ -46,9 +50,22 @@ public class HomePageController implements IController {
         this.bookModel = DIFactory.createBookModel();
         this.collectionParams = new PaginationParams();
         this.bookParams = new PaginationParams();
+        this.preference = DIFactory.createGlobalPreference();
 
         renderCollections();
         setupActions();
+
+        // open last collection if remember state is enabled
+        var rememberState = this.preference.loadBoolean(Preference.RememberAppState, false);
+        if (!rememberState)
+            return;
+
+        var lastCollectionId = this.preference.loadString(Preference.LastOpenedCollectionId, "");
+        if (lastCollectionId.isEmpty())
+            return;
+            
+        var collection = new CollectionDto(lastCollectionId, "", "");
+        this.clickOnCollection(collection);
     }
 
     private void renderCollections() {
@@ -240,6 +257,7 @@ public class HomePageController implements IController {
 
         this.homePageView.setBooks(this.books);
         this.selectedCollection = collectionDto;
+        preference.saveString(Preference.LastOpenedCollectionId, collectionDto.getId());
     }
 
     private void searchBooks(SearchControlsDto controls) {
