@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.ISidebarItem;
 

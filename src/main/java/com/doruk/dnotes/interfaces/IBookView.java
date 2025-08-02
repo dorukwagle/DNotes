@@ -17,4 +17,6 @@ public interface IBookView extends IView {
     void setSidebarItemOnSelect(Consumer<BookPageDto> onSelect);
     SearchControlsDto getSidebarSearchControls();
     void setSelectedSidebarItem(BookPageDto item);
+    Button getNewNoteButton();
+    void setSidebarItemOnRightClick(Consumer<BookPageDto> onRightClick);
 }

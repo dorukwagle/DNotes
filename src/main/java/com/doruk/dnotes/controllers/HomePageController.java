@@ -63,7 +63,7 @@ public class HomePageController implements IController {
         var lastCollectionId = this.preference.loadString(Preference.LastOpenedCollectionId, "");
         if (lastCollectionId.isEmpty())
             return;
-            
+
         var collection = new CollectionDto(lastCollectionId, "", "");
         this.clickOnCollection(collection);
     }
@@ -123,9 +123,7 @@ public class HomePageController implements IController {
             this.collections.addFirst(collection);
 
         this.homePageView.setSidebarItems(this.collections);
-        Platform.runLater(() -> 
-            this.homePageView.setSelectedSidebarItem(collection)
-        );
+        Platform.runLater(() -> this.homePageView.setSelectedSidebarItem(collection));
     }
 
     private void updateBookState(BookDto book, UpdateStateAction action) {
@@ -215,11 +213,10 @@ public class HomePageController implements IController {
 
         modal.setOnUpdateAction(() -> {
             var book = this.bookModel.update(new BookDto(
-                bookDto.getId(),
-                this.selectedCollection.getId(),
-                modal.getInputText(),
-                ""
-            ));
+                    bookDto.getId(),
+                    this.selectedCollection.getId(),
+                    modal.getInputText(),
+                    ""));
             this.updateBookState(book, UpdateStateAction.Update);
         });
 
@@ -232,9 +229,9 @@ public class HomePageController implements IController {
             return;
 
         var col = this.collections.stream()
-            .filter(c -> c.getId().equals(collectionDto.getId()))
-            .findFirst()
-            .orElse(null);
+                .filter(c -> c.getId().equals(collectionDto.getId()))
+                .findFirst()
+                .orElse(null);
 
         // check if the recently clicked collection is deleted
         if (col == null) {
@@ -250,7 +247,7 @@ public class HomePageController implements IController {
             this.homePageView.setPlaceholder("No books found!, Create one to get started...");
         else
             this.homePageView.setPlaceholder(null); // remove the placeholder
-        
+
         // if searching, override the placeholder
         if (this.bookLock && this.books.isEmpty())
             this.homePageView.setPlaceholder("No Matching book found...!");
@@ -262,10 +259,9 @@ public class HomePageController implements IController {
 
     private void searchBooks(SearchControlsDto controls) {
         var params = new PaginationParams(
-            controls.getSearchField().getText(),
-            controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
-            controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
-        );
+                controls.getSearchField().getText(),
+                controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
+                controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending);
 
         // if search field is empty, unlock the collection
         this.bookLock = !controls.getSearchField().getText().trim().isEmpty();
@@ -275,10 +271,9 @@ public class HomePageController implements IController {
 
     private void searchCollections(SearchControlsDto controls) {
         var params = new PaginationParams(
-            controls.getSearchField().getText(),
-            controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
-            controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
-        );
+                controls.getSearchField().getText(),
+                controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
+                controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending);
 
         // if search field is empty, unlock the collection
         this.collectionLock = !controls.getSearchField().getText().trim().isEmpty();
@@ -312,19 +307,19 @@ public class HomePageController implements IController {
         // set search bar controls actions
         var sidebarSearchControls = homePageView.getSidebarSearchControls();
         sidebarSearchControls.getSearchField()
-            .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
+                .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
         sidebarSearchControls.getSortByToggle()
-            .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
+                .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
         sidebarSearchControls.getSortOrderToggle()
-            .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
+                .setOnAction(_ -> this.searchCollections(sidebarSearchControls));
 
         var searchControls = homePageView.getSearchControls();
         searchControls.getSearchField()
-            .setOnAction(_ -> this.searchBooks(searchControls));
+                .setOnAction(_ -> this.searchBooks(searchControls));
         searchControls.getSortByToggle()
-            .setOnAction(_ -> this.searchBooks(searchControls));
+                .setOnAction(_ -> this.searchBooks(searchControls));
         searchControls.getSortOrderToggle()
-            .setOnAction(_ -> this.searchBooks(searchControls));
+                .setOnAction(_ -> this.searchBooks(searchControls));
     }
 
     private void clickOnCollection(CollectionDto collectionDto) {

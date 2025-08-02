@@ -22,13 +22,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class BookPage implements IBookView {
-
     private Button backButton;
     private BorderPane root;
     private VBox editorContainer;
     private Sidebar<BookPageDto> sidebar;
     private BorderPane topBar;
     private PlaceholderView placeholderView;
+    private Button fabButton;
+    private Consumer<BookPageDto> sidebarItemOnRightClick;
 
     public BookPage() {
         root = new BorderPane();
@@ -37,6 +38,10 @@ public class BookPage implements IBookView {
         // add sidebar to the left
         sidebar = new Sidebar<>();
         root.setLeft(sidebar.getView());
+        sidebar.setOnRightClick(dto -> {
+            if (this.sidebarItemOnRightClick != null)
+                this.sidebarItemOnRightClick.accept(dto);
+        });
 
         // Create top bar
         topBar = new BorderPane();
@@ -57,7 +62,7 @@ public class BookPage implements IBookView {
         root.setCenter(mainContainer);
 
         // create a fab button
-        Button fabButton = new Button();
+        fabButton = new Button();
         fabButton.setTooltip(new Tooltip("New Page"));
         fabButton.getStyleClass().addAll(Styles.ACCENT, Styles.ELEVATED_3);
         fabButton.setStyle(
@@ -150,5 +155,15 @@ public class BookPage implements IBookView {
     @Override
     public void setPlaceholder(String txt) {
         this.placeholderView.setPlaceholder(txt);
+    }
+
+    @Override
+    public void setSidebarItemOnRightClick(Consumer<BookPageDto> onRightClick) {
+        this.sidebarItemOnRightClick = onRightClick;
+    }
+
+    @Override
+    public Button getNewNoteButton() {
+        return this.fabButton;
     }
 }
