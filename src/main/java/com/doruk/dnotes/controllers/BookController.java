@@ -17,6 +17,7 @@ import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.BookStore;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 
 public class BookController implements IController {
@@ -47,6 +48,22 @@ public class BookController implements IController {
         this.setupActions();
 
         this.openBook();
+
+        Platform.runLater(this::openLastNote);
+    }
+
+    private void openLastNote() {
+        // check preference, whether to open last note
+        var openLastNote = preference.loadBoolean(Preference.RememberEditor, false);
+        var lastNoteId = preference.loadString(Preference.LastOpenedNoteId, "");
+
+        // if disabled, or no last note found: just return
+        if (!openLastNote || lastNoteId.isEmpty())
+            return;
+        
+        var lastNote = new BookPageDto().setId(lastNoteId);
+        this.view.setSelectedSidebarItem(lastNote);
+        this.openNote(lastNote);
     }
 
     private void openBook() {
@@ -168,12 +185,6 @@ public class BookController implements IController {
         );
 
         modal.showAndWait();
-    }
-
-    private void clickOnNote(BookPageDto note) {
-        this.editorLock = false;
-        this.view.setSelectedSidebarItem(note);
-        this.openNote(note);
     }
 
     @Override
