@@ -49,7 +49,13 @@ public class BookController implements IController {
 
         this.openBook();
 
-        Platform.runLater(this::openLastNote);
+        // check if last opened note belongs to this book, and also isn't deleted
+        // then only open the note if in preferences
+        var lastNoteId = preference.loadString(Preference.LastOpenedNoteId, "");
+        var exists = !lastNoteId.isEmpty() && 
+            this.notes.stream().anyMatch(n -> n.getId().equals(lastNoteId));
+        if (exists)
+            Platform.runLater(this::openLastNote);
     }
 
     private void openLastNote() {
