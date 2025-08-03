@@ -201,13 +201,6 @@ public class BookController implements IController {
         return this.view.getView();
     }
 
-    private void clickOnNote(BookPageDto note) {
-        Platform.runLater(() -> {
-            this.view.setSelectedSidebarItem(note);
-            this.openNote(note);
-        });
-    }
-
     private void setupActions() {
         this.view.getBackButton().setOnAction(_ -> this.navigationController.goToHomePage());
         this.view.getNewNoteButton().setOnAction(_ -> this.createNewNote());
