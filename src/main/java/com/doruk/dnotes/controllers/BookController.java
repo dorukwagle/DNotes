@@ -26,7 +26,6 @@ public class BookController implements IController {
     private final INavigationController navigationController;
     private IEditorController editorController;
     private IPreference preference;
-    private boolean editorLock = false; // prevent editor opening on right click
     private IModel<BookPageDto> noteModel;
     private List<BookPageDto> notes;
     private PaginationParams noteParams = new PaginationParams();
@@ -93,9 +92,6 @@ public class BookController implements IController {
     }
 
     private void openNote(BookPageDto note) {
-        if (this.editorLock)
-            return; // locked: do not open it
-
         // gracefully close the existing editor
         if (this.editorController != null)
             this.editorController.close();
@@ -139,7 +135,10 @@ public class BookController implements IController {
             this.notes.addFirst(note);
 
         this.view.setSidebarItems(this.notes);
-        this.view.setSelectedSidebarItem(note);
+
+        // restore selection after re-rendering
+        if (this.currentEditingNote != null)
+            this.view.setSelectedSidebarItem(this.currentEditingNote);
 
         if (action == StateAction.Delete && this.notes.isEmpty())
             this.view.setPlaceholder("Nothing left here...");
@@ -173,9 +172,7 @@ public class BookController implements IController {
         this.updateSidebarState(updatedNote, StateAction.Update);
     }
 
-    private void sidebarItemOnRightClick(BookPageDto note) {
-        this.editorLock = true;
-        
+    private void sidebarItemOnRightClick(BookPageDto note) {        
         var modal = DIFactory.createOptionsModal();
         modal.setInputText(note.getName());
 
@@ -196,6 +193,13 @@ public class BookController implements IController {
     @Override
     public Parent getView() {
         return this.view.getView();
+    }
+
+    private void clickOnNote(BookPageDto note) {
+        Platform.runLater(() -> {
+            this.view.setSelectedSidebarItem(note);
+            this.openNote(note);
+        });
     }
 
     private void setupActions() {
