@@ -36,7 +36,7 @@ public class BookPage implements IBookView {
         editorContainer = new VBox();
 
         // add sidebar to the left
-        sidebar = new Sidebar<>(true);
+        sidebar = new Sidebar<>();
         root.setLeft(sidebar.getView());
         sidebar.setOnRightClick(dto -> {
             if (this.sidebarItemOnRightClick != null)

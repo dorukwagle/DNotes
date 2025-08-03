@@ -197,6 +197,8 @@ public class HomePageController implements IController {
         });
 
         modal.showAndWait();
+        // also simulate left button click, for proper functioning
+        this.clickOnCollection(collectionDto);
     }
 
     private void handleCardsOptionsClick(BookDto bookDto) {

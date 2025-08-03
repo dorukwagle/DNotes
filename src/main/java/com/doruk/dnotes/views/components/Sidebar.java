@@ -30,10 +30,8 @@ public class Sidebar <T extends ISidebarItem> {
     private Consumer<T> onSelect;
     private Consumer<T> onRightClick;
     private ListView<T> listView;
-    private boolean consumeEvent;
 
-    public Sidebar(boolean consumeEvent) {
-        this.consumeEvent = consumeEvent;
+    public Sidebar() {
         this.root = new VBox();
         this.root.getStyleClass().add("sidebar");
         this.root.setStyle(
@@ -137,20 +135,21 @@ public class Sidebar <T extends ISidebarItem> {
 
                     var btn = event.getButton();
 
-                    if (btn == MouseButton.MIDDLE)
-                        return;
-                        
-                    if (btn == MouseButton.SECONDARY) {
-                        if (onRightClick != null)
-                            onRightClick.accept(getItem());
-                        if (consumeEvent)
-                            return;
-                    }
-                    // left clicked
-                    listView.getSelectionModel().select(this.getIndex());
+                    switch (btn) {
+                        case MouseButton.SECONDARY -> {
+                            if (onRightClick != null)
+                                onRightClick.accept(getItem());
+                        }
+                        case MouseButton.PRIMARY -> {
+                            listView.getSelectionModel().select(this.getIndex());
 
-                    if (onSelect != null)
-                        onSelect.accept(getItem());
+                            if (onSelect != null)
+                                onSelect.accept(getItem());
+                        }
+                        default -> {
+                            return;
+                        }
+                    }
                 });
 
             }
