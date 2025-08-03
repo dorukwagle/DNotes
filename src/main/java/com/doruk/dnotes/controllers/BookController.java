@@ -30,6 +30,7 @@ public class BookController implements IController {
     private List<BookPageDto> notes;
     private PaginationParams noteParams = new PaginationParams();
     private BookPageDto currentEditingNote;
+    private static boolean isStartup = true;
 
     private enum StateAction {
         Create,
@@ -50,11 +51,16 @@ public class BookController implements IController {
 
         // check if last opened note belongs to this book, and also isn't deleted
         // then only open the note if in preferences
+        if (!isStartup)
+            return;
+        
         var lastNoteId = preference.loadString(Preference.LastOpenedNoteId, "");
         var exists = !lastNoteId.isEmpty() && 
             this.notes.stream().anyMatch(n -> n.getId().equals(lastNoteId));
         if (exists)
             Platform.runLater(this::openLastNote);
+        
+        isStartup = false;
     }
 
     private void openLastNote() {
