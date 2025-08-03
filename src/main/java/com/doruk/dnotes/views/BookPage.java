@@ -65,36 +65,19 @@ public class BookPage implements IBookView {
         fabButton = new Button();
         fabButton.setTooltip(new Tooltip("New Page"));
         fabButton.getStyleClass().addAll(Styles.ACCENT, Styles.ELEVATED_3);
-        fabButton.setStyle(
-                "-fx-background-radius: 28;\n" +
-                        "-fx-min-width: 56;\n" +
-                        "-fx-min-height: 56;\n" +
-                        "-fx-max-width: 56;\n" +
-                        "-fx-max-height: 56;\n" +
-                        "-fx-cursor: hand;\n" +
-                        "-fx-scale-x: 1;\n" +
-                        "-fx-scale-y: 1;\n" +
-                        "-fx-transition: all 1s ease;\n" +
-                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);");
         FontIcon icon = new FontIcon("mdi2f-file-plus");
         icon.setIconSize(24);
         icon.setScaleX(2.3);
         icon.setScaleY(2.3);
         fabButton.setGraphic(icon);
+        fabButton.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
+        fabButton.getStyleClass().add("fab-button");
 
         StackPane.setAlignment(fabButton, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(fabButton, new Insets(0, 50, 50, 0));
         mainContainer.getChildren().addAll(editorContainer, fabButton);
 
         VBox.setVgrow(editorContainer, Priority.ALWAYS);
-
-        // shrink, expang fab while hover
-        fabButton.hoverProperty().addListener((_, _, newVal) -> {
-            if (newVal)
-                fabButton.setStyle(fabButton.getStyle() + "-fx-scale-x: 0.9; -fx-scale-y: 0.9;");
-            else
-                fabButton.setStyle(fabButton.getStyle().replace("-fx-scale-x: 0.9; -fx-scale-y: 0.9;", ""));
-        });
 
         // Create and style back button
         backButton = new Button();
