@@ -64,7 +64,7 @@ public class HomePage implements IHomeView {
         root = new BorderPane();
         
         // Create and add sidebar
-        sidebar = new Sidebar<>();
+        sidebar = new Sidebar<>(false);
         root.setLeft(sidebar.getView());
         
         // Create main content container

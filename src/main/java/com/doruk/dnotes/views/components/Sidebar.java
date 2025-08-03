@@ -30,8 +30,10 @@ public class Sidebar <T extends ISidebarItem> {
     private Consumer<T> onSelect;
     private Consumer<T> onRightClick;
     private ListView<T> listView;
+    private boolean consumeEvent;
 
-    public Sidebar() {
+    public Sidebar(boolean consumeEvent) {
+        this.consumeEvent = consumeEvent;
         this.root = new VBox();
         this.root.getStyleClass().add("sidebar");
         this.root.setStyle(
@@ -128,6 +130,30 @@ public class Sidebar <T extends ISidebarItem> {
 
         listView.setItems(items);
         listView.setCellFactory(_ -> new ListCell<>() {
+            {
+                addEventFilter(MouseEvent.ANY, e -> e.consume());
+                addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
+                    event.consume();
+
+                    var btn = event.getButton();
+
+                    if (btn == MouseButton.MIDDLE)
+                        return;
+                        
+                    if (btn == MouseButton.SECONDARY) {
+                        if (onRightClick != null)
+                            onRightClick.accept(getItem());
+                        if (consumeEvent)
+                            return;
+                    }
+                    // left clicked
+                    listView.getSelectionModel().select(this.getIndex());
+
+                    if (onSelect != null)
+                        onSelect.accept(getItem());
+                });
+
+            }
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
@@ -152,18 +178,6 @@ public class Sidebar <T extends ISidebarItem> {
                     if (this.isSelected())
                         return;
                     setStyle(getStyle() + "-fx-background-color: transparent;");
-                });
-
-                setOnMouseClicked((MouseEvent event) -> {
-                    var btn = event.getButton();
-                    if (btn == MouseButton.SECONDARY) {
-                        if (onRightClick != null)
-                            onRightClick.accept(item);
-                    }
-                    listView.getSelectionModel().select(this.getIndex());
-
-                    if (onSelect != null)
-                        onSelect.accept(item);
                 });
 
                 // when selected, bold the text
