@@ -18,7 +18,7 @@ public class MarkdownEditor implements IMarkdownEditor {
     public MarkdownEditor() {
         this.preference = DIFactory.createGlobalPreference();
         editorText = new StringBuilder();
-        editorView = new EditorView();
+        editorView = new EditorWrapper();
 
         var selectedColor = preference.loadLong(Preference.EditorColor, 0);
         editorView.setEditorBackground(EditorColor.fromId((int) selectedColor));

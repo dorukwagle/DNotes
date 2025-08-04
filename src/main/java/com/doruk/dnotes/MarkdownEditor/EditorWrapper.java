@@ -1,6 +1,10 @@
 package com.doruk.dnotes.MarkdownEditor;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.model.Paragraph;
+import org.fxmisc.richtext.model.StyledSegment;
+
+import com.doruk.dnotes.MarkdownEditor.RichTextFX.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 import com.doruk.dnotes.enums.EditorColor;
 
@@ -14,13 +18,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 
-public class EditorView implements View {
+public class EditorWrapper implements View {
     
     private VBox root;
     private ControlPanelView controlPanel;
     private HBox reference;
+    private RichTextFX editor;
 
-    public EditorView() {
+    public EditorWrapper() {
         root = new VBox();
         root.setPrefHeight(10);
 
@@ -31,7 +36,7 @@ public class EditorView implements View {
         VBox.setMargin(panel, new Insets(15, 10, 0, 10));
         
         // add markdown editor
-        var editor = new RichTextFX();
+        editor = new RichTextFX();
         var scrollPane = new VirtualizedScrollPane<>(editor.getArea());
         scrollPane.setPrefHeight(10);
 
@@ -61,6 +66,25 @@ public class EditorView implements View {
         editor.applyBackgroundColor(Color.YELLOW);
 
         editor.appendText("normal text");
+        
+
+        int paragraphIndex = 0;
+        for (var paragraph : editor.getArea().getDocument().getParagraphs()) {
+            System.out.println("Paragraph " + paragraphIndex++);
+
+            ParagraphStyle paragraphStyle = paragraph.getParagraphStyle();
+            System.out.println("  ParagraphStyle: " + paragraphStyle.toString());
+
+            int segmentIndex = 0;
+            for (var styledSegment : paragraph.getStyledSegments()) {
+                String text = styledSegment.getSegment();
+                var style = styledSegment.getStyle();
+
+                System.out.println("    Segment " + segmentIndex++);
+                System.out.println("      Text : \"" + text + "\"");
+                System.out.println("      Style: " + style.toString());
+            }
+        }
     }
 
     @Override
@@ -80,5 +104,10 @@ public class EditorView implements View {
 
         var selected = color == EditorColor.Muted ? Styles.BG_NEUTRAL_MUTED : Styles.BG_NEUTRAL_SUBTLE;
         reference.getStyleClass().add(selected);
+    }
+
+    @Override
+    public RichTextFX getEditor() {
+        return editor;
     }
 }
