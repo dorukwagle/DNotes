@@ -7,7 +7,10 @@ import com.doruk.dnotes.ControllerFactory;
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.PaginationParams;
+import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.Preference;
+import com.doruk.dnotes.enums.SortBy;
+import com.doruk.dnotes.enums.SortOrder;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.IBookView;
 import com.doruk.dnotes.interfaces.IController;
@@ -31,6 +34,7 @@ public class BookController implements IController {
     private PaginationParams noteParams = new PaginationParams();
     private BookPageDto currentEditingNote;
     private static boolean isStartup = true;
+    private static boolean isSearchProgress = false;
 
     private enum StateAction {
         Create,
@@ -89,7 +93,8 @@ public class BookController implements IController {
 
         var feed = this.notes.isEmpty() ? "No pages found! Create one to get started..."
                 : "Click on a Note to view/edit.";
-        this.view.setPlaceholder(feed);
+        var whileSearch = "Search in Progress!. Click on a result to view...";
+        this.view.setPlaceholder(isSearchProgress ? whileSearch : feed);
 
         this.view.setSidebarItems(this.notes);
 
@@ -201,10 +206,38 @@ public class BookController implements IController {
         return this.view.getView();
     }
 
+    private void searchNotes(SearchControlsDto controls) {
+        isSearchProgress = !controls.getSearchField().getText().trim().isEmpty();
+
+        // if searching, close the editor
+        if (isSearchProgress && this.editorController != null){
+            this.editorController.close();
+            this.editorController = null;
+            this.currentEditingNote = null;
+        }
+
+        this.noteParams = new PaginationParams(
+            controls.getSearchField().getText(),
+            controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
+            controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
+        );
+
+       this.openBook();
+
+        if (!isSearchProgress)
+            this.view.setSelectedSidebarItem(this.currentEditingNote);
+    }
+
     private void setupActions() {
         this.view.getBackButton().setOnAction(_ -> this.navigationController.goToHomePage());
         this.view.getNewNoteButton().setOnAction(_ -> this.createNewNote());
         this.view.setSidebarItemOnSelect(this::openNote);
         this.view.setSidebarItemOnRightClick(this::sidebarItemOnRightClick);
+
+        var searchControls = this.view.getSidebarSearchControls();
+        searchControls.getSearchField().setOnAction(_ -> this.searchNotes(searchControls));
+
+        searchControls.getSortByToggle().setOnAction(_ -> this.searchNotes(searchControls));
+        searchControls.getSortOrderToggle().setOnAction(_ -> this.searchNotes(searchControls));
     }
 }
