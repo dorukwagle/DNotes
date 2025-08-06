@@ -3,8 +3,8 @@ package com.doruk.dnotes.MarkdownEditor;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 
 import com.doruk.dnotes.MarkdownEditor.RichTextFX.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
-import com.doruk.dnotes.enums.EditorColor;
 
 import atlantafx.base.theme.Styles;
 import javafx.geometry.Insets;
@@ -17,7 +17,6 @@ import javafx.scene.paint.Color;
 
 
 public class EditorWrapper implements View {
-    
     private VBox root;
     private ControlPanelView controlPanel;
     private HBox reference;
@@ -57,8 +56,8 @@ public class EditorWrapper implements View {
         // editor.applyBold();
         editor.appendText(txt);
         editor.setSelection(15, 15 + txt.length());
-        editor.applyBold();
-        editor.applyItalic();
+        editor.toggleBold();
+        editor.toggleItalic();
         editor.applyFontSize(20);
         editor.applyTextColor(Color.RED);
         editor.applyBackgroundColor(Color.YELLOW);

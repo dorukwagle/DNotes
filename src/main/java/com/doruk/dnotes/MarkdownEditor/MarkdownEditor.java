@@ -4,14 +4,12 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
-import com.doruk.dnotes.enums.EditorColor;
-import com.doruk.dnotes.enums.Preference;
-import com.doruk.dnotes.interfaces.IMarkdownEditor;
-import com.doruk.dnotes.interfaces.IPreference;
+
 
 import javafx.scene.Parent;
 
@@ -19,12 +17,10 @@ public class MarkdownEditor implements IMarkdownEditor {
     
     private StringBuilder editorText;
     private View editorView;
-    private IPreference preference;
     private Map<ToolName, Boolean> strategyState = new EnumMap<>(ToolName.class);
     private Map<ToolName, ToolCmdStrategy> strategies = new EnumMap<>(ToolName.class);
 
     public MarkdownEditor() {
-        this.preference = DIFactory.createGlobalPreference();
         editorText = new StringBuilder();
         editorView = new EditorWrapper();
 
@@ -32,15 +28,17 @@ public class MarkdownEditor implements IMarkdownEditor {
         Arrays.stream(ToolName.values())
             .forEach(toolName -> strategyState.put(toolName, false));
 
-        var selectedColor = preference.loadLong(Preference.EditorColor, 0);
-        editorView.setEditorBackground(EditorColor.fromId((int) selectedColor));
-
         // initial setup
         initialSetup();
     }
 
     private void initialSetup() {
         
+    }
+
+    @Override
+    public void setEditorBackground(EditorColor color) {
+        editorView.setEditorBackground(color);
     }
 
     @Override

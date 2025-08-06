@@ -1,4 +1,4 @@
-package com.doruk.dnotes.enums;
+package com.doruk.dnotes.MarkdownEditor.enums;
 
 public enum EditorColor
  {
