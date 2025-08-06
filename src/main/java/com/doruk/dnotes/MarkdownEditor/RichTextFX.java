@@ -180,10 +180,9 @@ public class RichTextFX {
                 current.textColor, color, current.fontSize, current.linkUrl));
     }
 
-    public void applyLink(String url) {
-        toggleStyle(current -> new TextStyle(current.bold, current.italic, true, current.strike,
-                Color.BLUE, current.backgroundColor, current.fontSize, url));
-    }
+    // apply paragraph align center
+
+    // apply paragraph align left
 
     // Paragraph styles
     public void applyHeader(int level) {

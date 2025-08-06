@@ -1,8 +1,6 @@
 package com.doruk.dnotes.MarkdownEditor;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
-import org.fxmisc.richtext.model.Paragraph;
-import org.fxmisc.richtext.model.StyledSegment;
 
 import com.doruk.dnotes.MarkdownEditor.RichTextFX.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
@@ -109,5 +107,10 @@ public class EditorWrapper implements View {
     @Override
     public RichTextFX getEditor() {
         return editor;
+    }
+
+    @Override
+    public ControlPanelView getControlPanel() {
+        return controlPanel;
     }
 }

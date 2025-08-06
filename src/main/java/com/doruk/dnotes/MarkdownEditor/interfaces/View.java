@@ -1,5 +1,6 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
+import com.doruk.dnotes.MarkdownEditor.ControlPanelView;
 import com.doruk.dnotes.MarkdownEditor.RichTextFX;
 import com.doruk.dnotes.enums.EditorColor;
 
@@ -11,4 +12,5 @@ public interface View {
     Parent getView();
     void setEditorBackground(EditorColor color);
     RichTextFX getEditor();
+    ControlPanelView getControlPanel();
 }
