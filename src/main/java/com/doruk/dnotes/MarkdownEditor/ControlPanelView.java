@@ -13,11 +13,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.StackPane;
+
+import java.util.List;
+
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignL;
+
+import com.doruk.dnotes.MarkdownEditor.enums.BtnFunction;
 
 /**
  * Bold, Italic, Underline, Strikethrough
@@ -42,8 +46,8 @@ public class ControlPanelView {
     private ToggleButton bulletListButton;
     private ToggleButton numberListButton;
     private ToggleButton blockquoteButton;
-    private ToggleButton linkButton;
     private ToggleButton checkboxButton;
+    private ToggleButton alignCenterButton;
     private ComboBox<String> fontSizeCombo;
     private ColorPicker textColorPicker;
     private ColorPicker highlightColorPicker;
@@ -63,28 +67,43 @@ public class ControlPanelView {
         
         // Text Formatting Group
         boldButton = createIconToggleButton(MaterialDesignF.FORMAT_BOLD, "Bold");
+        boldButton.setId(BtnFunction.Bold.name());
         italicButton = createIconToggleButton(MaterialDesignF.FORMAT_ITALIC, "Italic");
+        italicButton.setId(BtnFunction.Italic.name());
         underlineButton = createIconToggleButton(MaterialDesignF.FORMAT_UNDERLINE, "Underline");
+        underlineButton.setId(BtnFunction.Underline.name());
         strikethroughButton = createIconToggleButton(MaterialDesignF.FORMAT_STRIKETHROUGH, "Strikethrough");
+        strikethroughButton.setId(BtnFunction.Strikethrough.name());
         
         // Headings Group
         h1Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_1, "Heading 1");
+        h1Button.setId(BtnFunction.H1.name());
         h2Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_2, "Heading 2");
+        h2Button.setId(BtnFunction.H2.name());
         h3Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_3, "Heading 3");
+        h3Button.setId(BtnFunction.H3.name());
         h4Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_4, "Heading 4");
+        h4Button.setId(BtnFunction.H4.name());
         
         // Lists Group
         bulletListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_BULLETED, "Bullet List");
+        bulletListButton.setId(BtnFunction.BulletList.name());
         numberListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_NUMBERED, "Numbered List");
+        numberListButton.setId(BtnFunction.NumberList.name());
+
+        // paragraph alignment
+        alignCenterButton = createIconToggleButton(MaterialDesignF.FORMAT_ALIGN_CENTER, "Align Center");
+        alignCenterButton.setId(BtnFunction.AlignCenter.name());
         
         // Other Formatting
         blockquoteButton = createIconToggleButton(MaterialDesignF.FORMAT_QUOTE_CLOSE, "Blockquote");
-        linkButton = createIconToggleButton(MaterialDesignL.LINK, "Insert Link");
+        blockquoteButton.setId(BtnFunction.Blockquote.name());
         checkboxButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_CHECKS, "Checkbox");
+        checkboxButton.setId(BtnFunction.Checkbox.name());
         
         // Font Size Dropdown
         fontSizeCombo = new ComboBox<>();
-        fontSizeCombo.getItems().addAll("8", "10", "12", "14", "16", "18", "20", "24", "28", "32", "36", "48");
+        fontSizeCombo.getItems().addAll("12", "14", "16", "18", "20", "24", "28", "32", "36");
         fontSizeCombo.setValue("16");
         fontSizeCombo.getStyleClass().addAll(Styles.SMALL);
         fontSizeCombo.setPrefWidth(70);
@@ -119,14 +138,15 @@ public class ControlPanelView {
             h1Button, h2Button, h3Button, h4Button
         );
         
+        // add align center button
+        addButtonGroup(
+            alignCenterButton
+        );
+            
         addButtonGroup(
             bulletListButton, numberListButton, checkboxButton
         );
-        
-        addButtonGroup(
-            linkButton
-        );
-        
+            
         // Add color pickers
         addButtonGroup(
             textColorBtn, 
@@ -176,19 +196,6 @@ public class ControlPanelView {
         button.setStyle(button.getStyle() + "-fx-cursor: hand;");
         button.setTooltip(new Tooltip(tooltip));
         
-        // Add hover and selected states using AtlantFX styles
-        button.hoverProperty().addListener((_, _, isHovering) -> {
-            if (isHovering) {
-                button.pseudoClassStateChanged(javafx.css.PseudoClass.getPseudoClass("hover"), true);
-            } else {
-                button.pseudoClassStateChanged(javafx.css.PseudoClass.getPseudoClass("hover"), false);
-            }
-        });
-        
-        button.selectedProperty().addListener((_, _, isSelected) -> {
-            button.pseudoClassStateChanged(javafx.css.PseudoClass.getPseudoClass("selected"), isSelected);
-        });
-        
         return button;
     }
 
@@ -233,5 +240,35 @@ public class ControlPanelView {
 
     public Button getBackButton() {
         return backButton;
+    }
+
+    public ColorPicker getHighColorPicker() {
+        return this.highlightColorPicker;
+    }
+
+    public ColorPicker getTextColorPicker() {
+        return this.textColorPicker;
+    }
+
+    public ComboBox<String> getFontSizeCombo() {
+        return this.fontSizeCombo;
+    }
+
+    public List<ToggleButton> getStyleButtons() {
+        return List.of(
+            boldButton, 
+            italicButton, 
+            underlineButton, 
+            strikethroughButton, 
+            blockquoteButton,
+            h1Button, 
+            h2Button, 
+            h3Button, 
+            h4Button,
+            bulletListButton, 
+            numberListButton, 
+            checkboxButton,
+            alignCenterButton
+        );
     }
 }
