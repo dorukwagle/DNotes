@@ -43,6 +43,10 @@ public class EditorController implements IEditorController {
 
     @Override
     public void close() {
-        
+        // close editor gracefully
+        // save the texts and notes
+
+        // then finally
+        this.navigationController.goToBooksPage();
     }
 }
