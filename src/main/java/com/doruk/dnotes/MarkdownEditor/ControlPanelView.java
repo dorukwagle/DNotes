@@ -21,7 +21,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
-import com.doruk.dnotes.MarkdownEditor.enums.BtnFunction;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 
 /**
  * Bold, Italic, Underline, Strikethrough
@@ -67,39 +67,39 @@ public class ControlPanelView {
         
         // Text Formatting Group
         boldButton = createIconToggleButton(MaterialDesignF.FORMAT_BOLD, "Bold");
-        boldButton.setId(BtnFunction.Bold.name());
+        boldButton.setId(ToolName.Bold.name());
         italicButton = createIconToggleButton(MaterialDesignF.FORMAT_ITALIC, "Italic");
-        italicButton.setId(BtnFunction.Italic.name());
+        italicButton.setId(ToolName.Italic.name());
         underlineButton = createIconToggleButton(MaterialDesignF.FORMAT_UNDERLINE, "Underline");
-        underlineButton.setId(BtnFunction.Underline.name());
+        underlineButton.setId(ToolName.Underline.name());
         strikethroughButton = createIconToggleButton(MaterialDesignF.FORMAT_STRIKETHROUGH, "Strikethrough");
-        strikethroughButton.setId(BtnFunction.Strikethrough.name());
+        strikethroughButton.setId(ToolName.Strikethrough.name());
         
         // Headings Group
         h1Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_1, "Heading 1");
-        h1Button.setId(BtnFunction.H1.name());
+        h1Button.setId(ToolName.H1.name());
         h2Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_2, "Heading 2");
-        h2Button.setId(BtnFunction.H2.name());
+        h2Button.setId(ToolName.H2.name());
         h3Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_3, "Heading 3");
-        h3Button.setId(BtnFunction.H3.name());
+        h3Button.setId(ToolName.H3.name());
         h4Button = createIconToggleButton(MaterialDesignF.FORMAT_HEADER_4, "Heading 4");
-        h4Button.setId(BtnFunction.H4.name());
+        h4Button.setId(ToolName.H4.name());
         
         // Lists Group
         bulletListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_BULLETED, "Bullet List");
-        bulletListButton.setId(BtnFunction.BulletList.name());
+        bulletListButton.setId(ToolName.BulletList.name());
         numberListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_NUMBERED, "Numbered List");
-        numberListButton.setId(BtnFunction.NumberList.name());
+        numberListButton.setId(ToolName.NumberList.name());
 
         // paragraph alignment
         alignCenterButton = createIconToggleButton(MaterialDesignF.FORMAT_ALIGN_CENTER, "Align Center");
-        alignCenterButton.setId(BtnFunction.AlignCenter.name());
+        alignCenterButton.setId(ToolName.AlignCenter.name());
         
         // Other Formatting
         blockquoteButton = createIconToggleButton(MaterialDesignF.FORMAT_QUOTE_CLOSE, "Blockquote");
-        blockquoteButton.setId(BtnFunction.Blockquote.name());
+        blockquoteButton.setId(ToolName.Blockquote.name());
         checkboxButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_CHECKS, "Checkbox");
-        checkboxButton.setId(BtnFunction.Checkbox.name());
+        checkboxButton.setId(ToolName.Checkbox.name());
         
         // Font Size Dropdown
         fontSizeCombo = new ComboBox<>();

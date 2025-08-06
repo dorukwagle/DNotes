@@ -1,6 +1,6 @@
 package com.doruk.dnotes.MarkdownEditor.enums;
 
-public enum BtnFunction {
+public enum ToolName {
     BulletList,
     Underline,
     Checkbox,

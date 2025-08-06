@@ -1,10 +1,12 @@
 package com.doruk.dnotes.MarkdownEditor;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
 import com.doruk.dnotes.DIFactory;
-import com.doruk.dnotes.MarkdownEditor.enums.BtnFunction;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 import com.doruk.dnotes.enums.EditorColor;
 import com.doruk.dnotes.enums.Preference;
@@ -18,33 +20,27 @@ public class MarkdownEditor implements IMarkdownEditor {
     private StringBuilder editorText;
     private View editorView;
     private IPreference preference;
-    private Map<BtnFunction, Boolean> strategyState = new EnumMap<>(BtnFunction.class);
+    private Map<ToolName, Boolean> strategyState = new EnumMap<>(ToolName.class);
+    private Map<ToolName, ToolCmdStrategy> strategies = new EnumMap<>(ToolName.class);
 
     public MarkdownEditor() {
         this.preference = DIFactory.createGlobalPreference();
         editorText = new StringBuilder();
         editorView = new EditorWrapper();
 
-        strategyState.putAll(Map.of(
-            BtnFunction.Bold, false,
-            BtnFunction.Italic, false,
-            BtnFunction.Underline, false,
-            BtnFunction.H1, false,
-            BtnFunction.H2, false,
-            BtnFunction.H3, false,
-            BtnFunction.H4, false,
-            BtnFunction.Strikethrough, false,
-            BtnFunction.AlignCenter, false,
-            BtnFunction.Blockquote, false
-        ));
-        strategyState.putAll(Map.of(
-            BtnFunction.Checkbox, false,
-            BtnFunction.BulletList, false,
-            BtnFunction.NumberList, false
-        ));
+        // initialize default strategy states to false
+        Arrays.stream(ToolName.values())
+            .forEach(toolName -> strategyState.put(toolName, false));
 
         var selectedColor = preference.loadLong(Preference.EditorColor, 0);
         editorView.setEditorBackground(EditorColor.fromId((int) selectedColor));
+
+        // initial setup
+        initialSetup();
+    }
+
+    private void initialSetup() {
+        
     }
 
     @Override

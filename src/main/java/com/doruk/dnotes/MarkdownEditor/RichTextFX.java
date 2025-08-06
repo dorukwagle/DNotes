@@ -145,22 +145,22 @@ public class RichTextFX {
     }
 
     // Formatting
-    public void applyBold() {
+    public void toggleBold() {
         toggleStyle(current -> new TextStyle(!current.bold, current.italic, current.underline, current.strike,
                 current.textColor, current.backgroundColor, current.fontSize, current.linkUrl));
     }
 
-    public void applyItalic() {
+    public void toggleItalic() {
         toggleStyle(current -> new TextStyle(current.bold, !current.italic, current.underline, current.strike,
                 current.textColor, current.backgroundColor, current.fontSize, current.linkUrl));
     }
 
-    public void applyUnderline() {
+    public void toggleUnderline() {
         toggleStyle(current -> new TextStyle(current.bold, current.italic, !current.underline, current.strike,
                 current.textColor, current.backgroundColor, current.fontSize, current.linkUrl));
     }
 
-    public void applyStrikethrough() {
+    public void toggleStrikethrough() {
         toggleStyle(current -> new TextStyle(current.bold, current.italic, current.underline, !current.strike,
                 current.textColor, current.backgroundColor, current.fontSize, current.linkUrl));
     }
