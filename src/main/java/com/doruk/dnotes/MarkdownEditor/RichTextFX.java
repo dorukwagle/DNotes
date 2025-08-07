@@ -35,18 +35,6 @@ public class RichTextFX {
             this.fontSize = fontSize;
             this.linkUrl = linkUrl;
         }
-
-        public TextStyle merge(TextStyle other) {
-            return new TextStyle(
-                    other.bold || this.bold,
-                    other.italic || this.italic,
-                    other.underline || this.underline,
-                    other.strike || this.strike,
-                    other.textColor != null ? other.textColor : this.textColor,
-                    other.backgroundColor != null ? other.backgroundColor : this.backgroundColor,
-                    other.fontSize > 0 ? other.fontSize : this.fontSize,
-                    other.linkUrl != null ? other.linkUrl : this.linkUrl);
-        }
     }
 
     public enum ParagraphType {
@@ -116,24 +104,8 @@ public class RichTextFX {
         area.replaceText(text);
     }
 
-    public String getText() {
-        return area.getText();
-    }
-
     public void appendText(String text) {
         area.insertText(area.getLength(), text);
-    }
-
-    public void insertText(int position, String text) {
-        area.insertText(position, text);
-    }
-
-    public void deleteText(int start, int end) {
-        area.deleteText(start, end);
-    }
-
-    public void selectAll() {
-        area.selectAll();
     }
 
     public IndexRange getSelection() {
@@ -223,23 +195,26 @@ public class RichTextFX {
     // Helpers
     private void toggleStyle(java.util.function.Function<TextStyle, TextStyle> mapper) {
         IndexRange selection = area.getSelection();
+        TextStyle current = getCurrentTextStyle();
+        TextStyle updated = mapper.apply(current);
+
         if (selection.getLength() > 0) {
-            TextStyle current = getCurrentTextStyle();
-            TextStyle updated = mapper.apply(current);
             area.setStyle(selection.getStart(), selection.getEnd(), updated);
         }
+        else area.setTextInsertionStyle(updated);
     }
 
     private TextStyle getCurrentTextStyle() {
-        int pos = area.getCaretPosition();
-        return pos > 0 ? area.getStyleOfChar(pos - 1) : TextStyle.EMPTY;
+        var hasSelection = area.getSelection().getLength() > 0;
+        int pos = hasSelection ? area.getSelection().getStart() : area.getCaretPosition();
+        return hasSelection ? area.getStyleAtPosition(pos) : area.getTextStyleForInsertionAt(pos);
     }
 
     private static void applyParagraphStyle(TextFlow flow, ParagraphStyle style) {
         StringBuilder css = new StringBuilder();
 
         // default padding
-        css.append("-fx-padding: 8px");
+        css.append("-fx-padding: 8px;");
 
         switch (style.type) {
             case H1 -> css.append("-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 10px 0 5px 0;");

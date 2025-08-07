@@ -33,7 +33,26 @@ public class MarkdownEditor implements IMarkdownEditor {
     }
 
     private void initialSetup() {
-        
+        // just for testing
+        var boldbtn = this.editorView.getControlPanel()
+            .getStyleButtons()
+            .stream()
+            .filter(btn -> btn.getId().equals(ToolName.Bold.name()))
+            .findFirst()
+            .orElse(null);
+        boldbtn.setOnAction((_) -> {
+            var editor = this.editorView.getEditor();
+            var area = editor.getArea();
+
+            var pos = area.getCaretPosition();
+            // System.out.println("pos: " + pos);
+            // area.selectRange(pos, pos + 1);
+            editor.toggleBold();
+            area.requestFocus();
+            // area.selectRange(pos, pos);
+
+            
+        });            
     }
 
     @Override

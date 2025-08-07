@@ -5,12 +5,7 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 
 public class BoldCmdStrategy implements ToolCmdStrategy {
     @Override
-    public void apply(RichTextFX editor) {
-        editor.toggleBold();
-    }
-
-    @Override
-    public void unapply(RichTextFX editor) {
+    public void applyToggle(RichTextFX editor) {
         editor.toggleBold();
     }
 
@@ -18,15 +13,5 @@ public class BoldCmdStrategy implements ToolCmdStrategy {
     public boolean isApplied(RichTextFX editor) {
         // return editor.isBold();
         return false;
-    }
-
-    @Override
-    public void applyOnSelection(RichTextFX editor) {
-        editor.toggleBold();
-    }
-
-    @Override
-    public void unapplyOnSelection(RichTextFX editor) {
-        editor.toggleBold();
     }
 }
