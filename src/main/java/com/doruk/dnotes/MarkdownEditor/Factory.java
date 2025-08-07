@@ -1,6 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor;
 
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 
 public class Factory {
@@ -49,5 +50,9 @@ public class Factory {
                 return null;
             }
         }
+    }
+
+    public static FXTextEditor getFXTextEditor() {
+        return new RichTextFX();
     }
 }

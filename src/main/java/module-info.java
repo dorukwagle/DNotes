@@ -30,4 +30,5 @@ module com.doruk.dnotes {
 
     exports com.doruk.dnotes.MarkdownEditor.interfaces;
     exports com.doruk.dnotes.MarkdownEditor.enums;
+    exports com.doruk.dnotes.MarkdownEditor.docstyle;
 }

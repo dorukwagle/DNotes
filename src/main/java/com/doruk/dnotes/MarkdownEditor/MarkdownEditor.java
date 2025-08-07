@@ -47,7 +47,7 @@ public class MarkdownEditor implements IMarkdownEditor {
             var pos = area.getCaretPosition();
             // System.out.println("pos: " + pos);
             // area.selectRange(pos, pos + 1);
-            editor.toggleBold();
+            // editor.toggleBold();
             area.requestFocus();
             // area.selectRange(pos, pos);
 

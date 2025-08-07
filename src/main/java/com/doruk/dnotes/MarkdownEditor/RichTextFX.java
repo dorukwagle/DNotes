@@ -3,56 +3,19 @@ package com.doruk.dnotes.MarkdownEditor;
 import javafx.scene.control.IndexRange;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
+
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
 import org.fxmisc.richtext.model.*;
 
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
+
 import atlantafx.base.theme.Styles;
 
-public class RichTextFX {
-
-    public static class TextStyle {
-        public final boolean bold;
-        public final boolean italic;
-        public final boolean underline;
-        public final boolean strike;
-        public final Color textColor;
-        public final Color backgroundColor;
-        public final int fontSize;
-        public final String linkUrl;
-
-        public static final TextStyle EMPTY = new TextStyle(false, false, false, false, null, Color.TRANSPARENT,
-                16, null);
-
-        public TextStyle(boolean bold, boolean italic, boolean underline, boolean strike,
-                Color textColor, Color backgroundColor, int fontSize, String linkUrl) {
-            this.bold = bold;
-            this.italic = italic;
-            this.underline = underline;
-            this.strike = strike;
-            this.textColor = textColor;
-            this.backgroundColor = backgroundColor;
-            this.fontSize = fontSize;
-            this.linkUrl = linkUrl;
-        }
-    }
-
-    public enum ParagraphType {
-        NORMAL, H1, H2, H3, H4, BLOCKQUOTE, UL_ITEM, OL_ITEM, CHECKBOX_ITEM
-    }
-
-    public static class ParagraphStyle {
-        public final ParagraphType type;
-        public final boolean checked;
-
-        public static final ParagraphStyle EMPTY = new ParagraphStyle(ParagraphType.NORMAL, false);
-
-        public ParagraphStyle(ParagraphType type, boolean checked) {
-            this.type = type;
-            this.checked = checked;
-        }
-    }
-
+public class RichTextFX implements FXTextEditor {
     private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
 
     public RichTextFX() {
@@ -95,6 +58,7 @@ public class RichTextFX {
         area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
     }
 
+    @Override
     public GenericStyledArea<ParagraphStyle, String, TextStyle> getArea() {
         return area;
     }

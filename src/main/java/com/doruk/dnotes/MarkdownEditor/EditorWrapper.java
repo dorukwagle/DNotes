@@ -2,8 +2,8 @@ package com.doruk.dnotes.MarkdownEditor;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
 
-import com.doruk.dnotes.MarkdownEditor.RichTextFX.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
+import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 
 import atlantafx.base.theme.Styles;
@@ -13,14 +13,13 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 
 public class EditorWrapper implements View {
     private VBox root;
     private ControlPanelView controlPanel;
     private HBox reference;
-    private RichTextFX editor;
+    private FXTextEditor editor;
 
     public EditorWrapper() {
         root = new VBox();
@@ -33,7 +32,7 @@ public class EditorWrapper implements View {
         VBox.setMargin(panel, new Insets(15, 10, 0, 10));
         
         // add markdown editor
-        editor = new RichTextFX();
+        editor = Factory.getFXTextEditor();
         var scrollPane = new VirtualizedScrollPane<>(editor.getArea());
         scrollPane.setPrefHeight(10);
 
@@ -47,41 +46,6 @@ public class EditorWrapper implements View {
         editor.getArea().backgroundProperty().bind(reference.backgroundProperty());
         
         VBox.setMargin(scrollPane, new Insets(11, 0, 0, 0));
-        
-        var txt = "this is bold text";
-
-        editor.applyFontSize(16);
-
-        editor.setText("hello world...");
-        // editor.applyBold();
-        editor.appendText(txt);
-        editor.setSelection(15, 15 + txt.length());
-        editor.toggleBold();
-        editor.toggleItalic();
-        editor.applyFontSize(20);
-        editor.applyTextColor(Color.RED);
-        editor.applyBackgroundColor(Color.YELLOW);
-
-        editor.appendText("normal text");
-        
-
-        int paragraphIndex = 0;
-        for (var paragraph : editor.getArea().getDocument().getParagraphs()) {
-            System.out.println("Paragraph " + paragraphIndex++);
-
-            ParagraphStyle paragraphStyle = paragraph.getParagraphStyle();
-            System.out.println("  ParagraphStyle: " + paragraphStyle.toString());
-
-            int segmentIndex = 0;
-            for (var styledSegment : paragraph.getStyledSegments()) {
-                String text = styledSegment.getSegment();
-                var style = styledSegment.getStyle();
-
-                System.out.println("    Segment " + segmentIndex++);
-                System.out.println("      Text : \"" + text + "\"");
-                System.out.println("      Style: " + style.toString());
-            }
-        }
     }
 
     @Override
@@ -104,7 +68,7 @@ public class EditorWrapper implements View {
     }
 
     @Override
-    public RichTextFX getEditor() {
+    public FXTextEditor getEditor() {
         return editor;
     }
 
