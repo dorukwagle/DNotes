@@ -13,7 +13,7 @@ module com.doruk.dnotes {
     requires org.xerial.sqlitejdbc;
 
     requires org.fxmisc.flowless;
-    requires org.fxmisc.richtext;
+    requires transitive org.fxmisc.richtext;
     requires reactfx;
     
     exports com.doruk.dnotes;
@@ -28,6 +28,7 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.prefs;
     exports com.doruk.dnotes.exceptions;
 
+    
     exports com.doruk.dnotes.MarkdownEditor.interfaces;
     exports com.doruk.dnotes.MarkdownEditor.enums;
     exports com.doruk.dnotes.MarkdownEditor.docstyle;

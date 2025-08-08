@@ -11,7 +11,9 @@ import org.fxmisc.richtext.model.*;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
+import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 
 import atlantafx.base.theme.Styles;
 
@@ -204,5 +206,23 @@ public class RichTextFX implements FXTextEditor {
                 (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255),
                 color.getOpacity());
+    }
+
+    @Override
+    public void addTextRenderer(ToolName tool, Renderer<TextExt> renderer) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addTextRenderer'");
+    }
+
+    @Override
+    public void addParagraphRenderer(ToolName tool, Renderer<TextFlow> renderer) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addParagraphRenderer'");
+    }
+
+    @Override 
+    public void removeRenderer(ToolName tool) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeRenderer'");
     }
 }

@@ -1,10 +1,17 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
 import org.fxmisc.richtext.GenericStyledArea;
+import org.fxmisc.richtext.TextExt;
 
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+
+import javafx.scene.text.TextFlow;
 
 public interface FXTextEditor {
     GenericStyledArea<ParagraphStyle, String, TextStyle> getArea();
+    void addTextRenderer(ToolName tool, Renderer<TextExt> renderer);
+    void addParagraphRenderer(ToolName tool, Renderer<TextFlow> renderer);
+    void removeRenderer(ToolName tool);
 }
