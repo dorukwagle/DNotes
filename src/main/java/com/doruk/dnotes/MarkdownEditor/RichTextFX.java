@@ -129,7 +129,7 @@ public class RichTextFX implements FXTextEditor {
             case 2 -> ParagraphType.H2;
             case 3 -> ParagraphType.H3;
             case 4 -> ParagraphType.H4;
-            default -> ParagraphType.NORMAL;
+            default -> ParagraphType.ALIGN_LEFT;
         };
         area.setParagraphStyle(area.getCurrentParagraph(), new ParagraphStyle(type, false));
     }
@@ -190,7 +190,8 @@ public class RichTextFX implements FXTextEditor {
             case BLOCKQUOTE -> css.append(
                     "-fx-border-color: #ccc; -fx-border-width: 0 0 0 4px; -fx-padding: 5px 0 5px 10px;");
             case UL_ITEM, OL_ITEM, CHECKBOX_ITEM -> css.append("-fx-padding: 2px 0 2px 20px;");
-            case NORMAL -> css.append("");
+            case ALIGN_LEFT -> css.append("");
+            case ALIGN_CENTER -> css.append("");
         }
 
         if (style.type == ParagraphType.CHECKBOX_ITEM && style.checked) {

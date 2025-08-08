@@ -53,6 +53,6 @@ public class Factory {
     }
 
     public static FXTextEditor getFXTextEditor() {
-        return new RichTextFX();
+        return new EditorFX();
     }
 }

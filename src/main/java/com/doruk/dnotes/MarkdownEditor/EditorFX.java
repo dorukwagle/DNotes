@@ -42,7 +42,6 @@ public class EditorFX implements FXTextEditor {
         area.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        // area.getStyleClass().add(Styles.ACCENT);
         area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
     }
 

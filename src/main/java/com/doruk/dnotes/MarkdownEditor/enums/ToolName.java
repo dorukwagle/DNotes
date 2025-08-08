@@ -3,6 +3,7 @@ package com.doruk.dnotes.MarkdownEditor.enums;
 public enum ToolName {
     BulletList,
     Underline,
+    AlignLeft,
     Checkbox,
     H1,
     H2,
