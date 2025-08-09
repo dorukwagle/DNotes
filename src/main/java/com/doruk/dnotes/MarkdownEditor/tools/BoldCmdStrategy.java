@@ -32,4 +32,9 @@ public class BoldCmdStrategy extends ToolCmdStrategy {
     public <T> boolean hasStyle(T style) {
         return ((TextStyle)style).bold;
     }
+
+    @Override
+    public StyleType getStyleType() {
+        return StyleType.TextStyle;
+    }
 }
