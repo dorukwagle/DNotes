@@ -2,6 +2,8 @@ package com.doruk.dnotes.MarkdownEditor;
 
 import org.fxmisc.richtext.TextExt;
 
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
@@ -56,7 +58,7 @@ public class Factory {
         return new EditorFX();
     }
 
-    public static Renderer<TextExt> createTextRenderer(ToolName toolName) {
+    public static Renderer<TextExt, TextStyle> createTextRenderer(ToolName toolName) {
         return switch (toolName) {
             case Bold -> new BoldRenderer();
             case Italic -> new ItalicRenderer();
@@ -66,7 +68,7 @@ public class Factory {
         };
     }
 
-    public static Renderer<TextExt> createStatefulRenderer(ToolName toolName, Object param) {
+    public static Renderer<TextExt, TextStyle> createStatefulRenderer(ToolName toolName, Object param) {
         return switch (toolName) {
             case FontColor -> new FontColorRenderer((Color)param);
             case FontBG -> new FontBGRenderer((Color)param);
@@ -75,7 +77,7 @@ public class Factory {
         };
     }
 
-    public static Renderer<TextFlow> createParagraphRenderer(ToolName toolName) {
+    public static Renderer<TextFlow, ParagraphStyle> createParagraphRenderer(ToolName toolName) {
         return switch (toolName) {
             case AlignCenter -> new AlignCenterRenderer();
             case AlignLeft -> new AlignLeftRenderer();

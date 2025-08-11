@@ -17,24 +17,24 @@ import javafx.scene.text.TextFlow;
 
 public class EditorFX implements FXTextEditor {
     private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
-    private final Map<ToolName, Renderer<TextExt>> textRenderers = new EnumMap<>(ToolName.class);
-    private final Map<ToolName, Renderer<TextFlow>> paragraphRenderers = new EnumMap<>(ToolName.class);
+    private final Map<ToolName, Renderer<TextExt, TextStyle>> textRenderers = new EnumMap<>(ToolName.class);
+    private final Map<ToolName, Renderer<TextFlow, ParagraphStyle>> paragraphRenderers = new EnumMap<>(ToolName.class);
 
     public EditorFX() {       
         area = new GenericStyledArea<>(
                 ParagraphStyle.EMPTY,
-                (flow, _) -> {
+                (flow, style) -> {
                     // set global styles
                     flow.setStyle("-fx-padding: 8px;");
                     // apply all renderers
-                    this.paragraphRenderers.forEach((_, renderer) -> renderer.render(flow));
+                    this.paragraphRenderers.forEach((_, renderer) -> renderer.render(flow, style));
                 },
                 TextStyle.EMPTY,
                 SegmentOps.styledTextOps(),
                 segment -> {
                     var text = new TextExt(segment.getSegment());
                     // apply all renderers
-                    this.textRenderers.forEach((_, renderer) -> renderer.render(text));
+                    this.textRenderers.forEach((_, renderer) -> renderer.render(text, segment.getStyle()));
                     return text;
                 });
 
@@ -51,12 +51,12 @@ public class EditorFX implements FXTextEditor {
     }
 
     @Override
-    public void addTextRenderer(ToolName tool, Renderer<TextExt> renderer) {
+    public void addTextRenderer(ToolName tool, Renderer<TextExt, TextStyle> renderer) {
         this.textRenderers.put(tool, renderer);
     }
 
     @Override
-    public void addParagraphRenderer(ToolName tool, Renderer<TextFlow> renderer) {
+    public void addParagraphRenderer(ToolName tool, Renderer<TextFlow, ParagraphStyle> renderer) {
         this.paragraphRenderers.put(tool, renderer);
     }
 

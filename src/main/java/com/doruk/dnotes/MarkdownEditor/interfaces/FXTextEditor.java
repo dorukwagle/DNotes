@@ -11,7 +11,7 @@ import javafx.scene.text.TextFlow;
 
 public interface FXTextEditor {
     GenericStyledArea<ParagraphStyle, String, TextStyle> getArea();
-    void addTextRenderer(ToolName tool, Renderer<TextExt> renderer);
-    void addParagraphRenderer(ToolName tool, Renderer<TextFlow> renderer);
+    void addTextRenderer(ToolName tool, Renderer<TextExt, TextStyle> renderer);
+    void addParagraphRenderer(ToolName tool, Renderer<TextFlow, ParagraphStyle> renderer);
     void removeRenderer(ToolName tool);
 }
