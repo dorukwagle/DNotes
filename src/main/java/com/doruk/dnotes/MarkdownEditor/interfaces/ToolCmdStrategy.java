@@ -1,11 +1,6 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
-import org.fxmisc.richtext.GenericStyledArea;
-import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.TwoDimensional.Bias;
-
-import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
-import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 
 public abstract class ToolCmdStrategy {
     protected enum StyleType {
