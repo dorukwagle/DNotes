@@ -89,7 +89,7 @@ public class ControlPanelView {
         bulletListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_BULLETED, "Bullet List");
         bulletListButton.setId(ToolName.BulletList.name());
         numberListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_NUMBERED, "Numbered List");
-        numberListButton.setId(ToolName.NumberList.name());
+        numberListButton.setId(ToolName.OrderedList.name());
 
         // paragraph alignment
         alignCenterButton = createIconToggleButton(MaterialDesignF.FORMAT_ALIGN_CENTER, "Align Center");

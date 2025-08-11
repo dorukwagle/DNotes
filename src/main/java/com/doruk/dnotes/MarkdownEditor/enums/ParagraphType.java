@@ -8,7 +8,7 @@ public enum ParagraphType {
     H3, 
     H4, 
     BLOCKQUOTE, 
-    UL_ITEM, 
-    OL_ITEM, 
+    UNORDERED_LIST_ITEM, 
+    ORDERED_LIST_ITEM, 
     CHECKBOX_ITEM
 }

@@ -8,6 +8,10 @@ public abstract class ToolCmdStrategy {
         ParagraphStyle
     }
 
+    public ToolCmdStrategy(FXTextEditor editor) {
+        this.addRenderer(editor);
+    }
+
     public abstract void apply(FXTextEditor editor);   
     public abstract void unapply(FXTextEditor editor);
 
@@ -19,6 +23,9 @@ public abstract class ToolCmdStrategy {
 
     // should return the type of style the tool is
     protected abstract StyleType getStyleType();
+
+    // add renderer to the editor
+    protected abstract void addRenderer(FXTextEditor editor);
 
     public boolean isApplied(FXTextEditor editor) {
         var area = editor.getArea();

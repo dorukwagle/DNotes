@@ -40,18 +40,16 @@ public class MarkdownEditor implements IMarkdownEditor {
             .filter(btn -> btn.getId().equals(ToolName.Bold.name()))
             .findFirst()
             .orElse(null);
+
+        var bold = Factory.createTool(ToolName.Bold, editorView.getEditor());
         boldbtn.setOnAction((_) -> {
-            var editor = this.editorView.getEditor();
-            var area = editor.getArea();
-
-            var pos = area.getCaretPosition();
-            // System.out.println("pos: " + pos);
-            // area.selectRange(pos, pos + 1);
-            // editor.toggleBold();
+            var area = editorView.getEditor().getArea();
             area.requestFocus();
-            // area.selectRange(pos, pos);
 
-            
+            if (boldbtn.isSelected())
+                bold.apply(editorView.getEditor());
+            else 
+                bold.unapply(editorView.getEditor());
         });            
     }
 

@@ -1,6 +1,11 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
 public abstract class StatefulToolCmdStrategy<T> extends ToolCmdStrategy {
+    
+    public StatefulToolCmdStrategy(FXTextEditor editor) {
+        super(editor);
+    }
+
     private T state;
     
     public void setState(T state) {
