@@ -26,6 +26,7 @@ import com.doruk.dnotes.MarkdownEditor.renderers.StrikethroughRenderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.ULItemRenderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.UnderlineRenderer;
 import com.doruk.dnotes.MarkdownEditor.tools.Bold;
+import com.doruk.dnotes.MarkdownEditor.tools.Italic;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
@@ -42,7 +43,7 @@ public class Factory {
             case OrderedList -> null;
             case H4 -> null;
             case Bold -> new Bold(editor);
-            case Italic -> null;
+            case Italic -> new Italic(editor);
             case Blockquote -> null;
             case AlignCenter -> null;
             case Strikethrough -> null;

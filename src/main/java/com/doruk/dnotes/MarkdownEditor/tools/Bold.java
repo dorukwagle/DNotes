@@ -20,14 +20,17 @@ public class Bold extends ToolCmdStrategy {
 
     @Override
     protected void processOnSelection(FXTextEditor editor, int start, int end, boolean apply) {
-        editor.getArea().setStyle(start, end,
-            StyleHelper.textWithBold(editor.getArea().getStyleAtPosition(start), apply));
+        var area = editor.getArea();
+        var spans = area.getStyleSpans(start, end);
+
+        var newSpans = spans.mapStyles(style -> StyleHelper.textWithBold(style, apply));
+        area.setStyleSpans(start, newSpans);
     }
 
     @Override
     protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
         editor.getArea().setTextInsertionStyle(
-            StyleHelper.textWithBold(editor.getArea().getStyleAtPosition(pos), apply));
+            StyleHelper.textWithBold(editor.getArea().getTextStyleForInsertionAt(pos), apply));
     }
 
     @Override

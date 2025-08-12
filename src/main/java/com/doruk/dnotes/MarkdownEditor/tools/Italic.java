@@ -30,13 +30,16 @@ public class Italic extends ToolCmdStrategy {
 
     @Override
     protected void processOnSelection(FXTextEditor editor, int start, int end, boolean apply) {
-        editor.getArea().setStyle(start, end,
-            StyleHelper.textWithItalic(editor.getArea().getStyleAtPosition(start), apply));
+        var area = editor.getArea();
+        var spans = area.getStyleSpans(start, end);
+
+        var newSpans = spans.mapStyles(style -> StyleHelper.textWithItalic(style, apply));
+        area.setStyleSpans(start, newSpans);
     }
 
     @Override
     protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
         editor.getArea().setTextInsertionStyle(
-            StyleHelper.textWithItalic(editor.getArea().getStyleAtPosition(pos), apply));
+            StyleHelper.textWithItalic(editor.getArea().getTextStyleForInsertionAt(pos), apply));
     }
 }

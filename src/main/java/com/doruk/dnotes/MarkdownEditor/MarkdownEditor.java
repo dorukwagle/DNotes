@@ -41,7 +41,15 @@ public class MarkdownEditor implements IMarkdownEditor {
             .findFirst()
             .orElse(null);
 
+        var italicbtn = this.editorView.getControlPanel()
+            .getStyleButtons()
+            .stream()
+            .filter(btn -> btn.getId().equals(ToolName.Italic.name()))
+            .findFirst()
+            .orElse(null);
+
         var bold = Factory.createTool(ToolName.Bold, editorView.getEditor());
+        var italic = Factory.createTool(ToolName.Italic, editorView.getEditor());
         boldbtn.setOnAction((_) -> {
             var area = editorView.getEditor().getArea();
             area.requestFocus();
@@ -51,6 +59,16 @@ public class MarkdownEditor implements IMarkdownEditor {
             else 
                 bold.unapply(editorView.getEditor());
         });            
+
+        italicbtn.setOnAction((_) -> {
+            var area = editorView.getEditor().getArea();
+            area.requestFocus();
+
+            if (italicbtn.isSelected())
+                italic.apply(editorView.getEditor());
+            else 
+                italic.unapply(editorView.getEditor());
+        });
     }
 
     @Override

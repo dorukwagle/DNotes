@@ -9,6 +9,7 @@ public class ItalicRenderer implements Renderer<TextExt, TextStyle> {
     
     @Override
     public void render(TextExt textExt, TextStyle style) {
-        textExt.setStyle(textExt.getStyle() + "-fx-font-style: italic;");
+        if (style.italic)
+            textExt.setStyle(textExt.getStyle() + "-fx-font-style: italic;");
     }
 }
