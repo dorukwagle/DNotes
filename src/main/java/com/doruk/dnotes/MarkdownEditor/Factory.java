@@ -27,6 +27,8 @@ import com.doruk.dnotes.MarkdownEditor.renderers.ULItemRenderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.UnderlineRenderer;
 import com.doruk.dnotes.MarkdownEditor.tools.Bold;
 import com.doruk.dnotes.MarkdownEditor.tools.Italic;
+import com.doruk.dnotes.MarkdownEditor.tools.Strikethrough;
+import com.doruk.dnotes.MarkdownEditor.tools.Underlin;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
@@ -35,7 +37,7 @@ public class Factory {
     public static ToolCmdStrategy createTool(ToolName toolName, FXTextEditor editor) {
         return switch (toolName) {
             case BulletList -> null;
-            case Underline -> null;
+            case Underline -> new Underlin(editor);
             case Checkbox -> null;
             case H1 -> null;
             case H2 -> null;
@@ -46,7 +48,7 @@ public class Factory {
             case Italic -> new Italic(editor);
             case Blockquote -> null;
             case AlignCenter -> null;
-            case Strikethrough -> null;
+            case Strikethrough -> new Strikethrough(editor);
             case FontColor -> null;
             case FontBG -> null;
             case Font -> null;
@@ -69,7 +71,7 @@ public class Factory {
         };
     }
 
-    public static Renderer<TextExt, TextStyle> createStatefulRenderer(ToolName toolName, Object param) {
+    public static Renderer<TextExt, TextStyle> createStatefulTextRenderer(ToolName toolName, Object param) {
         return switch (toolName) {
             case FontColor -> new FontColorRenderer((Color)param);
             case FontBG -> new FontBGRenderer((Color)param);
