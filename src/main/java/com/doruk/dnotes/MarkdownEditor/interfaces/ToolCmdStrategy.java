@@ -12,8 +12,25 @@ public abstract class ToolCmdStrategy {
         this.addRenderer(editor);
     }
 
-    public abstract void apply(FXTextEditor editor);   
-    public abstract void unapply(FXTextEditor editor);
+    public void apply(FXTextEditor editor) {
+        var area = editor.getArea();
+        var selection = area.getSelection();
+
+        if (selection.getLength() > 0)
+            this.processOnSelection(editor, selection.getStart(), selection.getEnd(), true);
+        else
+            this.processOnInsertion(editor, area.getCaretPosition(), true);
+    }
+
+    public void unapply(FXTextEditor editor) {
+        var area = editor.getArea();
+        var selection = area.getSelection();
+
+        if (selection.getLength() > 0)
+            this.processOnSelection(editor, selection.getStart(), selection.getEnd(), false);
+        else
+            this.processOnInsertion(editor, area.getCaretPosition(), false);
+    }
 
     // receives either TextStyle or ParagraphStyle, instances should compute its presence
     // in the given style
@@ -23,6 +40,12 @@ public abstract class ToolCmdStrategy {
 
     // should return the type of style the tool is
     protected abstract StyleType getStyleType();
+
+    // apply on selection
+    protected abstract void processOnSelection(FXTextEditor editor, int start, int end, boolean apply);
+
+    // apply on insertion
+    protected abstract void processOnInsertion(FXTextEditor editor, int pos, boolean apply);
 
     // add renderer to the editor
     protected abstract void addRenderer(FXTextEditor editor);
