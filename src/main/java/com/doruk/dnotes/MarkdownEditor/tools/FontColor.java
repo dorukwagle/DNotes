@@ -25,19 +25,10 @@ public class FontColor extends StatefulToolCmdStrategy<Color> {
         return StyleType.TextStyle;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void processOnSelection(FXTextEditor editor, int start, int end, boolean apply) {
-        var area = editor.getArea();
-        var spans = area.getStyleSpans(start, end);
-
-        var newSpans = spans.mapStyles(style -> StyleHelper.textWithColor(style, this.getState()));
-        area.setStyleSpans(start, newSpans);
-    }
-
-    @Override
-    protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
-        editor.getArea().setTextInsertionStyle(
-                StyleHelper.textWithColor(editor.getArea().getTextStyleForInsertionAt(pos), this.getState()));
+    protected <T> T getStyle(T currentStyle, boolean apply) {
+        return (T) StyleHelper.textWithColor((TextStyle)currentStyle, this.getState());
     }
 
     @Override

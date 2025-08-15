@@ -41,11 +41,23 @@ public abstract class ToolCmdStrategy {
     // should return the type of style the tool is
     protected abstract StyleType getStyleType();
 
+    // should return the actual TextStyle/ParagraphStyle for rendering
+    protected abstract <T> T getStyle(T currentStyle, boolean apply);
+
     // apply on selection
-    protected abstract void processOnSelection(FXTextEditor editor, int start, int end, boolean apply);
+    protected void processOnSelection(FXTextEditor editor, int start, int end, boolean apply) {
+        var area = editor.getArea();
+        var spans = area.getStyleSpans(start, end);
+
+        var newSpans = spans.mapStyles(style -> this.getStyle(style, apply));
+        area.setStyleSpans(start, newSpans);
+    }
 
     // apply on insertion
-    protected abstract void processOnInsertion(FXTextEditor editor, int pos, boolean apply);
+    protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
+        editor.getArea().setTextInsertionStyle(
+            this.getStyle(editor.getArea().getTextStyleForInsertionAt(pos), apply));
+    }
 
     // add renderer to the editor
     protected abstract void addRenderer(FXTextEditor editor);

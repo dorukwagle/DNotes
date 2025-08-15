@@ -23,20 +23,10 @@ public class Strikethrough extends ToolCmdStrategy {
         return StyleType.TextStyle;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void processOnSelection(FXTextEditor editor, int start, int end, boolean apply) {
-        var area = editor.getArea();
-        var spans = area.getStyleSpans(start, end);
-
-        var newSpans = spans.mapStyles(style -> StyleHelper.textWithStrikethrough(style, apply));
-        area.setStyleSpans(start, newSpans);
-    }
-
-    @Override
-    protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
-        editor.getArea().setTextInsertionStyle(
-            StyleHelper.textWithStrikethrough(editor.getArea().getTextStyleForInsertionAt(pos), apply)
-        );
+    protected <T> T getStyle(T currentStyle, boolean apply) {
+        return (T) StyleHelper.textWithStrikethrough((TextStyle)currentStyle, apply);
     }
 
     @Override
@@ -44,5 +34,4 @@ public class Strikethrough extends ToolCmdStrategy {
         editor.addTextRenderer(ToolName.Strikethrough, 
             Factory.createTextRenderer(ToolName.Strikethrough));
     }
-    
 }
