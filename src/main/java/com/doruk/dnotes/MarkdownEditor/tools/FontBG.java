@@ -4,25 +4,20 @@ import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
-import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulToolCmdStrategy;
+import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulTextStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 
 import javafx.scene.paint.Color;
 
-public class FontBG extends StatefulToolCmdStrategy<Color> {
+public class FontBG extends StatefulTextStyleTool<Color> {
     
     public FontBG(FXTextEditor editor) {
         super(editor);
     }
 
     @Override
-    protected <U> void loadState(U style) {
-        this.setState(((TextStyle) style).backgroundColor);
-    }
-
-    @Override
-    protected StyleType getStyleType() {
-        return StyleType.TextStyle;
+    protected void loadState(TextStyle style) {
+        this.setState(style.backgroundColor);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,8 +1,10 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
-public abstract class StatefulToolCmdStrategy<T> extends ToolCmdStrategy {
+import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
+
+public abstract class StatefulTextStyleTool<T> extends TextStyleTool {
     
-    public StatefulToolCmdStrategy(FXTextEditor editor) {
+    public StatefulTextStyleTool(FXTextEditor editor) {
         super(editor);
     }
 
@@ -20,9 +22,9 @@ public abstract class StatefulToolCmdStrategy<T> extends ToolCmdStrategy {
     protected <U> boolean hasStyle(U style) {
         // stateful widgets are always applied with default value from the UI
         // however load the currently applied style to the state
-        this.loadState(style);
+        this.loadState((TextStyle)style);
         return true;
     }
 
-    protected abstract <U> void loadState(U style);
+    protected abstract void loadState(TextStyle style);
 }

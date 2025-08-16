@@ -4,11 +4,11 @@ import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
-import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
+import com.doruk.dnotes.MarkdownEditor.interfaces.TextStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 
 
-public class Bold extends ToolCmdStrategy {
+public class Bold extends TextStyleTool {
 
     public Bold(FXTextEditor editor) {
         super(editor);
@@ -28,10 +28,5 @@ public class Bold extends ToolCmdStrategy {
     @Override
     protected <T> boolean hasStyle(T style) {
         return ((TextStyle)style).bold;
-    }
-
-    @Override
-    protected StyleType getStyleType() {
-        return StyleType.TextStyle;
     }
 }

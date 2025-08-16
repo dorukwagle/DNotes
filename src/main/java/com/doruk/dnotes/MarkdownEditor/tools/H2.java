@@ -5,9 +5,9 @@ import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
-import com.doruk.dnotes.MarkdownEditor.interfaces.ParagraphToolCmdStrategy;
+import com.doruk.dnotes.MarkdownEditor.interfaces.ParagraphStyleTool;
 
-public class H2 extends ParagraphToolCmdStrategy {
+public class H2 extends ParagraphStyleTool {
     
     public H2(FXTextEditor editor) {
         super(editor);

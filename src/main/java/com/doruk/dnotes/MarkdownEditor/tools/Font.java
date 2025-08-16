@@ -4,23 +4,18 @@ import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
-import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulToolCmdStrategy;
+import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulTextStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 
-public class Font extends StatefulToolCmdStrategy<Integer> {
+public class Font extends StatefulTextStyleTool<Integer> {
     
     public Font(FXTextEditor editor) {
         super(editor);
     }
 
     @Override
-    protected <U> void loadState(U style) {
-        this.setState(((TextStyle) style).fontSize);
-    }
-
-    @Override
-    protected StyleType getStyleType() {
-        return StyleType.TextStyle;
+    protected void loadState(TextStyle style) {
+        this.setState(style.fontSize);
     }
 
     @SuppressWarnings("unchecked")

@@ -2,9 +2,9 @@ package com.doruk.dnotes.MarkdownEditor.interfaces;
 
 import org.fxmisc.richtext.model.TwoDimensional.Bias;
 
-public abstract class ParagraphToolCmdStrategy extends ToolCmdStrategy {
+public abstract class ParagraphStyleTool extends ToolCmdStrategy {
 
-    public ParagraphToolCmdStrategy(FXTextEditor editor) {
+    public ParagraphStyleTool(FXTextEditor editor) {
         super(editor);
     }
 
@@ -38,5 +38,27 @@ public abstract class ParagraphToolCmdStrategy extends ToolCmdStrategy {
 
         var newStyle = this.getStyle(currentStyle, apply);
         area.setParagraphStyle(parIndex, newStyle);
+    }
+
+    @Override
+    public boolean isApplied(FXTextEditor editor) {
+        var area = editor.getArea();
+        var pos = area.getCaretPosition();
+        
+        return this.hasStyle(area.getParagraphStyleForInsertionAt(pos));
+    }
+
+    @Override
+    public boolean isAppliedOnSelection(FXTextEditor editor) {
+        var area = editor.getArea();
+
+        int startPar = area.offsetToPosition(area.getSelection().getStart(), Bias.Forward).getMajor();
+        int endPar = area.offsetToPosition(area.getSelection().getEnd(), Bias.Backward).getMajor();
+
+        for (int i = startPar; i <= endPar; i++) {
+            if (!this.hasStyle(area.getParagraph(i).getParagraphStyle()))
+                return false;
+        }
+        return true;
     }
 }
