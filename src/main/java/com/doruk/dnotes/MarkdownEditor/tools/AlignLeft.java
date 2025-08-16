@@ -1,0 +1,32 @@
+package com.doruk.dnotes.MarkdownEditor.tools;
+
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
+import com.doruk.dnotes.MarkdownEditor.interfaces.ParagraphStyleTool;
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+import com.doruk.dnotes.MarkdownEditor.Factory;
+
+public class AlignLeft extends ParagraphStyleTool {
+    
+    public AlignLeft(FXTextEditor editor) {
+        super(editor);
+    }
+
+    @Override
+    protected <T> boolean hasStyle(T style) {
+        return ((ParagraphStyle) style).type == ParagraphType.ALIGN_LEFT;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected <T> T getStyle(T currentStyle, boolean apply) {
+        return (T) new ParagraphStyle(ParagraphType.ALIGN_LEFT, false);
+    }
+
+    @Override
+    protected void addRenderer(FXTextEditor editor) {
+        editor.addParagraphRenderer(ToolName.AlignLeft,
+                Factory.createParagraphRenderer(ToolName.AlignLeft));
+    }    
+}
