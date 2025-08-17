@@ -29,6 +29,8 @@ import com.doruk.dnotes.MarkdownEditor.tools.AlignCenter;
 import com.doruk.dnotes.MarkdownEditor.tools.AlignLeft;
 import com.doruk.dnotes.MarkdownEditor.tools.Blockquote;
 import com.doruk.dnotes.MarkdownEditor.tools.Bold;
+import com.doruk.dnotes.MarkdownEditor.tools.BulletList;
+import com.doruk.dnotes.MarkdownEditor.tools.CheckList;
 import com.doruk.dnotes.MarkdownEditor.tools.Font;
 import com.doruk.dnotes.MarkdownEditor.tools.FontBG;
 import com.doruk.dnotes.MarkdownEditor.tools.FontColor;
@@ -37,6 +39,7 @@ import com.doruk.dnotes.MarkdownEditor.tools.H2;
 import com.doruk.dnotes.MarkdownEditor.tools.H3;
 import com.doruk.dnotes.MarkdownEditor.tools.H4;
 import com.doruk.dnotes.MarkdownEditor.tools.Italic;
+import com.doruk.dnotes.MarkdownEditor.tools.NumberList;
 import com.doruk.dnotes.MarkdownEditor.tools.Strikethrough;
 import com.doruk.dnotes.MarkdownEditor.tools.Underlin;
 
@@ -60,9 +63,9 @@ public class Factory {
             case Blockquote -> new Blockquote(editor);
             case AlignCenter -> new AlignCenter(editor);
             case AlignLeft -> new AlignLeft(editor);
-            case BulletList -> null;
-            case Checkbox -> null;
-            case OrderedList -> null;
+            case BulletList -> new BulletList(editor);
+            case CheckList -> new CheckList(editor);
+            case NumberList -> new NumberList(editor);
             default -> null;
         };
     }
@@ -99,9 +102,9 @@ public class Factory {
             case H3 -> new H3Renderer();
             case H4 -> new H4Renderer();
             case Blockquote -> new BlockquoteRenderer();
-            case OrderedList -> new OLItemRenderer();
-            case UnorderedList -> new ULItemRenderer();
-            case Checkbox -> new CheckboxRenderer();
+            case NumberList -> new OLItemRenderer();
+            case BulletList -> new ULItemRenderer();
+            case CheckList -> new CheckboxRenderer();
             default -> null;
         };
     }

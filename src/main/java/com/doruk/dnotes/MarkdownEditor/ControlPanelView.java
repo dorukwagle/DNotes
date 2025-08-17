@@ -89,7 +89,7 @@ public class ControlPanelView {
         bulletListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_BULLETED, "Bullet List");
         bulletListButton.setId(ToolName.BulletList.name());
         numberListButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_NUMBERED, "Numbered List");
-        numberListButton.setId(ToolName.OrderedList.name());
+        numberListButton.setId(ToolName.NumberList.name());
 
         // paragraph alignment
         alignCenterButton = createIconToggleButton(MaterialDesignF.FORMAT_ALIGN_CENTER, "Align Center");
@@ -99,7 +99,7 @@ public class ControlPanelView {
         blockquoteButton = createIconToggleButton(MaterialDesignF.FORMAT_QUOTE_CLOSE, "Blockquote");
         blockquoteButton.setId(ToolName.Blockquote.name());
         checkboxButton = createIconToggleButton(MaterialDesignF.FORMAT_LIST_CHECKS, "Checkbox");
-        checkboxButton.setId(ToolName.Checkbox.name());
+        checkboxButton.setId(ToolName.CheckList.name());
         
         // Font Size Dropdown
         fontSizeCombo = new ComboBox<>();

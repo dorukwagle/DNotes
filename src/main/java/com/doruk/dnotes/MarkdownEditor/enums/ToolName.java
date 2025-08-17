@@ -1,15 +1,14 @@
 package com.doruk.dnotes.MarkdownEditor.enums;
 
 public enum ToolName {
-    BulletList,
     Underline,
     AlignLeft,
-    Checkbox,
+    CheckList,
     H1,
     H2,
     H3,
-    OrderedList,
-    UnorderedList,
+    BulletList,
+    NumberList,
     H4,
     Bold,
     Italic,
