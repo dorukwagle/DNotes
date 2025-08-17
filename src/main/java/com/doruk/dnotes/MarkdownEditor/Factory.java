@@ -41,7 +41,7 @@ import com.doruk.dnotes.MarkdownEditor.tools.H4;
 import com.doruk.dnotes.MarkdownEditor.tools.Italic;
 import com.doruk.dnotes.MarkdownEditor.tools.NumberList;
 import com.doruk.dnotes.MarkdownEditor.tools.Strikethrough;
-import com.doruk.dnotes.MarkdownEditor.tools.Underlin;
+import com.doruk.dnotes.MarkdownEditor.tools.Underline;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
@@ -51,7 +51,7 @@ public class Factory {
         return switch (toolName) {
             case Bold -> new Bold(editor);
             case Italic -> new Italic(editor);
-            case Underline -> new Underlin(editor);
+            case Underline -> new Underline(editor);
             case Strikethrough -> new Strikethrough(editor);
             case FontColor -> new FontColor(editor);
             case FontBG -> new FontBG(editor);

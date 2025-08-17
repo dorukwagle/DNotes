@@ -131,7 +131,7 @@ public class ControlPanelView {
         
         // Add button groups with separators
         addButtonGroup(
-            boldButton, italicButton, underlineButton, strikethroughButton, blockquoteButton
+            boldButton, italicButton, underlineButton, strikethroughButton
         );
         
         addButtonGroup(
@@ -140,7 +140,7 @@ public class ControlPanelView {
         
         // add align center button
         addButtonGroup(
-            alignCenterButton
+            alignCenterButton, blockquoteButton
         );
             
         addButtonGroup(

@@ -10,11 +10,10 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 
-
 import javafx.scene.Parent;
 
 public class MarkdownEditor implements IMarkdownEditor {
-    
+
     private StringBuilder editorText;
     private View editorView;
     private Map<ToolName, Boolean> strategyState = new EnumMap<>(ToolName.class);
@@ -26,49 +25,27 @@ public class MarkdownEditor implements IMarkdownEditor {
 
         // initialize default strategy states to false
         Arrays.stream(ToolName.values())
-            .forEach(toolName -> strategyState.put(toolName, false));
+                .forEach(toolName -> strategyState.put(toolName, false));
 
         // initial setup
         initialSetup();
     }
 
     private void initialSetup() {
-        // just for testing
-        var boldbtn = this.editorView.getControlPanel()
+        // loop over each buttons, then apply each tools
+        this.editorView.getControlPanel()
             .getStyleButtons()
             .stream()
-            .filter(btn -> btn.getId().equals(ToolName.Bold.name()))
-            .findFirst()
-            .orElse(null);
+            .forEach(btn -> btn.setOnAction(_ -> {
+                var area = editorView.getEditor().getArea();
+                area.requestFocus();
 
-        var italicbtn = this.editorView.getControlPanel()
-            .getStyleButtons()
-            .stream()
-            .filter(btn -> btn.getId().equals(ToolName.Italic.name()))
-            .findFirst()
-            .orElse(null);
-
-        var bold = Factory.createTool(ToolName.Bold, editorView.getEditor());
-        var italic = Factory.createTool(ToolName.Italic, editorView.getEditor());
-        boldbtn.setOnAction((_) -> {
-            var area = editorView.getEditor().getArea();
-            area.requestFocus();
-
-            if (boldbtn.isSelected())
-                bold.apply(editorView.getEditor());
-            else 
-                bold.unapply(editorView.getEditor());
-        });            
-
-        italicbtn.setOnAction((_) -> {
-            var area = editorView.getEditor().getArea();
-            area.requestFocus();
-
-            if (italicbtn.isSelected())
-                italic.apply(editorView.getEditor());
-            else 
-                italic.unapply(editorView.getEditor());
-        });
+                var tool = Factory.createTool(ToolName.fromName(btn.getId()), editorView.getEditor());
+                if (btn.isSelected())
+                    tool.apply(editorView.getEditor());
+                else
+                    tool.unapply(editorView.getEditor());
+            }));
     }
 
     @Override
@@ -94,6 +71,6 @@ public class MarkdownEditor implements IMarkdownEditor {
     @Override
     public void setOnClose(Runnable onClose) {
         this.editorView.getCloseButton()
-            .setOnAction(_ -> onClose.run());
+                .setOnAction(_ -> onClose.run());
     }
 }

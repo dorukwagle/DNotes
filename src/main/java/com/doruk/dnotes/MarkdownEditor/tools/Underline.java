@@ -7,9 +7,9 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.TextStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 
-public class Underlin extends TextStyleTool {
+public class Underline extends TextStyleTool {
 
-    public Underlin(FXTextEditor editor) {
+    public Underline(FXTextEditor editor) {
         super(editor);
     }
 
