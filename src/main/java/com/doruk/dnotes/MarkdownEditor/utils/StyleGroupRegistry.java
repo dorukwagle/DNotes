@@ -1,21 +1,14 @@
 package com.doruk.dnotes.MarkdownEditor.utils;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.enums.StyleGroup;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 
 public class StyleGroupRegistry {
-    private enum StyleGroup {
-        Heading,
-        Blockquote,
-        List,
-        Alignment
-    }
-
     private static final Map<StyleGroup, Set<ParagraphType>> styleMap = Map.of(
             StyleGroup.Heading, Set.of(ParagraphType.H1, ParagraphType.H2, ParagraphType.H3, ParagraphType.H4),
             StyleGroup.Blockquote, Set.of(ParagraphType.BLOCKQUOTE),
@@ -43,5 +36,14 @@ public class StyleGroupRegistry {
                 .filter(set -> set.contains(tool))
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
+    }
+
+    public static StyleGroup getGroup(ParagraphType type) {
+        return styleMap.entrySet()
+                .stream()
+                .filter(e -> e.getValue().contains(type))
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 }
