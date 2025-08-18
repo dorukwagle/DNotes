@@ -9,8 +9,10 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
 import javafx.scene.Parent;
+import javafx.scene.input.MouseEvent;
 
 public class MarkdownEditor implements IMarkdownEditor {
 
@@ -34,18 +36,40 @@ public class MarkdownEditor implements IMarkdownEditor {
     private void initialSetup() {
         // loop over each buttons, then apply each tools
         this.editorView.getControlPanel()
-            .getStyleButtons()
-            .stream()
-            .forEach(btn -> btn.setOnAction(_ -> {
-                var area = editorView.getEditor().getArea();
-                area.requestFocus();
+                .getStyleButtons()
+                .stream()
+                .forEach(btn -> {
+                    var tool = Factory.createTool(ToolName.fromName(btn.getId()), editorView.getEditor());
+                    btn.setOnAction(_ -> {
+                        var area = editorView.getEditor().getArea();
+                        area.requestFocus();
 
-                var tool = Factory.createTool(ToolName.fromName(btn.getId()), editorView.getEditor());
-                if (btn.isSelected())
-                    tool.apply(editorView.getEditor());
-                else
-                    tool.unapply(editorView.getEditor());
-            }));
+                        if (btn.isSelected())
+                            tool.apply(editorView.getEditor());
+                        else
+                            tool.unapply(editorView.getEditor());
+                    });
+                });
+        
+        // loop over once again to add event filter, to resolve conflicting tools
+        this.editorView.getControlPanel()
+                .getStyleButtons()
+                .stream()
+                .forEach(btn -> {
+                    btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
+                        var toolName = ToolName.fromName(btn.getId());
+                        var conflictingTools = StyleGroupRegistry.getConflictingTools(toolName);
+                        conflictingTools.remove(toolName);
+                        this.editorView.getControlPanel()
+                            .getStyleButtons()
+                            .stream()
+                            .filter(toggle -> {
+                                return conflictingTools.contains(ToolName.fromName(toggle.getId())) 
+                                && toggle.isSelected();
+                            })
+                            .forEach(toggle -> toggle.setSelected(false));
+                    });
+                });
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+import com.doruk.dnotes.store.GlobalConstants;
 
 /**
  * Bold, Italic, Underline, Strikethrough
@@ -104,7 +105,7 @@ public class ControlPanelView {
         // Font Size Dropdown
         fontSizeCombo = new ComboBox<>();
         fontSizeCombo.getItems().addAll("12", "14", "16", "18", "20", "24", "28", "32", "36");
-        fontSizeCombo.setValue("16");
+        fontSizeCombo.setValue(String.valueOf(GlobalConstants.DEFAULT_FONT_SIZE));
         fontSizeCombo.getStyleClass().addAll(Styles.SMALL);
         fontSizeCombo.setPrefWidth(70);
 
@@ -137,10 +138,14 @@ public class ControlPanelView {
         addButtonGroup(
             h1Button, h2Button, h3Button, h4Button
         );
+
+        addButtonGroup(
+            blockquoteButton
+        );
         
         // add align center button
         addButtonGroup(
-            alignCenterButton, blockquoteButton
+            alignCenterButton
         );
             
         addButtonGroup(
