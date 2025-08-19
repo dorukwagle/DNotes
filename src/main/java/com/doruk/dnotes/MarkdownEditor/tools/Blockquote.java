@@ -22,7 +22,7 @@ public class Blockquote extends ParagraphStyleTool {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) ParagraphStyleHelper.withBlockquote((ParagraphStyle)currentStyle);
+        return (T) ParagraphStyleHelper.withBlockquote((ParagraphStyle)currentStyle, apply);
     }
 
     @Override

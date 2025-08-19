@@ -6,6 +6,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulTextStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
+import com.doruk.dnotes.store.GlobalConstants;
 
 public class Font extends StatefulTextStyleTool<Integer> {
     
@@ -27,6 +28,6 @@ public class Font extends StatefulTextStyleTool<Integer> {
     @Override
     protected void addRenderer(FXTextEditor editor) {
         editor.addTextRenderer(ToolName.Font,
-                Factory.createStatefulTextRenderer(ToolName.Font, this.getState()));
+                Factory.createStatefulTextRenderer(ToolName.Font, GlobalConstants.DEFAULT_FONT_SIZE));
     }
 }

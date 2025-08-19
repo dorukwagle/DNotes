@@ -22,7 +22,7 @@ public class H4 extends ParagraphStyleTool {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) ParagraphStyleHelper.withHeading4((ParagraphStyle)currentStyle);
+        return (T) ParagraphStyleHelper.withHeading4((ParagraphStyle)currentStyle, apply);
     }
 
     @Override

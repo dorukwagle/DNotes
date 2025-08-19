@@ -22,7 +22,7 @@ public class AlignLeft extends ParagraphStyleTool {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) ParagraphStyleHelper.withAlignLeft((ParagraphStyle)currentStyle);
+        return (T) ParagraphStyleHelper.withAlignLeft((ParagraphStyle)currentStyle, apply);
     }
 
     @Override

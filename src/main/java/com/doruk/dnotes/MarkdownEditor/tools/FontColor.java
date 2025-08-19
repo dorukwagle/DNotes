@@ -6,6 +6,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulTextStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
+import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.scene.paint.Color;
 
@@ -29,6 +30,6 @@ public class FontColor extends StatefulTextStyleTool<Color> {
     @Override
     protected void addRenderer(FXTextEditor editor) {
         editor.addTextRenderer(ToolName.FontColor,
-                Factory.createStatefulTextRenderer(ToolName.FontColor, this.getState()));
+                Factory.createStatefulTextRenderer(ToolName.FontColor, GlobalConstants.DEFAULT_FONT_COLOR));
     }
 }

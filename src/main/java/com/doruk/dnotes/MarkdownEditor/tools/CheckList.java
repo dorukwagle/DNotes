@@ -21,7 +21,7 @@ public class CheckList extends StatefulParagraphStyleTool<String> {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) ParagraphStyleHelper.withCheckList((ParagraphStyle)currentStyle, false);
+        return (T) ParagraphStyleHelper.withCheckList((ParagraphStyle)currentStyle, false, apply);
     }
 
     @Override
