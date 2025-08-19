@@ -1,5 +1,8 @@
 package com.doruk.dnotes.MarkdownEditor;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.fxmisc.richtext.TextExt;
 
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
@@ -47,27 +50,35 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 
 public class Factory {
+    private static Map<ToolName, ToolCmdStrategy> tools;
+
+    private static void initializeTools(FXTextEditor editor) {
+        tools = new EnumMap<>(ToolName.class);
+
+        tools.put(ToolName.Bold, new Bold(editor));
+        tools.put(ToolName.Italic, new Italic(editor));
+        tools.put(ToolName.Underline, new Underline(editor));
+        tools.put(ToolName.Strikethrough, new Strikethrough(editor));
+        tools.put(ToolName.FontColor, new FontColor(editor));
+        tools.put(ToolName.FontBG, new FontBG(editor));
+        tools.put(ToolName.Font, new Font(editor));
+        tools.put(ToolName.H1, new H1(editor));
+        tools.put(ToolName.H2, new H2(editor));
+        tools.put(ToolName.H3, new H3(editor));
+        tools.put(ToolName.H4, new H4(editor));
+        tools.put(ToolName.Blockquote, new Blockquote(editor));
+        tools.put(ToolName.AlignCenter, new AlignCenter(editor));
+        tools.put(ToolName.AlignLeft, new AlignLeft(editor));
+        tools.put(ToolName.BulletList, new BulletList(editor));
+        tools.put(ToolName.CheckList, new CheckList(editor));
+        tools.put(ToolName.NumberList, new NumberList(editor));
+    }
+
     public static ToolCmdStrategy createTool(ToolName toolName, FXTextEditor editor) {
-        return switch (toolName) {
-            case Bold -> new Bold(editor);
-            case Italic -> new Italic(editor);
-            case Underline -> new Underline(editor);
-            case Strikethrough -> new Strikethrough(editor);
-            case FontColor -> new FontColor(editor);
-            case FontBG -> new FontBG(editor);
-            case Font -> new Font(editor);
-            case H1 -> new H1(editor);
-            case H2 -> new H2(editor);
-            case H3 -> new H3(editor);
-            case H4 -> new H4(editor);
-            case Blockquote -> new Blockquote(editor);
-            case AlignCenter -> new AlignCenter(editor);
-            case AlignLeft -> new AlignLeft(editor);
-            case BulletList -> new BulletList(editor);
-            case CheckList -> new CheckList(editor);
-            case NumberList -> new NumberList(editor);
-            default -> null;
-        };
+        if (tools == null)
+            initializeTools(editor);
+
+        return tools.get(toolName);
     }
 
     public static FXTextEditor getFXTextEditor() {
