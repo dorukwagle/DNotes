@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 
 public class EditorController implements IEditorController {
 
-    private final IMarkdownEditor markdownEditor;
+    private IMarkdownEditor markdownEditor;
     private final INavigationController navigationController;
 
     public EditorController(IMarkdownEditor markdownEditor, INavigationController navigationController) {
@@ -34,6 +34,9 @@ public class EditorController implements IEditorController {
         // save the texts and notes
 
         // then finally
-        this.navigationController.goToBooksPage();
+        // this.navigationController.goToBooksPage();
+        this.markdownEditor.getView().setManaged(false);
+        this.markdownEditor.getView().setVisible(false);
+        this.markdownEditor = null; // remove reference
     }
 }

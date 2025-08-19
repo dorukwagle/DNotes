@@ -103,9 +103,14 @@ public class BookController implements IController {
     }
 
     private void openNote(BookPageDto note) {
+        if (note == null)
+            return;
+        
         // gracefully close the existing editor
-        if (this.editorController != null)
+        if (this.editorController != null) {
             this.editorController.close();
+            this.editorController = null; // remove reference
+        }
 
         this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR,
                 this.navigationController);
