@@ -2,6 +2,10 @@ package com.doruk.dnotes.MarkdownEditor.interfaces;
 
 import org.fxmisc.richtext.model.TwoDimensional.Bias;
 
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+
 public abstract class ParagraphStyleTool extends ToolCmdStrategy {
 
     public ParagraphStyleTool(FXTextEditor editor) {
@@ -11,6 +15,16 @@ public abstract class ParagraphStyleTool extends ToolCmdStrategy {
     @Override
     protected StyleType getStyleType() {
         return StyleType.ParagraphStyle;
+    }
+
+    // returns the paragraph that the tool belongs to
+    protected abstract ParagraphType getParagraphType();
+
+    @Override
+    protected <T> boolean hasStyle(T style) {
+        var type = this.getParagraphType();
+        var styles = ((ParagraphStyle) style).getStyle(StyleGroupRegistry.getGroup(type));
+        return styles.isPresent() && styles.get() == type;
     }
 
     // apply paragraph style on selection

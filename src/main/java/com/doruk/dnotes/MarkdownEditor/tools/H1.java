@@ -6,6 +6,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ParagraphStyleTool;
+import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
 public class H1 extends ParagraphStyleTool {
 
@@ -14,14 +15,14 @@ public class H1 extends ParagraphStyleTool {
     }
 
     @Override
-    protected <T> boolean hasStyle(T style) {
-        return ((ParagraphStyle) style).type == ParagraphType.H1;
+    protected ParagraphType getParagraphType() {
+        return ParagraphType.H1;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) new ParagraphStyle(ParagraphType.H1, false);
+        return (T) ParagraphStyleHelper.withHeading1((ParagraphStyle)currentStyle);
     }
 
     @Override

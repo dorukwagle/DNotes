@@ -6,6 +6,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulParagraphStyleTool;
+import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
 public class BulletList extends StatefulParagraphStyleTool<String> {
     public BulletList(FXTextEditor editor) {
@@ -13,14 +14,14 @@ public class BulletList extends StatefulParagraphStyleTool<String> {
     }
 
     @Override
-    protected <T> boolean hasStyle(T style) {
-        return ((ParagraphStyle)style).type == ParagraphType.BULLET_LIST_ITEM;
+    protected ParagraphType getParagraphType() {
+        return ParagraphType.BULLET_LIST_ITEM;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) new ParagraphStyle(ParagraphType.BULLET_LIST_ITEM, false);
+        return (T) ParagraphStyleHelper.withBulletList((ParagraphStyle)currentStyle, 0, 0);
     }
 
     @Override

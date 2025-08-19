@@ -40,8 +40,4 @@ public class StyleHelper {
     public static TextStyle textWithFontSize(TextStyle style, int fontSize) {
         return new TextStyle(style.bold, style.italic, style.underline, style.strikethrough, style.textColor, style.backgroundColor, fontSize);
     }
-
-    public static TextStyle textDefault() {
-        return TextStyle.EMPTY;
-    }
 }

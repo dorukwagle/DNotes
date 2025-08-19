@@ -6,6 +6,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulParagraphStyleTool;
+import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
 public class NumberList extends StatefulParagraphStyleTool<String> {
     public NumberList(FXTextEditor editor) {
@@ -13,14 +14,14 @@ public class NumberList extends StatefulParagraphStyleTool<String> {
     }
 
     @Override
-    protected <T> boolean hasStyle(T style) {
-        return ((ParagraphStyle)style).type == ParagraphType.NUMBER_LIST_ITEM;
+    protected ParagraphType getParagraphType() {
+        return ParagraphType.NUMBER_LIST_ITEM;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) new ParagraphStyle(ParagraphType.NUMBER_LIST_ITEM, false);
+        return (T) ParagraphStyleHelper.withNumberList((ParagraphStyle)currentStyle, 0, 0);
     }
 
     @Override
