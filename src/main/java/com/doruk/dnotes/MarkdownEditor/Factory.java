@@ -91,15 +91,9 @@ public class Factory {
             case Italic -> new ItalicRenderer();
             case Strikethrough -> new StrikethroughRenderer();
             case Underline -> new UnderlineRenderer();
-            default -> null;
-        };
-    }
-
-    public static Renderer<TextExt, TextStyle> createStatefulTextRenderer(ToolName toolName, Object param) {
-        return switch (toolName) {
-            case FontColor -> new FontColorRenderer((Color)param);
-            case FontBG -> new FontBGRenderer((Color)param);
-            case Font -> new FontRenderer((Integer)param);
+            case FontColor -> new FontColorRenderer();
+            case FontBG -> new FontBGRenderer();
+            case Font -> new FontRenderer();
             default -> null;
         };
     }

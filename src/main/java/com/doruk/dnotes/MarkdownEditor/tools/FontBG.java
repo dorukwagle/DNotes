@@ -24,12 +24,14 @@ public class FontBG extends StatefulTextStyleTool<Color> {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) StyleHelper.textWithBackgroundColor((TextStyle)currentStyle, this.getState());
+        return (T) StyleHelper.textWithBackgroundColor((TextStyle)currentStyle, apply ? this.getState() : null);
     }
 
     @Override
     protected void addRenderer(FXTextEditor editor) {
+        // set default font background for the first time
+        this.setState(GlobalConstants.DEFAULT_FONT_BG_COLOR);
         editor.addTextRenderer(ToolName.FontBG,
-                Factory.createStatefulTextRenderer(ToolName.FontBG, GlobalConstants.DEFAULT_FONT_BG_COLOR));
+                Factory.createTextRenderer(ToolName.FontBG));
     }
 }

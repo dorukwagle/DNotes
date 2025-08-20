@@ -27,7 +27,10 @@ public class Font extends StatefulTextStyleTool<Integer> {
 
     @Override
     protected void addRenderer(FXTextEditor editor) {
+        // set default font size for the first time
+        this.setState(GlobalConstants.DEFAULT_FONT_SIZE);
+        
         editor.addTextRenderer(ToolName.Font,
-                Factory.createStatefulTextRenderer(ToolName.Font, GlobalConstants.DEFAULT_FONT_SIZE));
+                Factory.createTextRenderer(ToolName.Font));
     }
 }

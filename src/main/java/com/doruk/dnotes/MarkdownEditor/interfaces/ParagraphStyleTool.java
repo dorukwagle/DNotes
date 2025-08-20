@@ -76,3 +76,11 @@ public abstract class ParagraphStyleTool extends ToolCmdStrategy {
         return true;
     }
 }
+
+/**
+ * Mediator 
+ * → connects UI state ↔ tools/renderers (e.g. font size picker updates the font-size tool, which triggers re-render).
+ * -> handles caret position change, selection change, update btn toggle states depending on active style
+ * Visitor (keyboard events) → handles (Enter, Tab, Backspace) 
+ *  to perform specific tasks for each active tools
+ */

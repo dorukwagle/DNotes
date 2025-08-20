@@ -24,12 +24,14 @@ public class FontColor extends StatefulTextStyleTool<Color> {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) StyleHelper.textWithColor((TextStyle)currentStyle, this.getState());
+        return (T) StyleHelper.textWithColor((TextStyle)currentStyle, apply ? this.getState() : null);
     }
 
     @Override
     protected void addRenderer(FXTextEditor editor) {
+        // set default font color for the first time
+        this.setState(GlobalConstants.DEFAULT_FONT_COLOR);
         editor.addTextRenderer(ToolName.FontColor,
-                Factory.createStatefulTextRenderer(ToolName.FontColor, GlobalConstants.DEFAULT_FONT_COLOR));
+                Factory.createTextRenderer(ToolName.FontColor));
     }
 }
