@@ -10,6 +10,7 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
@@ -34,6 +35,14 @@ public class MarkdownEditor implements IMarkdownEditor {
     }
 
     private void initialSetup() {
+        // reset colors to default
+        this.editorView.getControlPanel()
+                .getTextColorPicker()
+                .setValue(GlobalConstants.DEFAULT_FONT_COLOR);
+        this.editorView.getControlPanel()
+                .getHighColorPicker()
+                .setValue(GlobalConstants.DEFAULT_FONT_BG_COLOR);
+
         // loop over each buttons, then apply each tools
         this.editorView.getControlPanel()
                 .getStyleButtons()
