@@ -16,7 +16,8 @@ public class H3Renderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.H3))
             return;
 
-        textFlow.setStyle(textFlow.getStyle() + 
-            "-fx-font-size: " + GlobalConstants.H3_FONT_SIZE + "px; -fx-font-weight: bold; -fx-padding: 6px 0 3px 0;");
+        textFlow.setStyle(textFlow.getStyle() + "-fx-line-spacing: " + GlobalConstants.H3_FONT_SIZE + "px;");
+        textFlow.getChildren()
+            .forEach(child -> child.setStyle(child.getStyle() + "-fx-font-size: " + GlobalConstants.H3_FONT_SIZE + "px; -fx-font-weight: bold;"));
     }
 }

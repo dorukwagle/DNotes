@@ -13,12 +13,11 @@ public class H1Renderer implements Renderer<TextFlow, ParagraphStyle> {
     public void render(TextFlow textFlow, ParagraphStyle style) {
         var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.H1));
         
-        System.out.println("checking to apply H1");
         if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.H1))
             return;
 
-        System.out.println("applying H1");
-        textFlow.setStyle(textFlow.getStyle() + 
-            "-fx-font-size: " + GlobalConstants.H1_FONT_SIZE + "px; -fx-font-weight: bold; -fx-padding: 10px 0 5px 0;");
+        textFlow.setStyle(textFlow.getStyle() + "-fx-line-spacing: " + GlobalConstants.H1_FONT_SIZE + "px;");
+        textFlow.getChildren()
+            .forEach(child -> child.setStyle(child.getStyle() + "-fx-font-size: " + GlobalConstants.H1_FONT_SIZE + "px; -fx-font-weight: bold;"));
     }
 }

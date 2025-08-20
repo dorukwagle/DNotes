@@ -16,7 +16,8 @@ public class H2Renderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.H2))
             return;
 
-        textFlow.setStyle(textFlow.getStyle() + 
-            "-fx-font-size: " + GlobalConstants.H2_FONT_SIZE + "px; -fx-font-weight: bold; -fx-padding: 8px 0 4px 0;");
+        textFlow.setStyle(textFlow.getStyle() + "-fx-line-spacing: " + GlobalConstants.H2_FONT_SIZE + "px;");
+        textFlow.getChildren()
+            .forEach(child -> child.setStyle(child.getStyle() + "-fx-font-size: " + GlobalConstants.H2_FONT_SIZE + "px; -fx-font-weight: bold;"));
     }
 }

@@ -9,6 +9,7 @@ public class UnderlineRenderer implements Renderer<TextExt, TextStyle> {
     
     @Override
     public void render(TextExt textExt, TextStyle style) {
-        textExt.setUnderline(style.underline);
+        if (style.underline)
+            textExt.setUnderline(true);
     }
 }

@@ -11,7 +11,5 @@ public class BoldRenderer implements Renderer<TextExt, TextStyle> {
     public void render(TextExt textExt, TextStyle style) {
         if (style.bold)
             textExt.setStyle(textExt.getStyle() + "-fx-font-weight: bold;");
-        else
-            textExt.setStyle(textExt.getStyle() + "-fx-font-weight: normal;");
     }
 }

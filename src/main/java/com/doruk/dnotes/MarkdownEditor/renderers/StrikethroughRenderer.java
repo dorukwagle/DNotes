@@ -9,6 +9,7 @@ public class StrikethroughRenderer implements Renderer<TextExt, TextStyle> {
     
     @Override
     public void render(TextExt textExt, TextStyle style) {
-        textExt.setStrikethrough(style.strikethrough);
+        if (style.strikethrough)
+            textExt.setStrikethrough(true);
     }
 }
