@@ -16,12 +16,13 @@ public class BlockquoteRenderer implements Renderer<TextFlow, ParagraphStyle> {
 
         textFlow.setStyle(
             textFlow.getStyle() +
-                "-fx-background-color: -color-accent-subtle;" +
-                        "-fx-background-radius: 0px 100px 100px 0px;" +
-                        "-fx-background-insets: 15px 15px 10px 35px;" +
-                        "-fx-border-insets: 15px 100px 10px 35px;" +
-                        "-fx-border-color: -color-accent-6;" +
-                        "-fx-border-width: 0 0 0 10px;" +
-                        "-fx-font-family: 'Magnolia Script';");
+            "-fx-background-color: -color-accent-subtle;" +
+            "-fx-background-radius: 0px 100px 100px 0px;" +
+            "-fx-background-insets: 15px 15px 10px 35px;" +
+            "-fx-border-insets: 15px 100px 10px 35px;" +
+            "-fx-border-color: -color-accent-6;" +
+            "-fx-border-width: 0 0 0 10px;" +
+            "-fx-font-family: 'Magnolia Script';"
+        );
     }
 }

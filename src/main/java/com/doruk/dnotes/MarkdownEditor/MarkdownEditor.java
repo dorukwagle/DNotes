@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.fxmisc.richtext.NavigationActions.SelectionPolicy;
-
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
