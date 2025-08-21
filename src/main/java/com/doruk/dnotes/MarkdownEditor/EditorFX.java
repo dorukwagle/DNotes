@@ -24,8 +24,6 @@ public class EditorFX implements FXTextEditor {
         area = new GenericStyledArea<>(
                 ParagraphStyle.EMPTY,
                 (flow, style) -> {
-                    // set global styles
-                    flow.setStyle("-fx-padding: 8px;");
                     // apply all renderers
                     this.paragraphRenderers.forEach((_, renderer) -> renderer.render(flow, style));
                 },

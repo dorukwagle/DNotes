@@ -15,6 +15,7 @@ public class BlockquoteRenderer implements Renderer<TextFlow, ParagraphStyle> {
             return;
 
         textFlow.setStyle(
+            textFlow.getStyle() +
                 "-fx-background-color: -color-accent-subtle;" +
                         "-fx-background-radius: 0px 100px 100px 0px;" +
                         "-fx-background-insets: 15px 15px 10px 35px;" +
