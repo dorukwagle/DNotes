@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.fxmisc.richtext.NavigationActions.SelectionPolicy;
+
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
@@ -14,6 +16,7 @@ import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
 
 public class MarkdownEditor implements IMarkdownEditor {
 
@@ -30,8 +33,14 @@ public class MarkdownEditor implements IMarkdownEditor {
         Arrays.stream(ToolName.values())
                 .forEach(toolName -> strategyState.put(toolName, false));
 
+        // load the fonts
+        loadFonts();
         // initial setup
         initialSetup();
+    }
+
+    private void loadFonts() {
+        Font.loadFont(getClass().getResourceAsStream("/fonts/magnolia_script_regular.otf"), 0);
     }
 
     private void initialSetup() {
@@ -79,6 +88,8 @@ public class MarkdownEditor implements IMarkdownEditor {
                             .forEach(toggle -> toggle.setSelected(false));
                     });
                 });
+
+        editorView.getEditor().getArea().insertText(0, "hello ⚾world \n hi world\u2028 😄testing world");
     }
 
     @Override

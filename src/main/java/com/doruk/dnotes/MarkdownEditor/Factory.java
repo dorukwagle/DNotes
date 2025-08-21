@@ -46,7 +46,6 @@ import com.doruk.dnotes.MarkdownEditor.tools.NumberList;
 import com.doruk.dnotes.MarkdownEditor.tools.Strikethrough;
 import com.doruk.dnotes.MarkdownEditor.tools.Underline;
 
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 
 public class Factory {

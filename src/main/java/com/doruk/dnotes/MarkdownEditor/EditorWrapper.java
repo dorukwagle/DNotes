@@ -10,6 +10,8 @@ import atlantafx.base.theme.Styles;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -38,6 +40,14 @@ public class EditorWrapper implements View {
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         root.getChildren().add(scrollPane);
+
+        var emojiTextArea = new TextArea( "Test: ⚾, \u2028Testing 1 2 3 😷 Chess:♕♔ Faces:😀😃😄" ); // "😀😃😄" "😷" "♕♔"
+        emojiTextArea.setPrefHeight(10);
+        root.getChildren().add(emojiTextArea);
+
+        var emojiTextLabel = new Label("Test: ⚾, \u2028Testing 1 2 3 😷 Chess:♕♔ Faces:😀😃😄");
+        emojiTextLabel.setPrefHeight(10);
+        root.getChildren().add(emojiTextLabel);
         
         // just a color reference for area
         reference = new HBox();
