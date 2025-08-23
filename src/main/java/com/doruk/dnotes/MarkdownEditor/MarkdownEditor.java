@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.doruk.dnotes.MarkdownEditor.chageHandlers.FontBGColorHandler;
-import com.doruk.dnotes.MarkdownEditor.chageHandlers.FontColorHandler;
-import com.doruk.dnotes.MarkdownEditor.chageHandlers.FontSizeHandler;
+import com.doruk.dnotes.MarkdownEditor.changeHandlers.CaretSelectionHandler;
+import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontBGColorHandler;
+import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontColorHandler;
+import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontSizeHandler;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorToolsEvent;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
@@ -94,36 +95,17 @@ public class MarkdownEditor implements IMarkdownEditor {
                     });
                 });
 
-        editorView.getEditor().getArea().insertText(0, "hello ⚾world \n hi world\u2028 😄testing world");
+        editorView.getEditor().getArea().insertText(0, "hello ⚾world \n hi world{\u2028} 😄testing world {\r}brave world");
     }
 
     private void initializeChangeHandlers() {
-        // first listen to changes
         var panel = editorView.getControlPanel();
-
-        panel.getFontSizeCombo()
-            .valueProperty()
-            .addListener((_, oldValue, newValue) -> {
-                if (newValue != null && !newValue.equals(oldValue))
-                    EditorToolsMediator.publish(EditorToolsEvent.FONTSIZE_CHANGE);
-            });
-
-        panel.getTextColorPicker()
-            .valueProperty()
-            .addListener((_, _, _) -> {
-                EditorToolsMediator.publish(EditorToolsEvent.FONT_COLOR_CHANGE);
-            });
-
-        panel.getHighColorPicker()
-            .valueProperty()
-            .addListener((_, _, _) -> {
-                EditorToolsMediator.publish(EditorToolsEvent.FONT_BG_COLOR_CHANGE);
-            });
 
         // initialize the handlers
         new FontSizeHandler(editorView.getEditor(), panel);
         new FontColorHandler(editorView.getEditor(), panel);
         new FontBGColorHandler(editorView.getEditor(), panel);
+        new CaretSelectionHandler(editorView.getEditor(), panel);
     }
 
     @Override
