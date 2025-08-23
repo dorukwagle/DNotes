@@ -53,6 +53,8 @@ public class ControlPanelView {
     private ColorPicker textColorPicker;
     private ColorPicker highlightColorPicker;
     private Button backButton;
+    private ToggleButton textColorBtn;
+    private ToggleButton highlightColorBtn;
 
     public ControlPanelView() {
         root = new FlowPane();
@@ -111,7 +113,8 @@ public class ControlPanelView {
 
         // CREATE COLOR PICKERS AND TOGGLES
         // Create a toggle button for text color
-        ToggleButton textColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_TEXT, "Text Color");
+        textColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_TEXT, "Text Color");
+        textColorBtn.setId(ToolName.FontColor.name());
         
         // Text Color Picker
         textColorPicker = new ColorPicker(Color.BLACK);
@@ -121,8 +124,9 @@ public class ControlPanelView {
         textColorPicker.setPrefWidth(40);
         
         // Create a toggle button for highlight color
-        ToggleButton highlightColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_FILL, "Highlight Color");
-        
+        highlightColorBtn = createIconToggleButton(MaterialDesignF.FORMAT_COLOR_FILL, "Highlight Color");
+        highlightColorBtn.setId(ToolName.FontBG.name());   
+             
         // Highlight Color Picker
         highlightColorPicker = new ColorPicker(Color.CYAN);
         highlightColorPicker.setStyle("-fx-background-color: transparent; -fx-background-radius: 0; -fx-padding: 0; -fx-cursor: hand;");
@@ -273,7 +277,9 @@ public class ControlPanelView {
             bulletListButton, 
             numberListButton, 
             checkboxButton,
-            alignCenterButton
+            alignCenterButton,
+            textColorBtn,
+            highlightColorBtn
         );
     }
 }

@@ -2,8 +2,8 @@ module com.doruk.dnotes {
     requires transitive javafx.base;
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
+    requires transitive java.prefs;
     requires java.base;
-    requires java.prefs;
     requires atlantafx.base;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.core;

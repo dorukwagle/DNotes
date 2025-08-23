@@ -4,7 +4,11 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.doruk.dnotes.MarkdownEditor.chageHandlers.FontBGColorHandler;
+import com.doruk.dnotes.MarkdownEditor.chageHandlers.FontColorHandler;
+import com.doruk.dnotes.MarkdownEditor.chageHandlers.FontSizeHandler;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
+import com.doruk.dnotes.MarkdownEditor.enums.EditorToolsEvent;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
@@ -33,8 +37,11 @@ public class MarkdownEditor implements IMarkdownEditor {
 
         // load the fonts
         loadFonts();
+
         // initial setup
         initialSetup();
+
+        initializeChangeHandlers();
     }
 
     private void loadFonts() {
@@ -90,6 +97,35 @@ public class MarkdownEditor implements IMarkdownEditor {
         editorView.getEditor().getArea().insertText(0, "hello ⚾world \n hi world\u2028 😄testing world");
     }
 
+    private void initializeChangeHandlers() {
+        // first listen to changes
+        var panel = editorView.getControlPanel();
+
+        panel.getFontSizeCombo()
+            .valueProperty()
+            .addListener((_, oldValue, newValue) -> {
+                if (newValue != null && !newValue.equals(oldValue))
+                    EditorToolsMediator.publish(EditorToolsEvent.FONTSIZE_CHANGE);
+            });
+
+        panel.getTextColorPicker()
+            .valueProperty()
+            .addListener((_, _, _) -> {
+                EditorToolsMediator.publish(EditorToolsEvent.FONT_COLOR_CHANGE);
+            });
+
+        panel.getHighColorPicker()
+            .valueProperty()
+            .addListener((_, _, _) -> {
+                EditorToolsMediator.publish(EditorToolsEvent.FONT_BG_COLOR_CHANGE);
+            });
+
+        // initialize the handlers
+        new FontSizeHandler(editorView.getEditor(), panel);
+        new FontColorHandler(editorView.getEditor(), panel);
+        new FontBGColorHandler(editorView.getEditor(), panel);
+    }
+
     @Override
     public void setEditorBackground(EditorColor color) {
         editorView.setEditorBackground(color);
@@ -126,4 +162,14 @@ public class MarkdownEditor implements IMarkdownEditor {
  * -> to handle keyboard events (Enter, Tab, Backspace)
  * and perform specific tasks for each active tools
  * 
+ */
+
+/**
+ * FOR EMOJI SUPPORT IN LINUX
+ * 
+ * If you want, I can outline a dynamic FreeType rendering pipeline for RichTextFX that:
+ * Takes Noto Color Emoji TTF
+ * Rasterizes any requested emoji glyph on-demand
+ * Inserts it as a NodeSegment into your editor
+ * This way, you never have to ship thousands of static images, and it will work on Linux.
  */
