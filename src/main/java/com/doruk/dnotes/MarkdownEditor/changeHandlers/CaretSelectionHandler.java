@@ -1,16 +1,13 @@
 package com.doruk.dnotes.MarkdownEditor.changeHandlers;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.GenericStyledArea;
 import org.reactfx.Change;
 import org.reactfx.EventStreams;
-import org.reactfx.util.Tuples;
 
 import com.doruk.dnotes.MarkdownEditor.ControlPanelView;
 import com.doruk.dnotes.MarkdownEditor.Factory;
@@ -128,6 +125,59 @@ public class CaretSelectionHandler {
         if (change.getNewValue().getLength() == 0)
             return;
 
-        System.out.println("Selection changed" + change.getNewValue());
+        var btnMap = controlPanel.getStyleButtons()
+                .stream()
+                .collect(Collectors.toMap(
+                        btn -> btn.getId(),
+                        btn -> btn));
+
+        List<Pair<String, ToolCmdStrategy>> allTools = btnMap.values()
+                .stream()
+                .map(btn -> new Pair<>(btn.getId(), Factory.createTool(
+                        ToolName.fromName(btn.getId()), null)))
+                .toList();
+
+        allTools.forEach(tuple -> {
+            var isApplied = tuple.getValue().isAppliedOnSelection(editor);
+            btnMap.get(tuple.getKey()).setSelected(isApplied);
+            if (!isApplied)
+                return;
+
+            // also check if it's stateful tool
+            var tool = tuple.getValue();
+            if (!(tool instanceof StatefulTextStyleTool stateTool))
+                return;
+
+            switch (ToolName.fromName(tuple.getKey())) {
+                case FontColor -> {
+                    var color = (Color) stateTool.getState();
+                    Platform.runLater(() -> controlPanel.getTextColorPicker().setValue(color));
+
+                    if (GlobalConstants.DEFAULT_FONT_COLOR.equals(color))
+                        btnMap.get(tuple.getKey()).setSelected(false);
+                }
+                case FontBG -> {
+                    var color = (Color) stateTool.getState();
+                    Platform.runLater(() -> controlPanel.getHighColorPicker().setValue(color));
+
+                    if (GlobalConstants.DEFAULT_FONT_BG_COLOR.equals(color))
+                        btnMap.get(tuple.getKey()).setSelected(false);
+                }
+                default -> {
+                    return;
+                }
+            }
+        });
+
+        // also process font tool, it's not in the allTools list
+        var fontTool = Factory.createTool(ToolName.Font, null);
+        var isApplied = fontTool.isAppliedOnSelection(editor);
+
+        if (!(fontTool instanceof StatefulTextStyleTool fontStateTool))
+            return;
+        
+        var size = isApplied ? (Integer) fontStateTool.getState() : "";
+        Platform.runLater(() -> controlPanel.getFontSizeCombo()
+            .setValue(size.toString()));
     }
 }
