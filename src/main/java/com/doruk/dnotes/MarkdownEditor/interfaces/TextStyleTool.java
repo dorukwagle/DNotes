@@ -25,15 +25,14 @@ public abstract class TextStyleTool extends ToolCmdStrategy {
     @Override
     protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
         editor.getArea().setTextInsertionStyle(
-            this.getStyle(editor.getArea().getTextStyleForInsertionAt(pos), apply));
+            this.getStyle(editor.getArea().getStyleAtPosition(pos), apply));
     }
 
     @Override
     public boolean isApplied(FXTextEditor editor) {
         var area = editor.getArea();
         var pos = area.getCaretPosition();
-        
-        return this.hasStyle(area.getTextStyleForInsertionAt(pos));
+        return this.hasStyle(area.getStyleAtPosition(pos));
     }
 
     @Override

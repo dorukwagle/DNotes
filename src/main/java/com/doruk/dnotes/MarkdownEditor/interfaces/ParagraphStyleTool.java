@@ -58,7 +58,6 @@ public abstract class ParagraphStyleTool extends ToolCmdStrategy {
     public boolean isApplied(FXTextEditor editor) {
         var area = editor.getArea();
         var pos = area.getCaretPosition();
-        
         return this.hasStyle(area.getParagraphStyleForInsertionAt(pos));
     }
 
