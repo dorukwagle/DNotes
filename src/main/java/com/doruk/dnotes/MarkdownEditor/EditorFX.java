@@ -67,7 +67,7 @@ public class EditorFX implements FXTextEditor {
         area.setWrapText(true);
         area.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        area.setStyle(area.getStyle() + "-fx-padding: 10px;");
+        area.setStyle(area.getStyle() + "-fx-padding: 15px;");
 
         area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
     }

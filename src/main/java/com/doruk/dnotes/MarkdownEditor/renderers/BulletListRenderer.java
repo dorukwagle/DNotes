@@ -53,7 +53,8 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!isApplied(style))
             return;
         
-        textFlow.setLineSpacing(10);
+        textFlow.setStyle(textFlow.getStyle() + 
+            "-fx-padding: 2px 0 2px 20px;");
         // var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
         // if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM))
         //     return;

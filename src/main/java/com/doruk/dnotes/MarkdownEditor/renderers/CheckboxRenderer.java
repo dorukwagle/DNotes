@@ -28,7 +28,8 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!isApplied(style))
             return;
         
-        textFlow.setLineSpacing(10);
+        textFlow.setStyle(textFlow.getStyle() + 
+            "-fx-padding: 2px 0 2px 20px;");
     }
 
     @Override
