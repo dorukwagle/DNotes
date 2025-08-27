@@ -10,6 +10,7 @@ import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextFlow;
@@ -29,18 +30,33 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
             return;
         
         textFlow.setStyle(textFlow.getStyle() + 
-            "-fx-padding: 2px 0 2px 20px;");
+            "-fx-padding: 5px 0 5px 20px;");
     }
 
     @Override
-    public Node renderParagraphGraphic(ParagraphStyle style) {
+    public Node renderParagraphGraphic(ParagraphStyle style, int index) {
         if (!isApplied(style))
             return null;
         
         Label bulletNode = new Label();
-        bulletNode.setGraphic(new FontIcon(style.isItemChecked ? CHECKED : UNCHECKED));
+        var icon = new FontIcon(style.isItemChecked ? CHECKED : UNCHECKED);
+        bulletNode.setGraphic(icon);
+        icon.setScaleX(1.3);
+        icon.setScaleY(1.3);
         bulletNode.setPadding(new Insets(0, 0, 0, GlobalConstants.DEFAULT_LIST_ITEM_INSET));
+        bulletNode.setCursor(Cursor.HAND);
         bulletNode.setAlignment(Pos.BASELINE_CENTER);
+
+        bulletNode.hoverProperty().addListener((_, _, newVal) -> {
+            if (newVal){
+                icon.setScaleX(1.35);
+                icon.setScaleY(1.35);
+            }
+            else{
+                icon.setScaleX(1.3);
+                icon.setScaleY(1.3);
+            }
+        });
         
         return bulletNode;        
     }

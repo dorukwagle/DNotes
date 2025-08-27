@@ -49,17 +49,10 @@ public class EditorFX implements FXTextEditor {
 
             // Call all renderers that can render graphics
             Node graphic = this.paragraphRenderers.values().stream()
-                .map(renderer -> renderer.renderParagraphGraphic(style))
+                .map(renderer -> renderer.renderParagraphGraphic(style, index))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
-
-            // if (graphic != null) {
-            //     StackPane wrapper = new StackPane(graphic);
-            //     wrapper.setAlignment(Pos.BASELINE_CENTER); // align with baseline of text
-            //     wrapper.setPadding(new Insets(0, 20, 5, 5));
-            //     return wrapper;
-            // }
 
             return graphic;
         });
@@ -67,7 +60,7 @@ public class EditorFX implements FXTextEditor {
         area.setWrapText(true);
         area.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        area.setStyle(area.getStyle() + "-fx-padding: 15px;");
+        area.setStyle(area.getStyle() + "-fx-padding: 16px;");
 
         area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
     }

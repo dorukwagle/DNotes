@@ -29,7 +29,7 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
     }
     
     @Override
-    public Node renderParagraphGraphic(ParagraphStyle style) {
+    public Node renderParagraphGraphic(ParagraphStyle style, int index) {
         if (!isApplied(style))
             return null;
         
