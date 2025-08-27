@@ -54,12 +54,12 @@ public class EditorFX implements FXTextEditor {
                 .findFirst()
                 .orElse(null);
 
-            if (graphic != null) {
-                StackPane wrapper = new StackPane(graphic);
-                wrapper.setAlignment(Pos.BASELINE_CENTER); // align with baseline of text
-                wrapper.setPadding(new Insets(0, 20, 5, 5));
-                return wrapper;
-            }
+            // if (graphic != null) {
+            //     StackPane wrapper = new StackPane(graphic);
+            //     wrapper.setAlignment(Pos.BASELINE_CENTER); // align with baseline of text
+            //     wrapper.setPadding(new Insets(0, 20, 5, 5));
+            //     return wrapper;
+            // }
 
             return graphic;
         });
