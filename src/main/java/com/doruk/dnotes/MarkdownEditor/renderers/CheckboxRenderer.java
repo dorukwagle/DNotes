@@ -2,8 +2,10 @@ package com.doruk.dnotes.MarkdownEditor.renderers;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import com.doruk.dnotes.MarkdownEditor.ToolsMediator;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolsEvent;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.store.GlobalConstants;
@@ -56,6 +58,11 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
                 icon.setScaleX(1.3);
                 icon.setScaleY(1.3);
             }
+        });
+
+        // also add event listeners
+        bulletNode.setOnMouseClicked(_ -> {
+            ToolsMediator.publish(ToolsEvent.CHECKBOX_CLICKED, index);
         });
         
         return bulletNode;        
