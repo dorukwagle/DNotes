@@ -26,7 +26,7 @@ import com.doruk.dnotes.MarkdownEditor.renderers.H4Renderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.ItalicRenderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.OLItemRenderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.StrikethroughRenderer;
-import com.doruk.dnotes.MarkdownEditor.renderers.ULItemRenderer;
+import com.doruk.dnotes.MarkdownEditor.renderers.BulletListRenderer;
 import com.doruk.dnotes.MarkdownEditor.renderers.UnderlineRenderer;
 import com.doruk.dnotes.MarkdownEditor.tools.AlignCenter;
 import com.doruk.dnotes.MarkdownEditor.tools.AlignLeft;
@@ -107,7 +107,7 @@ public class Factory {
             case H4 -> new H4Renderer();
             case Blockquote -> new BlockquoteRenderer();
             case NumberList -> new OLItemRenderer();
-            case BulletList -> new ULItemRenderer();
+            case BulletList -> new BulletListRenderer();
             case CheckList -> new CheckboxRenderer();
             default -> null;
         };

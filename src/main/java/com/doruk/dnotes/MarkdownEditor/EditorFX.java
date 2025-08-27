@@ -1,7 +1,9 @@
 package com.doruk.dnotes.MarkdownEditor;
 
+import java.lang.classfile.Label;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
@@ -13,6 +15,10 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextFlow;
 
 public class EditorFX implements FXTextEditor {
@@ -20,7 +26,7 @@ public class EditorFX implements FXTextEditor {
     private final Map<ToolName, Renderer<TextExt, TextStyle>> textRenderers = new EnumMap<>(ToolName.class);
     private final Map<ToolName, Renderer<TextFlow, ParagraphStyle>> paragraphRenderers = new EnumMap<>(ToolName.class);
 
-    public EditorFX() {       
+    public EditorFX() {
         area = new GenericStyledArea<>(
                 ParagraphStyle.EMPTY,
                 (flow, style) -> {
@@ -36,9 +42,30 @@ public class EditorFX implements FXTextEditor {
                     return text;
                 });
 
+        area.setParagraphGraphicFactory(index -> {
+            var paragraph = area.getParagraph(index);
+            var style = paragraph.getParagraphStyle();
+
+            // Call all renderers that can render graphics
+            Node graphic = this.paragraphRenderers.values().stream()
+                .map(renderer -> renderer.renderParagraphGraphic(style))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+            // if (graphic != null) {
+            //     StackPane wrapper = new StackPane(graphic);
+            //     wrapper.setAlignment(Pos.BASELINE_CENTER); // align with baseline of text
+            //     return wrapper;
+            // }
+
+            return graphic;
+        });
+
         area.setWrapText(true);
         area.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        area.setStyle(area.getStyle() + "-fx-padding: 10px;");
 
         area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
     }
@@ -60,9 +87,7 @@ public class EditorFX implements FXTextEditor {
 
     @Override
     public void removeRenderer(ToolName tool) {
-        var map = this.textRenderers.containsKey(tool) ?
-            this.textRenderers :
-            this.paragraphRenderers;
+        var map = this.textRenderers.containsKey(tool) ? this.textRenderers : this.paragraphRenderers;
         map.remove(tool);
     }
 }

@@ -17,9 +17,7 @@ public class AlignCenterRenderer implements Renderer<TextFlow, ParagraphStyle> {
 
         textFlow.setStyle(
             textFlow.getStyle() + 
-            "-fx-text-alignment: center;" + 
-            "-fx-translate-x: 10px;" +
-            "-fx-translate-y: 5px;"   
+            "-fx-text-alignment: center;" 
         );
     }
 }

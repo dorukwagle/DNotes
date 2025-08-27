@@ -16,9 +16,7 @@ public class AlignLeftRenderer implements Renderer<TextFlow, ParagraphStyle> {
             return;
 
         textFlow.setStyle(textFlow.getStyle() +
-            "-fx-text-alignment: left;" +
-            "-fx-translate-x: 10px;" +
-            "-fx-translate-y: 5px;"   
+            "-fx-text-alignment: left;"
         );
     }
 }
