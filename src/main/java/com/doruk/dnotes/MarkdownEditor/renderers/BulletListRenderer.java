@@ -35,7 +35,6 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         Label bulletNode = new Label();
         bulletNode.setGraphic(new FontIcon(bullet));
         bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
-        
 
         return bulletNode;
     }
