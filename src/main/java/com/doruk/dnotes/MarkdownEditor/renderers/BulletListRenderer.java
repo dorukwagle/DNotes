@@ -7,6 +7,7 @@ import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,26 +22,38 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         "mdi2r-rhombus",
         "mdi2c-circle"
     };
+
+    private boolean isApplied(ParagraphStyle style) {
+        var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
+        return appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM;
+    }
     
     @Override
     public Node renderParagraphGraphic(ParagraphStyle style) {
+        if (!isApplied(style))
+            return null;
+        
         var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
         if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM))
             return null;
         
         int indent = style.level;
         String bullet = labels[indent % labels.length]; // cycle if deeper
-        var flowInset = (style.level + 1) * 30;
+        var flowInset = (style.level + 1) * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
         Label bulletNode = new Label();
         bulletNode.setGraphic(new FontIcon(bullet));
         bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
-
+        bulletNode.setAlignment(Pos.BASELINE_CENTER);
         return bulletNode;
     }
     
     @Override
     public void render(TextFlow textFlow, ParagraphStyle style) {
+        if (!isApplied(style))
+            return;
+        
+        textFlow.setLineSpacing(10);
         // var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
         // if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM))
         //     return;

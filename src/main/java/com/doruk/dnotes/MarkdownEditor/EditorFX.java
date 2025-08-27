@@ -15,6 +15,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -53,11 +54,12 @@ public class EditorFX implements FXTextEditor {
                 .findFirst()
                 .orElse(null);
 
-            // if (graphic != null) {
-            //     StackPane wrapper = new StackPane(graphic);
-            //     wrapper.setAlignment(Pos.BASELINE_CENTER); // align with baseline of text
-            //     return wrapper;
-            // }
+            if (graphic != null) {
+                StackPane wrapper = new StackPane(graphic);
+                wrapper.setAlignment(Pos.BASELINE_CENTER); // align with baseline of text
+                wrapper.setPadding(new Insets(0, 20, 5, 5));
+                return wrapper;
+            }
 
             return graphic;
         });

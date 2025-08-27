@@ -12,4 +12,5 @@ public class GlobalConstants {
     public static final int H2_FONT_SIZE = 32;
     public static final int H3_FONT_SIZE = 28;
     public static final int H4_FONT_SIZE = 24;
+    public static final int DEFAULT_LIST_ITEM_INSET = 30;
 }

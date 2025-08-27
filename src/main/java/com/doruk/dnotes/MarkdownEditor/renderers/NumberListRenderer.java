@@ -4,6 +4,7 @@ import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,15 +19,19 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         "mdi2r-rhombus",
         "mdi2c-circle"
     };
+
+    private boolean isApplied(ParagraphStyle style) {
+        var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM));
+        return appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.NUMBER_LIST_ITEM;
+    }
     
     @Override
     public Node renderParagraphGraphic(ParagraphStyle style) {
-        var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM));
-        if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.NUMBER_LIST_ITEM))
+        if (!isApplied(style))
             return null;
         
         // String bullet = labels[indent % labels.length]; // cycle if deeper
-        var flowInset = (style.level + 1) * 30;
+        var flowInset = (style.level + 1) * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
         Label bulletNode = new Label((style.lineCount + 1) + ".");
         bulletNode.setStyle("-fx-font-weight: bold; -fx-font-size: 22px;");
@@ -38,6 +43,9 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
 
     @Override
     public void render(TextFlow textFlow, ParagraphStyle style) {
-        
+        if (!isApplied(style))
+            return;
+
+        textFlow.setLineSpacing(10);
     }
 }
