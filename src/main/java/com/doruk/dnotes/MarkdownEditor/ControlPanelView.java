@@ -106,7 +106,7 @@ public class ControlPanelView {
         
         // Font Size Dropdown
         fontSizeCombo = new ComboBox<>();
-        fontSizeCombo.getItems().addAll("12", "14", "16", "18", "20", "24", "28", "32", "36");
+        fontSizeCombo.getItems().addAll("14", "16", "18", "20", "24", "28", "32", "36");
         fontSizeCombo.setValue(String.valueOf(GlobalConstants.DEFAULT_FONT_SIZE));
         fontSizeCombo.getStyleClass().addAll(Styles.SMALL);
         fontSizeCombo.setPrefWidth(70);
