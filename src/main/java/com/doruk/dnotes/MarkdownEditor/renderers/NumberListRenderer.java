@@ -1,13 +1,12 @@
 package com.doruk.dnotes.MarkdownEditor.renderers;
 
-import org.kordamp.ikonli.javafx.FontIcon;
-
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextFlow;
@@ -29,9 +28,10 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         // String bullet = labels[indent % labels.length]; // cycle if deeper
         var flowInset = (style.level + 1) * 30;
 
-        Label bulletNode = new Label("1.");
+        Label bulletNode = new Label((style.lineCount + 1) + ".");
         bulletNode.setStyle("-fx-font-weight: bold; -fx-font-size: 22px;");
         bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
+        bulletNode.setAlignment(Pos.BASELINE_CENTER);
 
         return bulletNode;
     }
