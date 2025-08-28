@@ -1,13 +1,11 @@
 package com.doruk.dnotes.MarkdownEditor;
 
-import java.lang.classfile.Label;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
-import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.SegmentOps;
 import org.fxmisc.richtext.model.TwoDimensional.Bias;
 
@@ -17,11 +15,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextFlow;
 
 public class EditorFX implements FXTextEditor {

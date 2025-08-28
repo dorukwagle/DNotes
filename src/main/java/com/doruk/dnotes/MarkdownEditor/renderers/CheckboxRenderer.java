@@ -31,8 +31,15 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!isApplied(style))
             return;
         
-        textFlow.setStyle(textFlow.getStyle() + 
-            "-fx-padding: 5px 0 5px 20px;");
+        var styleString = "-fx-padding: 5px 0 5px 20px;";
+        String nodeStyle = "-fx-fill: -color-fg-muted; -fx-strikethrough: true;";
+
+        System.out.println("isChecked: " + style.isItemChecked);
+
+        textFlow.setStyle(textFlow.getStyle() + styleString);
+
+        if (style.isItemChecked)
+            textFlow.getChildren().forEach(node -> node.setStyle(node.getStyle() + nodeStyle));
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontBGColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontSizeHandler;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
-import com.doruk.dnotes.MarkdownEditor.enums.ToolsEvent;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
