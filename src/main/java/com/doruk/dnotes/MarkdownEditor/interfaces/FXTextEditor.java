@@ -14,4 +14,5 @@ public interface FXTextEditor {
     void addTextRenderer(ToolName tool, Renderer<TextExt, TextStyle> renderer);
     void addParagraphRenderer(ToolName tool, Renderer<TextFlow, ParagraphStyle> renderer);
     void removeRenderer(ToolName tool);
+    int getParagraphIndexAtPos(int pos);
 }

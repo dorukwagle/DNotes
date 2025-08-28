@@ -1,14 +1,17 @@
 package com.doruk.dnotes.MarkdownEditor.tools;
 
+import org.fxmisc.richtext.model.Paragraph;
+
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulParagraphStyleTool;
 import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
-public class BulletList extends StatefulParagraphStyleTool<String> {
+public class BulletList extends StatefulParagraphStyleTool {
     public BulletList(FXTextEditor editor) {
         super(editor);
     }
@@ -28,5 +31,10 @@ public class BulletList extends StatefulParagraphStyleTool<String> {
     protected void addRenderer(FXTextEditor editor) {
         editor.addParagraphRenderer(ToolName.BulletList, 
                 Factory.createParagraphRenderer(ToolName.BulletList));
+    }
+
+    @Override
+    public void applyWithUpdatedState(FXTextEditor editor, int paragraphIndex) {
+       
     }
 }

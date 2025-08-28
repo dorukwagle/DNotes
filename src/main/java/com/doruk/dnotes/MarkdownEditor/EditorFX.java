@@ -7,7 +7,9 @@ import java.util.Objects;
 
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
+import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.SegmentOps;
+import org.fxmisc.richtext.model.TwoDimensional.Bias;
 
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
@@ -84,5 +86,10 @@ public class EditorFX implements FXTextEditor {
     public void removeRenderer(ToolName tool) {
         var map = this.textRenderers.containsKey(tool) ? this.textRenderers : this.paragraphRenderers;
         map.remove(tool);
+    }
+
+    @Override
+    public int getParagraphIndexAtPos(int pos) {
+        return area.offsetToPosition(pos, Bias.Forward).getMajor();
     }
 }
