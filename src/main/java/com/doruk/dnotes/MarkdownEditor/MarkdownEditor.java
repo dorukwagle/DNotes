@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CaretSelectionHandler;
+import com.doruk.dnotes.MarkdownEditor.changeHandlers.CheckboxClickHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontBGColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontSizeHandler;
@@ -106,6 +107,7 @@ public class MarkdownEditor implements IMarkdownEditor {
         new FontColorHandler(editorView.getEditor(), panel);
         new FontBGColorHandler(editorView.getEditor(), panel);
         new CaretSelectionHandler(editorView.getEditor(), panel);
+        new CheckboxClickHandler(editorView.getEditor());
     }
 
     @Override

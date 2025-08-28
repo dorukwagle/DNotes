@@ -65,6 +65,6 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
             ToolsMediator.publish(ToolsEvent.CHECKBOX_CLICKED, index);
         });
         
-        return bulletNode;        
+        return bulletNode;
     }
 }
