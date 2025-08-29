@@ -22,7 +22,7 @@ public class BulletList extends StatefulParagraphStyleTool {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
-        return (T) ParagraphStyleHelper.withBulletList((ParagraphStyle) currentStyle, 0, 0, apply);
+        return (T) ParagraphStyleHelper.withBulletList((ParagraphStyle) currentStyle, 1, 1, apply);
     }
 
     @Override

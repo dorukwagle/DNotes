@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
+import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 
 import javafx.scene.input.KeyCode;
@@ -17,7 +18,7 @@ public class KeyEventDispatcher {
         handlers.add(handler);
     }
 
-    public static void dispatch(Set<ToolName> enabledTools, KeyCode action, KeyEvent e) {
-        handlers.forEach(handler -> handler.handle(enabledTools, action, e));
+    public static void dispatch(FXTextEditor editor, Set<ToolName> enabledTools, KeyCode action, KeyEvent e) {
+        handlers.forEach(handler -> handler.handle(editor, enabledTools, action, e));
     }
 }

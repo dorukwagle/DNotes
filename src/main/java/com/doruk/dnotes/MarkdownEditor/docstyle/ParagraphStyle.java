@@ -21,8 +21,8 @@ public class ParagraphStyle {
     public static final ParagraphStyle EMPTY = new ParagraphStyle();
 
     public ParagraphStyle() {
-        this.level = 0;
-        this.lineCount = 0;
+        this.level = 1;
+        this.lineCount = 1;
         this.isItemChecked = false;
     }
 

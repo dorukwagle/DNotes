@@ -7,5 +7,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public interface KeyEventHandler {
-    public void handle(Set<ToolName> enabledTools, KeyCode action, KeyEvent event);
+    public void handle(
+        FXTextEditor editor,
+        Set<ToolName> enabledTools, 
+        KeyCode action, 
+        KeyEvent event
+    );
 }
