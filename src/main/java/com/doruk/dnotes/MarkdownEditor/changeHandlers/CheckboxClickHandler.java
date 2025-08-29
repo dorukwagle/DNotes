@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.ToolsMediator;
+import com.doruk.dnotes.MarkdownEditor.dto.ToolState;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolsEvent;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
@@ -24,6 +25,10 @@ public class CheckboxClickHandler implements Consumer<Object[]> {
         if (!(checkboxTool instanceof StatefulParagraphStyleTool tool))
             return;
         
-        tool.applyWithUpdatedState(editor, index);
+        tool.applyWithUpdatedState(editor, new ToolState(
+            index,
+            0,
+            0
+        ));
     }
 }

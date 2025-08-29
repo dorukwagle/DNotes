@@ -32,4 +32,10 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.MarkdownEditor.interfaces;
     exports com.doruk.dnotes.MarkdownEditor.enums;
     exports com.doruk.dnotes.MarkdownEditor.docstyle;
+    exports com.doruk.dnotes.MarkdownEditor.dto;
+    exports com.doruk.dnotes.MarkdownEditor.utils;
+    exports com.doruk.dnotes.MarkdownEditor.changeHandlers;
+    exports com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
+    exports com.doruk.dnotes.MarkdownEditor.tools;
+    exports com.doruk.dnotes.MarkdownEditor.renderers;
 }

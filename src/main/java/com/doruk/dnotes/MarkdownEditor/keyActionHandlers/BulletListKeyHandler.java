@@ -14,8 +14,23 @@ public class BulletListKeyHandler implements KeyEventHandler {
         if (!enabledTools.contains(ToolName.BulletList))
             return;
         
-        System.out.println("BulletListKeyHandler" + action.name());
-        event.consume();
-        event.consume();
+        switch (action) {
+            case ENTER -> handleEnter();
+            case TAB -> handleTab();
+            case BACK_SPACE -> handleBackspace();
+            default -> {}
+        }
+    }
+
+    private void handleEnter() {
+        
+    }
+
+    private void handleTab() {
+        
+    }
+
+    private void handleBackspace() {
+        
     }
 }

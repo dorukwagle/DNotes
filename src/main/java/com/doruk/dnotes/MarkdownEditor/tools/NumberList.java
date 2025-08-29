@@ -2,6 +2,7 @@ package com.doruk.dnotes.MarkdownEditor.tools;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.dto.ToolState;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
@@ -32,7 +33,12 @@ public class NumberList extends StatefulParagraphStyleTool {
 
 
     @Override
-    public void applyWithUpdatedState(FXTextEditor editor, int paragraphIndex) {
-        
+    public void applyWithUpdatedState(FXTextEditor editor, ToolState state) {
+        var style = editor.getArea().getParagraph(state.getParagraphIndex()).getParagraphStyle();
+
+        var newStyle = ParagraphStyleHelper.withNumberList(style, state.getLevel(), 
+            state.getLineCount(), 
+            true);
+        editor.getArea().setParagraphStyle(state.getParagraphIndex(), newStyle);
     }   
 }

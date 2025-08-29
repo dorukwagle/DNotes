@@ -3,6 +3,7 @@ package com.doruk.dnotes.MarkdownEditor.tools;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.dto.ToolState;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
@@ -33,10 +34,10 @@ public class CheckList extends StatefulParagraphStyleTool {
     }
 
     @Override
-    public void applyWithUpdatedState(FXTextEditor editor, int paragraphIndex) {
-        var style = editor.getArea().getParagraph(paragraphIndex).getParagraphStyle();
+    public void applyWithUpdatedState(FXTextEditor editor, ToolState state) {
+        var style = editor.getArea().getParagraph(state.getParagraphIndex()).getParagraphStyle();
 
         var newStyle = ParagraphStyleHelper.withCheckList(style, !style.isItemChecked, true);
-        editor.getArea().setParagraphStyle(paragraphIndex, newStyle);
+        editor.getArea().setParagraphStyle(state.getParagraphIndex(), newStyle);
     }
 }
