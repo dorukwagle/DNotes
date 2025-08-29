@@ -3,6 +3,9 @@ package com.doruk.dnotes.MarkdownEditor;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CaretSelectionHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CheckboxClickHandler;
@@ -12,12 +15,15 @@ import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontSizeHandler;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
-import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
+import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.BulletListKeyHandler;
+import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.KeyEventDispatcher;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 
@@ -25,16 +31,15 @@ public class MarkdownEditor implements IMarkdownEditor {
 
     private StringBuilder editorText;
     private View editorView;
-    private Map<ToolName, Boolean> strategyState = new EnumMap<>(ToolName.class);
-    private Map<ToolName, ToolCmdStrategy> strategies = new EnumMap<>(ToolName.class);
+    private static final Set<KeyCode> keyActions = Set.of(
+        KeyCode.ENTER, 
+        KeyCode.TAB, 
+        KeyCode.BACK_SPACE
+    );
 
     public MarkdownEditor() {
         editorText = new StringBuilder();
         editorView = new EditorWrapper();
-
-        // initialize default strategy states to false
-        Arrays.stream(ToolName.values())
-                .forEach(toolName -> strategyState.put(toolName, false));
 
         // load the fonts
         loadFonts();
@@ -43,6 +48,8 @@ public class MarkdownEditor implements IMarkdownEditor {
         initialSetup();
 
         initializeChangeHandlers();
+
+        initializeKeyEventHandlers();
     }
 
     private void loadFonts() {
@@ -75,7 +82,7 @@ public class MarkdownEditor implements IMarkdownEditor {
                     });
                 });
         
-        // loop over once again to add event filter, to resolve conflicting tools
+        // add event filter to resolve and unselect conflicting tools
         this.editorView.getControlPanel()
                 .getStyleButtons()
                 .stream()
@@ -107,6 +114,25 @@ public class MarkdownEditor implements IMarkdownEditor {
         new FontBGColorHandler(editorView.getEditor(), panel);
         new CaretSelectionHandler(editorView.getEditor(), panel);
         new CheckboxClickHandler(editorView.getEditor());
+    }
+
+    private void initializeKeyEventHandlers() {
+        KeyEventDispatcher.addHandler(new BulletListKeyHandler());
+        
+        this.editorView.getEditor().getArea()
+            .addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (!keyActions.contains(event.getCode()))
+                    return;
+                
+                var enabledTools = editorView.getControlPanel()
+                    .getStyleButtons()
+                    .stream()
+                    .filter(toggle -> toggle.isSelected())
+                    .map(toggle -> ToolName.fromName(toggle.getId()))
+                    .collect(Collectors.toSet());
+                
+                KeyEventDispatcher.dispatch(enabledTools, event.getCode(), event);
+            });
     }
 
     @Override
