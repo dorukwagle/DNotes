@@ -18,18 +18,30 @@ public class ParagraphStyle {
     // for check lists
     public final boolean isItemChecked;
 
+    // for lists, to add extra paragraph paddings
+    public final int offset;
+
     public static final ParagraphStyle EMPTY = new ParagraphStyle();
 
     public ParagraphStyle() {
         this.level = 1;
         this.lineCount = 1;
         this.isItemChecked = false;
+        this.offset = 0;
     }
 
     public ParagraphStyle(int level, int lineCount, boolean isItemChecked) {
         this.level = level;
         this.lineCount = lineCount;
         this.isItemChecked = isItemChecked;
+        this.offset = 0;
+    }
+
+    public ParagraphStyle(int level, int lineCount, boolean isItemChecked, int offset) {
+        this.level = level;
+        this.lineCount = lineCount;
+        this.isItemChecked = isItemChecked;
+        this.offset = offset;
     }
 
     public Optional<ParagraphType> getStyle(StyleGroup group) {

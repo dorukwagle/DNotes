@@ -56,4 +56,22 @@ public class ParagraphStyleHelper {
                 .withStyle(oldStyle,
                         StyleGroupRegistry.getGroup(ParagraphType.CHECK_LIST_ITEM), apply ? ParagraphType.CHECK_LIST_ITEM : null);
     }
+    
+    public static ParagraphStyle withBulletList(ParagraphStyle oldStyle, int level, int lineCount, int offset, boolean apply) {
+        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked, offset)
+                .withStyle(oldStyle, StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM),
+                        apply ? ParagraphType.BULLET_LIST_ITEM : null);
+    }
+
+    public static ParagraphStyle withNumberList(ParagraphStyle oldStyle, int level, int lineCount, int offset, boolean apply) {
+        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked, offset)
+                .withStyle(oldStyle,
+                        StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
+    }
+
+    public static ParagraphStyle withCheckList(ParagraphStyle oldStyle, boolean checked, int offset, boolean apply) {
+        return new ParagraphStyle(oldStyle.level, oldStyle.lineCount, checked, offset)
+                .withStyle(oldStyle,
+                        StyleGroupRegistry.getGroup(ParagraphType.CHECK_LIST_ITEM), apply ? ParagraphType.CHECK_LIST_ITEM : null);
+    }
 }
