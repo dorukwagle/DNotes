@@ -16,15 +16,17 @@ import javafx.scene.text.TextFlow;
 public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
     private enum LabelType {
         ARABIC,
-        ROMAN,
+        ROMAN_UPPER,
         ALPHABETIC_UPPER,
+        ROMAN_LOWER,
         ALPHABETIC_LOWER,
     }
     private static final LabelType[] labels = {
         LabelType.ARABIC, 
         LabelType.ALPHABETIC_UPPER,
-        LabelType.ROMAN, 
-        LabelType.ALPHABETIC_LOWER
+        LabelType.ROMAN_UPPER, 
+        LabelType.ALPHABETIC_LOWER,
+        LabelType.ROMAN_LOWER,
     };
 
     private boolean isApplied(ParagraphStyle style) {
@@ -37,14 +39,17 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
             case ARABIC -> {
                 return String.valueOf(lineCount);
             }
-            case ROMAN -> {
-                return NumeralUtility.toRoman(lineCount);
+            case ROMAN_UPPER -> {
+                return NumeralUtility.toRomanUpper(lineCount);
             }
             case ALPHABETIC_UPPER -> {
                 return NumeralUtility.toAlphabeticUpper(lineCount);
             }
             case ALPHABETIC_LOWER -> {
                 return NumeralUtility.toAlphabeticLower(lineCount);
+            }
+            case ROMAN_LOWER -> {
+                return NumeralUtility.toRomanLower(lineCount);
             }
             default -> {
                 return "";
