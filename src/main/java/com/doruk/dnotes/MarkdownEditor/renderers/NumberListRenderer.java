@@ -13,16 +13,90 @@ import javafx.scene.control.Label;
 import javafx.scene.text.TextFlow;
 
 public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
-    private static final String[] labels = {
-        "mdi2r-rhombus-split", 
-        "mdi2a-arrow-right-bold", 
-        "mdi2r-rhombus",
-        "mdi2c-circle"
+    private enum LabelType {
+        ARABIC,
+        ROMAN,
+        ALPHABETIC_UPPER,
+        ALPHABETIC_LOWER,
+    }
+    private static final LabelType[] labels = {
+        LabelType.ARABIC, 
+        LabelType.ALPHABETIC_UPPER,
+        LabelType.ROMAN, 
+        LabelType.ALPHABETIC_LOWER
     };
 
     private boolean isApplied(ParagraphStyle style) {
         var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM));
         return appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.NUMBER_LIST_ITEM;
+    }
+
+    private String toRoman(int number) {
+        return "";
+    }
+
+    private String toAlphabeticUpper(int number) {
+        if (number < 0)
+            return "";
+
+        // treating from 0 index
+        --number;
+
+        var start = 'A';
+        var end = 'Z';
+        var totalChar = end - start + 1; // 26
+
+        
+        var cyclicValue = number % totalChar;
+        int offsetValue = number / totalChar;
+
+        StringBuilder offsets = new StringBuilder();
+        while (--offsetValue >= 0)
+            offsets.append("A");
+        
+        return offsets + String.valueOf((char) (cyclicValue + start));
+    }
+
+    private String toAlphabeticLower(int number) {
+        if (number < 0)
+            return "";
+
+        // treating from 0 index
+        --number;
+
+        var start = 'a';
+        var end = 'z';
+        var totalChar = end - start + 1; // 26
+
+        
+        var cyclicValue = number % totalChar;
+        int offsetValue = number / totalChar;
+
+        StringBuilder offsets = new StringBuilder();
+        while (--offsetValue >= 0)
+            offsets.append("a");
+        
+        return offsets + String.valueOf((char) (cyclicValue + start));
+    }
+
+    private String getLabel(LabelType type, int lineCount) {
+        switch (type) {
+            case ARABIC -> {
+                return String.valueOf(lineCount);
+            }
+            case ROMAN -> {
+                return toRoman(lineCount);
+            }
+            case ALPHABETIC_UPPER -> {
+                return toAlphabeticUpper(lineCount);
+            }
+            case ALPHABETIC_LOWER -> {
+                return toAlphabeticLower(lineCount);
+            }
+            default -> {
+                return "";
+            }
+        }
     }
     
     @Override
@@ -30,10 +104,10 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!isApplied(style))
             return null;
         
-        // String bullet = labels[indent % labels.length]; // cycle if deeper
-        var flowInset = (style.level + 1) * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
+        LabelType labelType = labels[style.level % labels.length]; // cycle if deeper
+        var flowInset = style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
-        Label bulletNode = new Label((style.lineCount + 1) + ".");
+        Label bulletNode = new Label(getLabel(labelType, style.lineCount) + ".");
         bulletNode.setStyle("-fx-font-weight: bold; -fx-font-size: 22px;");
         bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
         bulletNode.setAlignment(Pos.BASELINE_CENTER);
