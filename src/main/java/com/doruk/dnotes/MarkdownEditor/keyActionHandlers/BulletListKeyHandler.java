@@ -2,8 +2,6 @@ package com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
 
 import java.util.Set;
 
-import org.fxmisc.richtext.model.Paragraph;
-
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.dto.ToolState;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
