@@ -62,7 +62,7 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!isApplied(style))
             return null;
         
-        LabelType labelType = labels[style.level % labels.length]; // cycle if deeper
+        LabelType labelType = labels[(style.level - 1) % labels.length]; // cycle if deeper
         var flowInset = style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
         Label bulletNode = new Label(getLabel(labelType, style.lineCount) + ".");
