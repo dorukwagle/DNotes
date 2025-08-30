@@ -3,6 +3,7 @@ package com.doruk.dnotes.MarkdownEditor.renderers;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
+import com.doruk.dnotes.MarkdownEditor.utils.NumeralUtility;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.store.GlobalConstants;
 
@@ -31,67 +32,19 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         return appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.NUMBER_LIST_ITEM;
     }
 
-    private String toRoman(int number) {
-        return "";
-    }
-
-    private String toAlphabeticUpper(int number) {
-        if (number < 0)
-            return "";
-
-        // treating from 0 index
-        --number;
-
-        var start = 'A';
-        var end = 'Z';
-        var totalChar = end - start + 1; // 26
-
-        
-        var cyclicValue = number % totalChar;
-        int offsetValue = number / totalChar;
-
-        StringBuilder offsets = new StringBuilder();
-        while (--offsetValue >= 0)
-            offsets.append("A");
-        
-        return offsets + String.valueOf((char) (cyclicValue + start));
-    }
-
-    private String toAlphabeticLower(int number) {
-        if (number < 0)
-            return "";
-
-        // treating from 0 index
-        --number;
-
-        var start = 'a';
-        var end = 'z';
-        var totalChar = end - start + 1; // 26
-
-        
-        var cyclicValue = number % totalChar;
-        int offsetValue = number / totalChar;
-
-        StringBuilder offsets = new StringBuilder();
-        while (--offsetValue >= 0)
-            offsets.append("a");
-        
-        return offsets + String.valueOf((char) (cyclicValue + start));
-    }
-
     private String getLabel(LabelType type, int lineCount) {
         switch (type) {
             case ARABIC -> {
                 return String.valueOf(lineCount);
             }
             case ROMAN -> {
-                return toRoman(lineCount);
+                return NumeralUtility.toRoman(lineCount);
             }
             case ALPHABETIC_UPPER -> {
-                return toAlphabeticUpper(lineCount);
+                return NumeralUtility.toAlphabeticUpper(lineCount);
             }
             case ALPHABETIC_LOWER -> {
-                return toAlphabeticLower(lineCount);
+                return NumeralUtility.toAlphabeticLower(lineCount);
             }
             default -> {
                 return "";
