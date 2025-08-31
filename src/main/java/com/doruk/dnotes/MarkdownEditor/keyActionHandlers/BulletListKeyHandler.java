@@ -64,7 +64,7 @@ public class BulletListKeyHandler implements KeyEventHandler {
         var style = paragraph.getParagraphStyle();
         // System.out.println("paragraph: " + paragraph.getText() + "\n" + "count: " + style.lineCount);
         // check if it's first item
-        if (style.lineCount == 1 && style.level == 1)
+        if (style.lineCount == 1)
             return;
         
         event.consume();

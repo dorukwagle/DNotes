@@ -123,6 +123,14 @@ public class MarkdownEditor implements IMarkdownEditor {
 
         this.editorView.getEditor().getArea()
             .addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                // switch (event.getCode()) {
+                //     case PASTE -> System.out.println("paste");
+                //     case CUT -> System.out.println("cut");
+                //     case COPY -> System.out.println("copy");
+                //     case  -> System.out.println("ctrl");
+                //     default -> {}
+                // }
+                
                 if (!keyActions.contains(event.getCode()))
                     return;
                 

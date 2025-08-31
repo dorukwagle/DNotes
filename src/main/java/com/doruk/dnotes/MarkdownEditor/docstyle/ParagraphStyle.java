@@ -14,6 +14,7 @@ public class ParagraphStyle {
     // for list items
     public final int level; // indent level
     public final int lineCount; // number of lines in the list current indent
+    public final String numberListId; // for number list items
 
     // for check lists
     public final boolean isItemChecked;
@@ -26,6 +27,7 @@ public class ParagraphStyle {
     public ParagraphStyle() {
         this.level = 1;
         this.lineCount = 1;
+        this.numberListId = null;
         this.isItemChecked = false;
         this.offset = 0;
     }
@@ -34,6 +36,7 @@ public class ParagraphStyle {
         this.level = level;
         this.lineCount = lineCount;
         this.isItemChecked = isItemChecked;
+        this.numberListId = null;
         this.offset = 0;
     }
 
@@ -41,6 +44,15 @@ public class ParagraphStyle {
         this.level = level;
         this.lineCount = lineCount;
         this.isItemChecked = isItemChecked;
+        this.numberListId = null;
+        this.offset = offset;
+    }
+    
+    public ParagraphStyle(int level, int lineCount, boolean isItemChecked, String numberListId, int offset) {
+        this.level = level;
+        this.lineCount = lineCount;
+        this.isItemChecked = isItemChecked;
+        this.numberListId = numberListId;
         this.offset = offset;
     }
 

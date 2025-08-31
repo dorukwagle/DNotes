@@ -69,6 +69,12 @@ public class ParagraphStyleHelper {
                         StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
     }
 
+    public static ParagraphStyle withNumberList(ParagraphStyle oldStyle, int level, int lineCount, String numberListId, int offset, boolean apply) {
+        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked, numberListId, offset)
+                .withStyle(oldStyle,
+                        StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
+    }
+
     public static ParagraphStyle withCheckList(ParagraphStyle oldStyle, boolean checked, int offset, boolean apply) {
         return new ParagraphStyle(oldStyle.level, oldStyle.lineCount, checked, offset)
                 .withStyle(oldStyle,
