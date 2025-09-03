@@ -3,11 +3,11 @@ package com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
 import java.util.Set;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
-import com.doruk.dnotes.MarkdownEditor.dto.ToolState;
+import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
-import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulParagraphStyleTool;
+import com.doruk.dnotes.MarkdownEditor.interfaces.ListStyleTool;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -43,14 +43,14 @@ public class BulletListKeyHandler implements KeyEventHandler {
         var style = area.getParagraph(editor.getParagraphIndexAtPos(pos)).getParagraphStyle();
         
         var tool = Factory.createTool(ToolName.BulletList, editor);     
-        if (!(tool instanceof StatefulParagraphStyleTool bulletTool))
+        if (!(tool instanceof ListStyleTool bulletTool))
             return;
 
-        bulletTool.applyWithUpdatedState(editor, new ToolState(
-            editor.getParagraphIndexAtPos(pos), 
-            style.level, 
-            style.lineCount + 1
-        ));
+        // bulletTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
+        //     editor.getParagraphIndexAtPos(pos), 
+        //     style.level, 
+        //     style.lineCount + 1
+        // ));
     }
 
     private void handleTab(FXTextEditor editor, KeyEvent event) {
@@ -70,14 +70,14 @@ public class BulletListKeyHandler implements KeyEventHandler {
         event.consume();
 
         var tool = Factory.createTool(ToolName.BulletList, editor);     
-        if (!(tool instanceof StatefulParagraphStyleTool bulletTool))
+        if (!(tool instanceof ListStyleTool bulletTool))
             return;
 
-        bulletTool.applyWithUpdatedState(editor, new ToolState(
-            editor.getParagraphIndexAtPos(pos), 
-            style.level + 1, 
-            1
-        ));
+        // bulletTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
+        //     editor.getParagraphIndexAtPos(pos), 
+        //     style.level + 1, 
+        //     1
+        // ));
     }
 
     private void handleBackspace(FXTextEditor editor, KeyEvent event) {
@@ -96,13 +96,13 @@ public class BulletListKeyHandler implements KeyEventHandler {
         event.consume();
 
         var tool = Factory.createTool(ToolName.BulletList, editor);     
-        if (!(tool instanceof StatefulParagraphStyleTool bulletTool))
+        if (!(tool instanceof ListStyleTool bulletTool))
             return;
 
-        bulletTool.applyWithUpdatedState(editor, new ToolState(
-            editor.getParagraphIndexAtPos(pos), 
-            style.level - 1, 
-            style.lineCount
-        ));
+        // bulletTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
+        //     editor.getParagraphIndexAtPos(pos), 
+        //     style.level - 1, 
+        //     style.lineCount
+        // ));
     }
 }

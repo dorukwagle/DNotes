@@ -61,7 +61,7 @@ public class ParagraphStyle {
     }
 
     public static ParagraphStyle newWithStyle(ParagraphStyle oldStyle, StyleGroup group, ParagraphType style) {
-        var newStyle = new ParagraphStyle(oldStyle.level, oldStyle.lineCount, oldStyle.isItemChecked);
+        var newStyle = new ParagraphStyle(oldStyle.level, oldStyle.lineCount, oldStyle.isItemChecked, oldStyle.numberListId, oldStyle.offset);
         newStyle.groupMap.putAll(oldStyle.groupMap);
         newStyle.groupMap.put(group, style);
         return newStyle;

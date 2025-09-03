@@ -1,6 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor.utils;
 
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 
 public class ParagraphStyleHelper {
@@ -49,6 +50,18 @@ public class ParagraphStyleHelper {
         return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked)
                 .withStyle(oldStyle,
                         StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
+    }
+
+    public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId) {
+        return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, itemInfo.oldStyle.offset)
+                .withStyle(itemInfo.oldStyle,
+                        StyleGroupRegistry.getGroup(itemInfo.listType), itemInfo.listType);
+    }
+    
+    public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId, int offset) {
+        return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, offset)
+                .withStyle(itemInfo.oldStyle,
+                        StyleGroupRegistry.getGroup(itemInfo.listType), itemInfo.listType);
     }
 
     public static ParagraphStyle withCheckList(ParagraphStyle oldStyle, boolean checked, boolean apply) {

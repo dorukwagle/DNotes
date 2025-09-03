@@ -4,11 +4,11 @@ import java.util.Set;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
-import com.doruk.dnotes.MarkdownEditor.dto.ToolState;
+import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
-import com.doruk.dnotes.MarkdownEditor.interfaces.StatefulParagraphStyleTool;
+import com.doruk.dnotes.MarkdownEditor.interfaces.ListStyleTool;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -57,7 +57,7 @@ public class NumberListKeyHandler implements KeyEventHandler {
                 return;
 
             var tool = Factory.createTool(ToolName.NumberList, editor);     
-            if (!(tool instanceof StatefulParagraphStyleTool numberTool))
+            if (!(tool instanceof ListStyleTool numberTool))
                 return;
 
             var parIndex = paragraphIndex;
@@ -86,7 +86,7 @@ public class NumberListKeyHandler implements KeyEventHandler {
         var style = area.getParagraph(editor.getParagraphIndexAtPos(pos)).getParagraphStyle();
         
         var tool = Factory.createTool(ToolName.NumberList, editor);     
-        if (!(tool instanceof StatefulParagraphStyleTool numberTool))
+        if (!(tool instanceof ListStyleTool numberTool))
             return;
 
         
@@ -96,13 +96,13 @@ public class NumberListKeyHandler implements KeyEventHandler {
 
         // get the current paragraph index after insert
         var currentParagraph = editor.getParagraphIndexAtPos(pos) + 1;
-        var newState = new ToolState(
-            currentParagraph,
-            style.level, 
-            style.lineCount + 1
-        );
+        // var newState = new ParagraphListItemInfo(
+        //     currentParagraph,
+        //     style.level, 
+        //     style.lineCount + 1
+        // );
 
-        numberTool.applyWithUpdatedState(editor, newState);
+        // numberTool.applyWithUpdatedState(editor, newState);
 
         // // if it's not the last line, increment downwards line counts.
         // if (isLastDocumentItem(editor, currentParagraph))
@@ -128,14 +128,14 @@ public class NumberListKeyHandler implements KeyEventHandler {
         event.consume();
 
         var tool = Factory.createTool(ToolName.NumberList, editor);     
-        if (!(tool instanceof StatefulParagraphStyleTool numberTool))
+        if (!(tool instanceof ListStyleTool numberTool))
             return;
 
-        numberTool.applyWithUpdatedState(editor, new ToolState(
-            editor.getParagraphIndexAtPos(pos), 
-            style.level + 1, 
-            1
-        ));
+        // numberTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
+        //     editor.getParagraphIndexAtPos(pos), 
+        //     style.level + 1, 
+        //     1
+        // ));
     }
 
     private void handleBackspace(FXTextEditor editor, KeyEvent event) {
@@ -154,13 +154,13 @@ public class NumberListKeyHandler implements KeyEventHandler {
         event.consume();
 
         var tool = Factory.createTool(ToolName.NumberList, editor);     
-        if (!(tool instanceof StatefulParagraphStyleTool numberTool))
+        if (!(tool instanceof ListStyleTool numberTool))
             return;
 
-        numberTool.applyWithUpdatedState(editor, new ToolState(
-            editor.getParagraphIndexAtPos(pos), 
-            style.level - 1, 
-            style.lineCount
-        ));
+        // numberTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
+        //     editor.getParagraphIndexAtPos(pos), 
+        //     style.level - 1, 
+        //     style.lineCount
+        // ));
     }
 }
