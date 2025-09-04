@@ -77,18 +77,6 @@ public class ListManager {
         return parIndex;
     }
 
-    private int fillLevel(int fromParIndex, int toParIndex, Map<Integer, Integer> holder) {
-        var area = editor.getArea();
-
-        for (int i = fromParIndex; i <= toParIndex; i++) {
-            var curPar = area.getParagraph(i);
-            var curStyle = curPar.getParagraphStyle();
-            holder.put(i, curStyle.level);
-        }
-        
-        return toParIndex;
-    }
-
     public void createOrRemoveListNode(ParagraphListItemInfo itemInfo) {
         var listState = new ParagraphListItemInfo(
             itemInfo.oldStyle,
@@ -106,6 +94,17 @@ public class ListManager {
         var style = ParagraphStyleHelper.withListNode(listState, apply ? listId : null, apply);
         
         editor.getArea().setParagraphStyle(itemInfo.paragraphIndex, style);
+
+        // if it's unapply, then remove all items below it
+        var indexAndLevel = new HashMap<Integer, Integer>();
+        var toParIndex = this.findListEndAndFillLevel(itemInfo.paragraphIndex, indexAndLevel);
+
+        // if the reference/current paragraph index is the only index, just return
+        if (indexAndLevel.size() == 1)
+            return;
+        
+        for (int i = itemInfo.paragraphIndex + 1; i <= toParIndex; i++) 
+            editor.getArea().setParagraphStyle(i, style);
     }
 
     public void createListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
