@@ -26,11 +26,7 @@ public abstract class ListStyleTool extends ParagraphStyleTool {
         int startPar = area.offsetToPosition(start, Bias.Forward).getMajor();
         int endPar = area.offsetToPosition(end, Bias.Backward).getMajor();
 
-        for (int i = startPar; i <= endPar; i++) {
-            var currentStyle = area.getParagraph(i).getParagraphStyle();
-            var newStyle = this.getStyle(currentStyle, apply);
-            area.setParagraphStyle(i, newStyle);
-        }
+        ListManager.getInstance().createListNode(this.getParagraphType(), startPar, endPar, apply);
     }
 
     // apply paragraph style on insertion (current paragraph only)
@@ -38,15 +34,14 @@ public abstract class ListStyleTool extends ParagraphStyleTool {
     protected void processOnInsertion(FXTextEditor editor, int pos, boolean apply) {
         var area = editor.getArea();
 
-        int parIndex = area.offsetToPosition(pos, Bias.Forward).getMajor();
+        int parIndex = editor.getParagraphIndexAtPos(pos);
         var currentStyle = area.getParagraph(parIndex).getParagraphStyle();
 
         // only provide paragraph type is applied, else remove: supply null
-        var state = new ParagraphListItemInfo(currentStyle, parIndex, apply ? this.getParagraphType() : null);
+        var state = new ParagraphListItemInfo(currentStyle, parIndex, this.getParagraphType())
+            .setApply(apply);
 
         ListManager.getInstance().createOrRemoveListNode(state);
-
-        System.out.println("applied list style on insertion");
     }
 
     public void applyWithUpdatedState(FXTextEditor editor, ParagraphListItemInfo state) {

@@ -43,42 +43,6 @@ public class NumberListKeyHandler implements KeyEventHandler {
         return area.getParagraphs().size() - 1 == paragraphIndex;
     }
 
-    private void incrementDownwardsLineCounts(
-        FXTextEditor editor, 
-        int paragraphIndex, 
-        Set<Integer> scopeLevels) {
-            var area = editor.getArea();
-            var referencePar = area.getParagraph(paragraphIndex);
-            var referenceStyle = referencePar.getParagraphStyle();
-            
-            
-            // if the reference line is last line, just return
-            if (isLastDocumentItem(editor, paragraphIndex))
-                return;
-
-            var tool = Factory.createTool(ToolName.NumberList, editor);     
-            if (!(tool instanceof ListStyleTool numberTool))
-                return;
-
-            var parIndex = paragraphIndex;
-            while (true) {
-                ++parIndex;
-                
-                var curPar = area.getParagraph(parIndex);
-                var curStyle = curPar.getParagraphStyle();
-                
-                if (!scopeLevels.contains(curStyle.level)){
-                    if (curStyle.level < referenceStyle.level)
-                        break;
-                    if (curStyle.level > referenceStyle.level)
-                        continue;
-                }
-
-                if (isLastDocumentItem(editor, parIndex))
-                    break;
-            }
-        }
-
     private void handleEnter(FXTextEditor editor, KeyEvent event) {
         var area = editor.getArea();
         var pos = area.getCaretPosition();
@@ -103,12 +67,6 @@ public class NumberListKeyHandler implements KeyEventHandler {
         // );
 
         // numberTool.applyWithUpdatedState(editor, newState);
-
-        // // if it's not the last line, increment downwards line counts.
-        // if (isLastDocumentItem(editor, currentParagraph))
-        //     return;
-
-        incrementDownwardsLineCounts(editor, currentParagraph, Set.of(style.level));
     }
 
     private void handleTab(FXTextEditor editor, KeyEvent event) {

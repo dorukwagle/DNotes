@@ -52,16 +52,16 @@ public class ParagraphStyleHelper {
                         StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
     }
 
-    public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId) {
+    public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId, boolean apply) {
         return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, itemInfo.oldStyle.offset)
                 .withStyle(itemInfo.oldStyle,
-                        StyleGroupRegistry.getGroup(itemInfo.listType), itemInfo.listType);
+                        StyleGroupRegistry.getGroup(itemInfo.listType), apply ? itemInfo.listType : null);
     }
     
-    public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId, int offset) {
+    public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId, int offset, boolean apply) {
         return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, offset)
                 .withStyle(itemInfo.oldStyle,
-                        StyleGroupRegistry.getGroup(itemInfo.listType), itemInfo.listType);
+                        StyleGroupRegistry.getGroup(itemInfo.listType), apply ? itemInfo.listType : null);
     }
 
     public static ParagraphStyle withCheckList(ParagraphStyle oldStyle, boolean checked, boolean apply) {

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
@@ -99,30 +100,52 @@ public class ListManager {
         );
 
         var listId = this.generateListId();
-        this.listMap.put(listId, new NumberListNode());
 
         // set id to null, if list type is null
-        var style = ParagraphStyleHelper.withListNode(listState, 
-            itemInfo.listType == null ? null : listId);
+        var apply = itemInfo.getApply();
+        var style = ParagraphStyleHelper.withListNode(listState, apply ? listId : null, apply);
+        
         editor.getArea().setParagraphStyle(itemInfo.paragraphIndex, style);
     }
 
-    public void createListNode(int fromParIndex, int toParIndex) {
+    public void createListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
         // in a loop, add each paragraph style, level, number etc, and list id
+        var listId = this.generateListId();
+
+        for (int i = fromParIndex; i <= toParIndex; i++) {
+            var currentStyle = editor.getArea().getParagraph(i).getParagraphStyle();
+            var state = new ParagraphListItemInfo(currentStyle, i, listType);
+            var newStyle = ParagraphStyleHelper.withListNode(state, apply ? listId : null, apply);
+            editor.getArea().setParagraphStyle(i, newStyle);
+        }
     }
 
-    public void addListItem(String listId, int level, int paragraphIndex) {
+    public void computeListNumbering(String listId, int referenceParIndex) {
+        var indexAndLevel = new HashMap<Integer, Integer>();
         
-    }
+        var fromParIndex = this.findListStartAndFillLevel(referenceParIndex, indexAndLevel);
+        var toParIndex = this.findListEndAndFillLevel(referenceParIndex, indexAndLevel);
 
-    public void removeListItems(String listId, int paragraphIndex) {
-        
-    }
+        var calculation = NumberListNode.calculateItemsNumbering(fromParIndex, toParIndex, indexAndLevel);
+        var isLevelPreserved = calculation.getValue();
+        var indexNumberMap = calculation.getKey();
 
-    // public void releaseItems() {}
-
-    public void reComputeNode(String nodeId) {
-
+        for (int i = fromParIndex; i <= toParIndex; i++) {
+            var currentStyle = editor.getArea().getParagraph(i).getParagraphStyle();
+            // skip if already correct numbering
+            if (currentStyle.lineCount == indexNumberMap.get(i) && 
+                currentStyle.level == indexAndLevel.get(i))
+                continue;
+            
+            var state = new ParagraphListItemInfo(
+                currentStyle,
+                i,
+                isLevelPreserved ? indexAndLevel.get(i) : 1,
+                indexNumberMap.get(i)
+            );
+            var newStyle = ParagraphStyleHelper.withListNode(state, listId, true);
+            editor.getArea().setParagraphStyle(i, newStyle);
+        }
     }
 
     private String generateListId() {

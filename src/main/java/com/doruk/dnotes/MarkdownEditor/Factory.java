@@ -50,6 +50,7 @@ import javafx.scene.text.TextFlow;
 
 public class Factory {
     private static Map<ToolName, ToolCmdStrategy> tools;
+    private static FXTextEditor editor;
 
     private static void initializeTools(FXTextEditor editor) {
         tools = new EnumMap<>(ToolName.class);
@@ -81,7 +82,10 @@ public class Factory {
     }
 
     public static FXTextEditor getFXTextEditor() {
-        return new EditorFX();
+        if (editor == null)
+            editor = new EditorFX();
+        
+        return editor;
     }
 
     public static Renderer<TextExt, TextStyle> createTextRenderer(ToolName toolName) {

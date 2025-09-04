@@ -9,6 +9,7 @@ public class ParagraphListItemInfo {
     public final int lineCount;
     public final boolean isChecked;
     public final ParagraphType listType;
+    private boolean apply;
     public final ParagraphStyle oldStyle;
 
     public ParagraphListItemInfo(ParagraphStyle oldStyle, int paragraphIndex, int level, int lineCount, boolean isChecked, ParagraphType listType) {
@@ -18,6 +19,7 @@ public class ParagraphListItemInfo {
         this.isChecked = isChecked;
         this.listType = listType;
         this.oldStyle = oldStyle;
+        this.apply = true;
     }
 
     public ParagraphListItemInfo(ParagraphStyle oldStyle, int paragraphIndex, ParagraphType listType) {
@@ -27,6 +29,7 @@ public class ParagraphListItemInfo {
         this.isChecked = false;
         this.listType = listType;
         this.oldStyle = oldStyle;
+        this.apply = true;
     }
 
     public ParagraphListItemInfo(ParagraphStyle oldStyle, int paragraphIndex, boolean isChecked, ParagraphType listType) {
@@ -36,6 +39,7 @@ public class ParagraphListItemInfo {
         this.isChecked = isChecked;
         this.listType = listType;
         this.oldStyle = oldStyle;
+        this.apply = true;
     }
 
     public ParagraphListItemInfo(ParagraphStyle oldStyle, int paragraphIndex, int level, int lineCount) {
@@ -45,5 +49,15 @@ public class ParagraphListItemInfo {
         this.isChecked = false;
         this.listType = null;
         this.oldStyle = oldStyle;
+        this.apply = true;
+    }
+
+    public ParagraphListItemInfo setApply(boolean apply) {
+        this.apply = apply;
+        return this;
+    }
+
+    public boolean getApply() {
+        return this.apply;
     }
 }
