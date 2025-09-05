@@ -42,39 +42,41 @@ public class ListManager {
         var parIndex = referenceParIndex - 1; // exclude the reference
         var listId = area.getParagraph(parIndex).getParagraphStyle().numberListId;
         
-        while (true) {
+        while (parIndex >= 0) {
             var curPar = area.getParagraph(parIndex);
             var curStyle = curPar.getParagraphStyle();
-
-            holder.put(parIndex, curStyle.level);
             
-            if (!listId.equals(curStyle.numberListId) || isLastDocumentItem(parIndex))
+            if (!listId.equals(curStyle.numberListId))
                 break;
+            
+            holder.put(parIndex, curStyle.level);
             
             --parIndex;
         }
-        
-        return parIndex;
+        // end correction: +1
+        return parIndex + 1;
     }
 
     private int findListEndAndFillLevel(int referenceParIndex, Map<Integer, Integer> holder) {
         var area = editor.getArea();
         var parIndex = referenceParIndex;
         var listId = area.getParagraph(parIndex).getParagraphStyle().numberListId;
-
-        while (true) {
+        var totalParagraphs = area.getParagraphs().size();
+        
+        while (parIndex < totalParagraphs) {
             var curPar = area.getParagraph(parIndex);
             var curStyle = curPar.getParagraphStyle();
-
-            holder.put(parIndex, curStyle.level);
             
-            if (!listId.equals(curStyle.numberListId) || isLastDocumentItem(parIndex))
+            if (!listId.equals(curStyle.numberListId))
                 break;
             
-            ++parIndex;
+            holder.put(parIndex, curStyle.level);
+            
+            ++parIndex; 
         }
         
-        return parIndex;
+        // end correction of 1
+        return parIndex - 1;
     }
 
     public void createOrRemoveListNode(ParagraphListItemInfo itemInfo) {
@@ -107,7 +109,7 @@ public class ListManager {
             editor.getArea().setParagraphStyle(i, style);
     }
 
-    public void createListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
+    public void createOrRemoveListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
         // in a loop, add each paragraph style, level, number etc, and list id
         var listId = this.generateListId();
 
@@ -119,7 +121,7 @@ public class ListManager {
         }
     }
 
-    public void computeListNumbering(String listId, int referenceParIndex) {
+    public void computeListNumbering(ParagraphType listType, String listId, int referenceParIndex) {
         var indexAndLevel = new HashMap<Integer, Integer>();
         
         var fromParIndex = this.findListStartAndFillLevel(referenceParIndex, indexAndLevel);
@@ -140,7 +142,9 @@ public class ListManager {
                 currentStyle,
                 i,
                 isLevelPreserved ? indexAndLevel.get(i) : 1,
-                indexNumberMap.get(i)
+                indexNumberMap.get(i),
+                false,
+                listType
             );
             var newStyle = ParagraphStyleHelper.withListNode(state, listId, true);
             editor.getArea().setParagraphStyle(i, newStyle);

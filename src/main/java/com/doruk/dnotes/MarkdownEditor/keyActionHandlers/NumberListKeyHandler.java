@@ -5,10 +5,12 @@ import java.util.Set;
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ListStyleTool;
+import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -37,22 +39,11 @@ public class NumberListKeyHandler implements KeyEventHandler {
         return area.getCaretColumn() == 0;
     }
 
-    // check if it's the last line in the document
-    private boolean isLastDocumentItem(FXTextEditor editor, int paragraphIndex) {
-        var area = editor.getArea();
-        return area.getParagraphs().size() - 1 == paragraphIndex;
-    }
-
     private void handleEnter(FXTextEditor editor, KeyEvent event) {
         var area = editor.getArea();
         var pos = area.getCaretPosition();
 
         var style = area.getParagraph(editor.getParagraphIndexAtPos(pos)).getParagraphStyle();
-        
-        var tool = Factory.createTool(ToolName.NumberList, editor);     
-        if (!(tool instanceof ListStyleTool numberTool))
-            return;
-
         
         // consume the event and insert new paragraph to the editor, before applying
         event.consume();
@@ -60,6 +51,7 @@ public class NumberListKeyHandler implements KeyEventHandler {
 
         // get the current paragraph index after insert
         var currentParagraph = editor.getParagraphIndexAtPos(pos) + 1;
+        ListManager.getInstance().computeListNumbering(ParagraphType.NUMBER_LIST_ITEM, style.numberListId, currentParagraph);
         // var newState = new ParagraphListItemInfo(
         //     currentParagraph,
         //     style.level, 

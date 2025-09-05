@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
@@ -66,9 +67,10 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         var flowInset = style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
         Label bulletNode = new Label(getLabel(labelType, style.lineCount) + ".");
-        bulletNode.setStyle("-fx-font-weight: bold; -fx-font-size: 22px;");
+        bulletNode.setStyle("-fx-font-weight: normal; -fx-font-size: 22px;");
         bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
-        bulletNode.setAlignment(Pos.BASELINE_CENTER);
+        bulletNode.setAlignment(Pos.BASELINE_LEFT);
+        bulletNode.setTextAlignment(TextAlignment.LEFT);
 
         return bulletNode;
     }

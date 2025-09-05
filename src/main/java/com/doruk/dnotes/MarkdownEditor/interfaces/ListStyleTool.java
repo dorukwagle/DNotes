@@ -12,7 +12,6 @@ public abstract class ListStyleTool extends ParagraphStyleTool {
     }
 
     // this method isn't needed for ListStyleTool
-    @SuppressWarnings("unchecked")
     @Override
     protected <T> T getStyle(T currentStyle, boolean apply) {
         return null;
@@ -26,7 +25,7 @@ public abstract class ListStyleTool extends ParagraphStyleTool {
         int startPar = area.offsetToPosition(start, Bias.Forward).getMajor();
         int endPar = area.offsetToPosition(end, Bias.Backward).getMajor();
 
-        ListManager.getInstance().createListNode(this.getParagraphType(), startPar, endPar, apply);
+        ListManager.getInstance().createOrRemoveListNode(this.getParagraphType(), startPar, endPar, apply);
     }
 
     // apply paragraph style on insertion (current paragraph only)

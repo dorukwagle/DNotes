@@ -7,15 +7,24 @@ import javafx.util.Pair;
 
 public class NumberListNode {
     private static Map<Integer, Integer> calculateSingleLevelNumbering(int fromParIndex, int toParIndex) {
-        Map<Integer, Integer> indexAndLevel = new HashMap<>();
+        Map<Integer, Integer> indexNumberMap = new HashMap<>();
 
         var cursor = 1;
         for (int i = fromParIndex; i <= toParIndex; i++) 
-            indexAndLevel.put(i, cursor++);
+            indexNumberMap.put(i, cursor++);
 
-        return indexAndLevel;
-    } 
-      
+        return indexNumberMap;
+    }
+
+    private static Map<Integer, Integer> calculateMultiLevelNumbering(int fromParIndex, int toParIndex) {
+        Map<Integer, Integer> indexNumberMap = new HashMap<>();
+
+        var cursor = 1;
+        for (int i = fromParIndex; i <= toParIndex; i++) 
+            indexNumberMap.put(i, cursor++);
+
+        return indexNumberMap;
+    }
     
     /**
      * This method calculates the numbering for the given list items. 
@@ -31,12 +40,12 @@ public class NumberListNode {
         Map<Integer, Integer> indexAndLevel) 
     {
         // if the first list item contains level > 1, don't preserve the levels
-        if (indexAndLevel.get(fromParIndex) > 1)
-            return new Pair<>(calculateSingleLevelNumbering(fromParIndex, toParIndex), false);
-        
         // if first item has level 1, then preserve the default levels.
-        var indexNumberMap = new HashMap<Integer, Integer>();
-        
-        return new Pair<>(indexNumberMap, true);
+        var preserve = indexAndLevel.get(fromParIndex) == 1;
+        return new Pair<>(
+            preserve ? calculateMultiLevelNumbering(fromParIndex, toParIndex) : 
+                calculateSingleLevelNumbering(fromParIndex, toParIndex),
+            preserve
+        );
     }
 }
