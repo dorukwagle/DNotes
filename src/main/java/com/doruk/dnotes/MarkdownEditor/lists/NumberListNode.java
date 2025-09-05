@@ -19,9 +19,15 @@ public class NumberListNode {
     private static Map<Integer, Integer> calculateMultiLevelNumbering(int fromParIndex, int toParIndex) {
         Map<Integer, Integer> indexNumberMap = new HashMap<>();
 
-        var cursor = 1;
-        for (int i = fromParIndex; i <= toParIndex; i++) 
-            indexNumberMap.put(i, cursor++);
+        Map<Integer, Integer> levelLineCount = new HashMap<>();
+
+        for (int i = fromParIndex; i <= toParIndex; i++) {
+           int level = indexNumberMap.get(i);
+           int count = levelLineCount.computeIfAbsent(level, _ -> 1);
+
+           indexNumberMap.put(i, count);
+           levelLineCount.put(level, count + 1);
+        }
 
         return indexNumberMap;
     }

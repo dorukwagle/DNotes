@@ -27,7 +27,7 @@ public class NumberListKeyHandler implements KeyEventHandler {
         var group = StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM);
         // if it's not a list item
         if (currentParagraphStyle.numberListId == null)
-            return; 
+            return;
         // now check if number list
         if (currentParagraphStyle.getStyle(group).get() != ParagraphType.NUMBER_LIST_ITEM)
             return;
