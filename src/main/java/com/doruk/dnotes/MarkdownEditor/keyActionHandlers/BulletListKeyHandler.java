@@ -4,10 +4,12 @@ import java.util.Set;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ListStyleTool;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -16,11 +18,15 @@ public class BulletListKeyHandler implements KeyEventHandler {
     @Override
     public void handle(
         FXTextEditor editor,
-        Set<ToolName> enabledTools, 
         KeyCode action, 
         KeyEvent event
     ) {
-        if (!enabledTools.contains(ToolName.BulletList))
+        var currentParagraphStyle = editor.getArea().getParagraph(editor.getParagraphIndexAtPos(editor.getArea().getCaretPosition())).getParagraphStyle();
+        var group = StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM);
+        if (currentParagraphStyle.numberListId == null)
+            return; // it's not a list item
+        // now check if bullet list
+        if (currentParagraphStyle.getStyle(group).get() != ParagraphType.BULLET_LIST_ITEM)
             return;
         
         switch (action) {

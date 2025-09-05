@@ -2,9 +2,7 @@ package com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 
@@ -18,7 +16,7 @@ public class KeyEventDispatcher {
         handlers.add(handler);
     }
 
-    public static void dispatch(FXTextEditor editor, Set<ToolName> enabledTools, KeyCode action, KeyEvent e) {
-        handlers.forEach(handler -> handler.handle(editor, enabledTools, action, e));
+    public static void dispatch(FXTextEditor editor, KeyCode action, KeyEvent e) {
+        handlers.forEach(handler -> handler.handle(editor, action, e));
     }
 }

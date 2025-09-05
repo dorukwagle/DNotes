@@ -134,14 +134,7 @@ public class MarkdownEditor implements IMarkdownEditor {
                 if (!keyActions.contains(event.getCode()))
                     return;
                 
-                var enabledTools = editorView.getControlPanel()
-                    .getStyleButtons()
-                    .stream()
-                    .filter(toggle -> toggle.isSelected())
-                    .map(toggle -> ToolName.fromName(toggle.getId()))
-                    .collect(Collectors.toSet());
-                
-                KeyEventDispatcher.dispatch(editorView.getEditor(), enabledTools, event.getCode(), event);
+                KeyEventDispatcher.dispatch(editorView.getEditor(), event.getCode(), event);
             });
     }
 

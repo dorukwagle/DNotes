@@ -11,6 +11,7 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ListStyleTool;
 import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -19,11 +20,16 @@ public class NumberListKeyHandler implements KeyEventHandler {
     @Override
     public void handle(
         FXTextEditor editor,
-        Set<ToolName> enabledTools, 
         KeyCode action, 
         KeyEvent event
     ) {
-        if (!enabledTools.contains(ToolName.NumberList))
+        var currentParagraphStyle = editor.getArea().getParagraph(editor.getParagraphIndexAtPos(editor.getArea().getCaretPosition())).getParagraphStyle();
+        var group = StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM);
+        // if it's not a list item
+        if (currentParagraphStyle.numberListId == null)
+            return; 
+        // now check if number list
+        if (currentParagraphStyle.getStyle(group).get() != ParagraphType.NUMBER_LIST_ITEM)
             return;
         
         switch (action) {
