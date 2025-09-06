@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
@@ -149,6 +150,36 @@ public class ListManager {
             var newStyle = ParagraphStyleHelper.withListNode(state, listId, true);
             editor.getArea().setParagraphStyle(i, newStyle);
         }
+    }
+
+    public void increaseListOffset(ParagraphType listType, String listId, int listStartIndex) {
+        
+    }
+
+    public void increaseItemLevel(ParagraphType listType, String listId, int itemParIndex, ParagraphStyle curStyle) {
+        this.adjustItemLevel(listType, listId, itemParIndex, curStyle, 1);
+    }
+    
+    public void decreaseItemLevel(ParagraphType listType, String listId, int itemParIndex, ParagraphStyle curStyle) {
+        this.adjustItemLevel(listType, listId, itemParIndex, curStyle, -1);
+    }
+
+    private void adjustItemLevel(ParagraphType listType, String listId, int itemParIndex, ParagraphStyle curStyle, int adjustBy) {
+        var newStyle = ParagraphStyleHelper.withListNode(
+            new ParagraphListItemInfo(
+                curStyle, 
+                itemParIndex, 
+                curStyle.level + adjustBy,
+                curStyle.lineCount,
+                false,
+                listType
+            ), 
+            listId, 
+            curStyle.offset, 
+            true
+        );
+        editor.getArea().setParagraphStyle(itemParIndex, newStyle);
+        this.computeListNumbering(listType, listId, itemParIndex);
     }
 
     private String generateListId() {

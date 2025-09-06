@@ -35,7 +35,9 @@ public class MarkdownEditor implements IMarkdownEditor {
     private static final Set<KeyCode> keyActions = Set.of(
         KeyCode.ENTER, 
         KeyCode.TAB, 
-        KeyCode.BACK_SPACE
+        KeyCode.BACK_SPACE,
+        KeyCode.SHIFT,
+        KeyCode.CONTROL
     );
 
     public MarkdownEditor() {

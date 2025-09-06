@@ -1,15 +1,8 @@
 package com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
 
-import java.util.Set;
-
-import com.doruk.dnotes.MarkdownEditor.Factory;
-import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
-import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
-import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
-import com.doruk.dnotes.MarkdownEditor.interfaces.ListStyleTool;
 import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
@@ -35,7 +28,12 @@ public class NumberListKeyHandler implements KeyEventHandler {
         switch (action) {
             case ENTER -> handleEnter(editor, event);
             case TAB -> handleTab(editor, event);
-            case BACK_SPACE -> handleBackspace(editor, event);
+            case BACK_SPACE -> {
+                if (event.isShiftDown())
+                    handleShiftBackspace(editor, event);
+                else
+                    handleBackspace(editor, event);
+            }
             default -> {}
         }
     }
@@ -58,40 +56,32 @@ public class NumberListKeyHandler implements KeyEventHandler {
         // get the current paragraph index after insert
         var currentParagraph = editor.getParagraphIndexAtPos(pos) + 1;
         ListManager.getInstance().computeListNumbering(ParagraphType.NUMBER_LIST_ITEM, style.numberListId, currentParagraph);
-        // var newState = new ParagraphListItemInfo(
-        //     currentParagraph,
-        //     style.level, 
-        //     style.lineCount + 1
-        // );
-
-        // numberTool.applyWithUpdatedState(editor, newState);
     }
 
     private void handleTab(FXTextEditor editor, KeyEvent event) {
         var area = editor.getArea();
-        // check if at middle of paragraph
         var pos = area.getCaretPosition();
+        // check if it's first item or caret is at column start
         if (!isCaretAtStart(editor))
             return;
-        
-        var paragraph = area.getParagraph(editor.getParagraphIndexAtPos(pos));
-        var style = paragraph.getParagraphStyle();
-
-        // check if it's first item
-        if (style.lineCount == 1)
-            return;
-        
+            
         event.consume();
 
-        var tool = Factory.createTool(ToolName.NumberList, editor);     
-        if (!(tool instanceof ListStyleTool numberTool))
+        var paragraph = area.getParagraph(editor.getParagraphIndexAtPos(pos));
+        var style = paragraph.getParagraphStyle();
+        
+        // if first item, then increase the offset
+        if (style.level == 1 && style.lineCount == 1) {
+            ListManager.getInstance()
+                .increaseListOffset(ParagraphType.NUMBER_LIST_ITEM, 
+                    style.numberListId, editor.getParagraphIndexAtPos(pos));
             return;
-
-        // numberTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
-        //     editor.getParagraphIndexAtPos(pos), 
-        //     style.level + 1, 
-        //     1
-        // ));
+        }
+        if (style.lineCount == 1)
+            return;// don't futher increaes the level, let editor handle tab
+        
+        ListManager.getInstance()
+            .increaseItemLevel(ParagraphType.NUMBER_LIST_ITEM, style.numberListId, editor.getParagraphIndexAtPos(pos), style);
     }
 
     private void handleBackspace(FXTextEditor editor, KeyEvent event) {
@@ -103,20 +93,34 @@ public class NumberListKeyHandler implements KeyEventHandler {
         
         var paragraph = area.getParagraph(editor.getParagraphIndexAtPos(pos));
         var style = paragraph.getParagraphStyle();
-        // also check if it's outermost level
+
+        ListManager.getInstance()
+            .computeListNumbering(
+                ParagraphType.NUMBER_LIST_ITEM, 
+                style.numberListId, 
+                editor.getParagraphIndexAtPos(pos)
+            );
+    }
+
+    private void handleShiftBackspace(FXTextEditor editor, KeyEvent event) {
+        var area = editor.getArea();
+        // check if at middle of paragraph
+        var pos = area.getCaretPosition();
+
+        var paragraph = area.getParagraph(editor.getParagraphIndexAtPos(pos));
+        var style = paragraph.getParagraphStyle();
+
         if (style.level == 1)
             return;
         
         event.consume();
 
-        var tool = Factory.createTool(ToolName.NumberList, editor);     
-        if (!(tool instanceof ListStyleTool numberTool))
-            return;
-
-        // numberTool.applyWithUpdatedState(editor, new ParagraphListItemInfo(
-        //     editor.getParagraphIndexAtPos(pos), 
-        //     style.level - 1, 
-        //     style.lineCount
-        // ));
+        ListManager.getInstance()
+            .decreaseItemLevel(
+                ParagraphType.NUMBER_LIST_ITEM, 
+                style.numberListId, 
+                editor.getParagraphIndexAtPos(pos),
+                style
+            );
     }
 }
