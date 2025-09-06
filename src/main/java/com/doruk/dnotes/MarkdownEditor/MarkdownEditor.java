@@ -118,7 +118,11 @@ public class MarkdownEditor implements IMarkdownEditor {
                     });
                 });
 
-        editorView.getEditor().getArea().insertText(0, "hello ⚾world \n hi world{\u2028} 😄testing world {\r}brave world");
+        var area = editorView.getEditor().getArea();
+        area.insertText(0, "hello test\n");
+        area.insertText(area.getLength() - 1, "hello ⚾world \n hi world{\u2028} 😄testing world {\r}brave world");
+        area.insertText(area.getLength() -1, "\nagain hi world");
+        area.insertText(area.getLength() -1, "\n haha");
     }
 
     private void initializeChangeHandlers() {

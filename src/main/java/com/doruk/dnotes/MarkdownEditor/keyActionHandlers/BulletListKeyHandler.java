@@ -1,9 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
 
-import java.util.Set;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
-import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
@@ -46,7 +44,6 @@ public class BulletListKeyHandler implements KeyEventHandler {
         var area = editor.getArea();
         var pos = area.getCaretPosition();
 
-        var style = area.getParagraph(editor.getParagraphIndexAtPos(pos)).getParagraphStyle();
         
         var tool = Factory.createTool(ToolName.BulletList, editor);     
         if (!(tool instanceof ListStyleTool bulletTool))

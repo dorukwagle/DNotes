@@ -7,8 +7,11 @@ import java.util.Objects;
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
 import org.fxmisc.richtext.model.SegmentOps;
+import org.fxmisc.richtext.model.TextChange;
 import org.fxmisc.richtext.model.TwoDimensional.Bias;
+import org.reactfx.SuspendableYes;
 
+import com.doruk.dnotes.MarkdownEditor.customFxmisc.util.UndoUtils;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
@@ -22,6 +25,7 @@ public class EditorFX implements FXTextEditor {
     private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
     private final Map<ToolName, Renderer<TextExt, TextStyle>> textRenderers = new EnumMap<>(ToolName.class);
     private final Map<ToolName, Renderer<TextFlow, ParagraphStyle>> paragraphRenderers = new EnumMap<>(ToolName.class);
+    private final SuspendableYes suspendableUndo = new SuspendableYes();
 
     public EditorFX() {
         area = new GenericStyledArea<>(
@@ -59,6 +63,11 @@ public class EditorFX implements FXTextEditor {
         area.setStyle(area.getStyle() + "-fx-padding: 16px;");
 
         area.getStylesheets().add(getClass().getResource("/styles.scss").toExternalForm());
+
+        // also implement custom undo manager to be able to stop recording some history
+        area.setUndoManager(
+            UndoUtils.richTextSuspendableUndoManager(area, suspendableUndo)
+        );
     }
 
     @Override
@@ -85,5 +94,10 @@ public class EditorFX implements FXTextEditor {
     @Override
     public int getParagraphIndexAtPos(int pos) {
         return area.offsetToPosition(pos, Bias.Forward).getMajor();
+    }
+
+    @Override
+    public SuspendableYes getSuspendableUndo() {
+        return suspendableUndo;
     }
 }

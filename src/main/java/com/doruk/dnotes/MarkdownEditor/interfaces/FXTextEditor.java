@@ -2,6 +2,7 @@ package com.doruk.dnotes.MarkdownEditor.interfaces;
 
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
+import org.reactfx.SuspendableYes;
 
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
@@ -15,4 +16,5 @@ public interface FXTextEditor {
     void addParagraphRenderer(ToolName tool, Renderer<TextFlow, ParagraphStyle> renderer);
     void removeRenderer(ToolName tool);
     int getParagraphIndexAtPos(int pos);
+    SuspendableYes getSuspendableUndo();
 }

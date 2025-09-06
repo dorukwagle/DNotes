@@ -115,8 +115,6 @@ public class NumberListKeyHandler implements KeyEventHandler {
 
     private void handleBackspace(FXTextEditor editor, KeyEvent event) {
         var area = editor.getArea();
-        // check if at middle of paragraph
-        var pos = area.getCaretPosition();
         // if has selection and no multi lines
         if (area.getSelection().getLength() > 0 && !area.getSelectedText().contains("\n"))
             return;

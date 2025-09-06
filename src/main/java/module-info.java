@@ -13,8 +13,9 @@ module com.doruk.dnotes {
     requires org.xerial.sqlitejdbc;
 
     requires org.fxmisc.flowless;
+    requires org.fxmisc.undo;
     requires transitive org.fxmisc.richtext;
-    requires reactfx;
+    requires transitive reactfx;
     
     exports com.doruk.dnotes;
     exports com.doruk.dnotes.views;

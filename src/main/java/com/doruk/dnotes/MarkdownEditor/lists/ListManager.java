@@ -28,6 +28,10 @@ public class ListManager {
         return instance;
     }
 
+    private void preventHistory(Runnable task) {
+        editor.getSuspendableUndo().suspendWhile(task::run);
+    }
+
     private int findListStartAndFillLevel(int referenceParIndex, Map<Integer, Integer> holder) {
         // if 0, then terminate
         if (referenceParIndex == 0)
@@ -90,7 +94,7 @@ public class ListManager {
         var apply = itemInfo.getApply();
         var style = ParagraphStyleHelper.withListNode(listState, apply ? listId : null, apply);
         
-        editor.getArea().setParagraphStyle(itemInfo.paragraphIndex, style);
+        this.preventHistory(() -> editor.getArea().setParagraphStyle(itemInfo.paragraphIndex, style));
 
         // if it's unapply, then remove all items below it
         var indexAndLevel = new HashMap<Integer, Integer>();
@@ -100,8 +104,11 @@ public class ListManager {
         if (indexAndLevel.size() == 1)
             return;
         
-        for (int i = itemInfo.paragraphIndex + 1; i <= toParIndex; i++) 
-            editor.getArea().setParagraphStyle(i, style);
+        // remove all list item numberings downwards
+        for (int i = itemInfo.paragraphIndex + 1; i <= toParIndex; i++) {
+            final int index = i;
+            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, style));
+        }
     }
 
     public void createOrRemoveListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
@@ -112,7 +119,9 @@ public class ListManager {
             var currentStyle = editor.getArea().getParagraph(i).getParagraphStyle();
             var state = new ParagraphListItemInfo(currentStyle, i, listType);
             var newStyle = ParagraphStyleHelper.withListNode(state, apply ? listId : null, apply);
-            editor.getArea().setParagraphStyle(i, newStyle);
+
+            final int index = i;
+            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, newStyle));
         }
     }
 
@@ -141,8 +150,9 @@ public class ListManager {
                 false,
                 listType
             );
+            final int index = i; 
             var newStyle = ParagraphStyleHelper.withListNode(state, listId, true);
-            editor.getArea().setParagraphStyle(i, newStyle);
+            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, newStyle));
         }
     }
 
@@ -172,7 +182,7 @@ public class ListManager {
             curStyle.offset, 
             true
         );
-        editor.getArea().setParagraphStyle(itemParIndex, newStyle);
+        this.preventHistory(() -> editor.getArea().setParagraphStyle(itemParIndex, newStyle));
         this.computeListNumbering(listType, listId, itemParIndex);
     }
 
