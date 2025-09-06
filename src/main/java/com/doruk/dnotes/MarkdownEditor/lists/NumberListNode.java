@@ -16,13 +16,13 @@ public class NumberListNode {
         return indexNumberMap;
     }
 
-    private static Map<Integer, Integer> calculateMultiLevelNumbering(int fromParIndex, int toParIndex) {
+    private static Map<Integer, Integer> calculateMultiLevelNumbering(int fromParIndex, int toParIndex, Map<Integer, Integer> indexAndLevel) {
         Map<Integer, Integer> indexNumberMap = new HashMap<>();
 
         Map<Integer, Integer> levelLineCount = new HashMap<>();
 
         for (int i = fromParIndex; i <= toParIndex; i++) {
-           int level = indexNumberMap.get(i);
+           int level = indexAndLevel.get(i);
            int count = levelLineCount.computeIfAbsent(level, _ -> 1);
 
            indexNumberMap.put(i, count);
@@ -49,7 +49,7 @@ public class NumberListNode {
         // if first item has level 1, then preserve the default levels.
         var preserve = indexAndLevel.get(fromParIndex) == 1;
         return new Pair<>(
-            preserve ? calculateMultiLevelNumbering(fromParIndex, toParIndex) : 
+            preserve ? calculateMultiLevelNumbering(fromParIndex, toParIndex, indexAndLevel) : 
                 calculateSingleLevelNumbering(fromParIndex, toParIndex),
             preserve
         );
