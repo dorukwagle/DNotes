@@ -39,7 +39,8 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         
         int indent = style.level;
         String bullet = labels[(indent - 1) % labels.length]; // cycle if deeper
-        var flowInset = indent * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
+        var flowInset = style.offset * GlobalConstants.DEFAULT_LIST_ITEM_INSET + 
+            indent * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
         Label bulletNode = new Label();
         bulletNode.setGraphic(new FontIcon(bullet));

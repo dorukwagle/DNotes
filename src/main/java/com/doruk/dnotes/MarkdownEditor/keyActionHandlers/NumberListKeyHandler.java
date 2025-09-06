@@ -49,10 +49,11 @@ public class NumberListKeyHandler implements KeyEventHandler {
 
     private void reCalculateListNumbering(FXTextEditor editor) {
         var area = editor.getArea();
-        var parIndex = editor.getParagraphIndexAtPos(area.getCaretPosition());
-        var style = area.getParagraph(parIndex).getParagraphStyle();
         
         Platform.runLater(() -> {
+            var parIndex = editor.getParagraphIndexAtPos(area.getCaretPosition());
+            var style = area.getParagraph(parIndex).getParagraphStyle();
+            
             ListManager.getInstance()
                 .computeListNumbering(
                     ParagraphType.NUMBER_LIST_ITEM, 

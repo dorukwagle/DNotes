@@ -64,7 +64,8 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
             return null;
         
         LabelType labelType = labels[(style.level - 1) % labels.length]; // cycle if deeper
-        var flowInset = style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
+        var flowInset = style.offset * GlobalConstants.DEFAULT_LIST_ITEM_INSET + 
+            style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
 
         Label bulletNode = new Label(getLabel(labelType, style.lineCount) + ".");
         bulletNode.setStyle("-fx-font-weight: normal; -fx-font-size: 22px;");

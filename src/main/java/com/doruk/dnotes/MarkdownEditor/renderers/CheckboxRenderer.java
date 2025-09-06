@@ -46,13 +46,16 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
     public Node renderParagraphGraphic(ParagraphStyle style, int index) {
         if (!isApplied(style))
             return null;
+
+        var flowInset = style.offset * GlobalConstants.DEFAULT_LIST_ITEM_INSET + 
+            style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
         
         Label bulletNode = new Label();
         var icon = new FontIcon(style.isItemChecked ? CHECKED : UNCHECKED);
         bulletNode.setGraphic(icon);
         icon.setScaleX(1.3);
         icon.setScaleY(1.3);
-        bulletNode.setPadding(new Insets(0, 0, 0, GlobalConstants.DEFAULT_LIST_ITEM_INSET));
+        bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
         bulletNode.setCursor(Cursor.HAND);
         bulletNode.setAlignment(Pos.BASELINE_CENTER);
 
