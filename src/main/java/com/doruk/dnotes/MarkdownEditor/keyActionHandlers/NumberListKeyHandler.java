@@ -6,6 +6,8 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
+import javafx.application.Platform;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -34,6 +36,8 @@ public class NumberListKeyHandler implements KeyEventHandler {
                 else
                     handleBackspace(editor, event);
             }
+            case V -> handlePaste(editor, event);
+            case X -> handleCut(editor, event);
             default -> {}
         }
     }
@@ -41,6 +45,21 @@ public class NumberListKeyHandler implements KeyEventHandler {
     private boolean isCaretAtStart(FXTextEditor editor) {
         var area = editor.getArea();
         return area.getCaretColumn() == 0;
+    }
+
+    private void reCalculateListNumbering(FXTextEditor editor) {
+        var area = editor.getArea();
+        var parIndex = editor.getParagraphIndexAtPos(area.getCaretPosition());
+        var style = area.getParagraph(parIndex).getParagraphStyle();
+        
+        Platform.runLater(() -> {
+            ListManager.getInstance()
+                .computeListNumbering(
+                    ParagraphType.NUMBER_LIST_ITEM, 
+                    style.numberListId,
+                    parIndex
+                );
+        });
     }
 
     private void handleEnter(FXTextEditor editor, KeyEvent event) {
@@ -55,7 +74,11 @@ public class NumberListKeyHandler implements KeyEventHandler {
 
         // get the current paragraph index after insert
         var currentParagraph = editor.getParagraphIndexAtPos(pos) + 1;
-        ListManager.getInstance().computeListNumbering(ParagraphType.NUMBER_LIST_ITEM, style.numberListId, currentParagraph);
+        ListManager.getInstance().computeListNumbering(
+            ParagraphType.NUMBER_LIST_ITEM, 
+            style.numberListId, 
+            currentParagraph
+        );
     }
 
     private void handleTab(FXTextEditor editor, KeyEvent event) {
@@ -81,25 +104,48 @@ public class NumberListKeyHandler implements KeyEventHandler {
             return;// don't futher increaes the level, let editor handle tab
         
         ListManager.getInstance()
-            .increaseItemLevel(ParagraphType.NUMBER_LIST_ITEM, style.numberListId, editor.getParagraphIndexAtPos(pos), style);
+            .increaseItemLevel(
+                ParagraphType.NUMBER_LIST_ITEM, 
+                style.numberListId, 
+                editor.getParagraphIndexAtPos(pos), 
+                style
+            );
     }
 
     private void handleBackspace(FXTextEditor editor, KeyEvent event) {
         var area = editor.getArea();
         // check if at middle of paragraph
         var pos = area.getCaretPosition();
-        if (!isCaretAtStart(editor))
+        // if has selection and no multi lines
+        if (area.getSelection().getLength() > 0 && !area.getSelectedText().contains("\n"))
+            return;
+            
+        if (area.getSelection().getLength() == 0 && !isCaretAtStart(editor))
+            return;
+
+        // since this runs before the backspace reaches editor and removes the text
+        this.reCalculateListNumbering(editor); // executes in next javafx pulse
+    }
+
+    private void handleCut(FXTextEditor editor, KeyEvent event) {
+        var area = editor.getArea();
+        var selection = area.getSelection();
+
+        if (selection.getLength() == 0 || !area.getSelectedText().contains("\n"))
             return;
         
-        var paragraph = area.getParagraph(editor.getParagraphIndexAtPos(pos));
-        var style = paragraph.getParagraphStyle();
+        this.reCalculateListNumbering(editor);
+    }
 
-        ListManager.getInstance()
-            .computeListNumbering(
-                ParagraphType.NUMBER_LIST_ITEM, 
-                style.numberListId, 
-                editor.getParagraphIndexAtPos(pos)
-            );
+    private void handlePaste(FXTextEditor editor, KeyEvent event) {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        var content = clipboard.getString();
+        if (!clipboard.hasString() || 
+            content.isEmpty() || 
+            !content.contains("\n"))
+                return;
+        
+        this.reCalculateListNumbering(editor);
     }
 
     private void handleShiftBackspace(FXTextEditor editor, KeyEvent event) {

@@ -28,12 +28,6 @@ public class ListManager {
         return instance;
     }
 
-    // check if it's the last line in the document
-    private boolean isLastDocumentItem(int paragraphIndex) {
-        var area = editor.getArea();
-        return area.getParagraphs().size() - 1 == paragraphIndex;
-    }
-
     private int findListStartAndFillLevel(int referenceParIndex, Map<Integer, Integer> holder) {
         // if 0, then terminate
         if (referenceParIndex == 0)

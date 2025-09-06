@@ -35,9 +35,11 @@ public class MarkdownEditor implements IMarkdownEditor {
     private static final Set<KeyCode> keyActions = Set.of(
         KeyCode.ENTER, 
         KeyCode.TAB, 
-        KeyCode.BACK_SPACE,
-        KeyCode.SHIFT,
-        KeyCode.CONTROL
+        KeyCode.BACK_SPACE
+    );
+    private static final Set<KeyCode> modifierKeyActions = Set.of(
+        KeyCode.X,
+        KeyCode.V
     );
 
     public MarkdownEditor() {
@@ -53,6 +55,17 @@ public class MarkdownEditor implements IMarkdownEditor {
         initializeChangeHandlers();
 
         initializeKeyEventHandlers();
+    }
+
+    private boolean shouldHandleKeyAction(KeyEvent event, KeyCode action) {
+        if (keyActions.contains(action))
+            return true;
+        
+        if ((event.isControlDown() || event.isMetaDown()) && 
+            modifierKeyActions.contains(action))
+                return true;
+        
+        return false;
     }
 
     private void loadFonts() {
@@ -124,16 +137,8 @@ public class MarkdownEditor implements IMarkdownEditor {
         KeyEventDispatcher.addHandler(new NumberListKeyHandler());
 
         this.editorView.getEditor().getArea()
-            .addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                // switch (event.getCode()) {
-                //     case PASTE -> System.out.println("paste");
-                //     case CUT -> System.out.println("cut");
-                //     case COPY -> System.out.println("copy");
-                //     case  -> System.out.println("ctrl");
-                //     default -> {}
-                // }
-                
-                if (!keyActions.contains(event.getCode()))
+            .addEventFilter(KeyEvent.KEY_PRESSED, event -> {                
+                if (!this.shouldHandleKeyAction(event, event.getCode()))
                     return;
                 
                 KeyEventDispatcher.dispatch(editorView.getEditor(), event.getCode(), event);
