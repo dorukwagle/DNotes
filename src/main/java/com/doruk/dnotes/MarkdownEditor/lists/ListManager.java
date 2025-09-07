@@ -40,6 +40,10 @@ public class ListManager {
         var area = editor.getArea();
         var parIndex = referenceParIndex - 1; // exclude the reference
         var listId = area.getParagraph(parIndex).getParagraphStyle().numberListId;
+
+        // if list id is null, then probably the reference item is the first list item
+        if (listId == null)
+            return referenceParIndex;
         
         while (parIndex >= 0) {
             var curPar = area.getParagraph(parIndex);

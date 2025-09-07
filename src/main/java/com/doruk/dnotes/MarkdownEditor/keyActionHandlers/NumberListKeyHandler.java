@@ -117,15 +117,41 @@ public class NumberListKeyHandler implements KeyEventHandler {
 
     private void handleBackspace(FXTextEditor editor, KeyEvent event) {
         var area = editor.getArea();
+        var hasSelection = area.getSelection().getLength() > 0;
         // if has selection and no multi lines
-        if (area.getSelection().getLength() > 0 && !area.getSelectedText().contains("\n"))
+        if (hasSelection && !area.getSelectedText().contains("\n"))
             return;
-            
-        if (area.getSelection().getLength() == 0 && !isCaretAtStart(editor))
+        
+        if (!hasSelection && !isCaretAtStart(editor))
             return;
 
-        // since this runs before the backspace reaches editor and removes the text
-        this.reCalculateListNumbering(editor); // executes in next javafx pulse
+        var pos = area.getCaretPosition();
+        var curParIndex = editor.getParagraphIndexAtPos(pos);
+        var style = area.getParagraph(curParIndex).getParagraphStyle();
+        boolean firstListItem = style.lineCount == 1 && style.level == 1;
+            
+        // if it's first list item, need to handle the backspace manually, as it puts cursor
+        // outside of the list.
+        if (firstListItem) {
+            // check if next item exist
+            var nextStyle = area.getParagraph(curParIndex + 1).getParagraphStyle();
+            if (!style.numberListId.equals(nextStyle.numberListId))
+                return;
+
+            // le the event run, and in the next pulse, when cursor resets, re-calculate the list
+            // now the index of next item is the index of current item
+            Platform.runLater(() -> ListManager.getInstance()
+                .computeListNumbering(
+                    ParagraphType.NUMBER_LIST_ITEM, 
+                    style.numberListId,
+                    curParIndex
+                ));
+            return;
+        }
+        // if it's any other paragraph except the first one, just re-calculate the list
+        this.reCalculateListNumbering(
+            editor
+        ); // executes in next javafx pulse
     }
 
     private void handleCut(FXTextEditor editor, KeyEvent event) {
