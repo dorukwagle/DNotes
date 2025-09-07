@@ -82,6 +82,26 @@ public class ListManager {
         return parIndex - 1;
     }
 
+    private void scanSelectedAndFillLevel(int fromParIndex, int toParIndex, Map<Integer, Integer> holder) {
+        var area = editor.getArea();
+        var areListItems = true;
+
+        for (int i = fromParIndex; i <= toParIndex; i++) {
+            var curPar = area.getParagraph(i);
+            var curStyle = curPar.getParagraphStyle();
+            
+            areListItems = curStyle.numberListId != null;
+
+            holder.put(i, curStyle.level);
+        }
+
+        // if list items if false, it means some items have stale list levels. 
+        // so ignore leveling, just make first line level anything other than 1, 
+        // rest will be handled by the NumberListNode
+        if (!areListItems)
+            holder.put(fromParIndex, Integer.MAX_VALUE);
+    }
+
     private void removeListStyle(int parIndex, ParagraphStyle style) {
         var indexAndLevel = new HashMap<Integer, Integer>();
         var toParIndex = this.findListEndAndFillLevel(parIndex, indexAndLevel);
@@ -115,26 +135,15 @@ public class ListManager {
             this.removeListStyle(itemInfo.paragraphIndex, style);
     }
 
-    public void createOrRemoveListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
-        // in a loop, add each paragraph style, level, number etc, and list id
-        var listId = this.generateListId();
-
-        for (int i = fromParIndex; i <= toParIndex; i++) {
-            var currentStyle = editor.getArea().getParagraph(i).getParagraphStyle();
-            var state = new ParagraphListItemInfo(currentStyle, i, listType);
-            var newStyle = ParagraphStyleHelper.withListNode(state, apply ? listId : null, apply);
-
-            final int index = i;
-            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, newStyle));
-        }
-    }
-
-    public void computeListNumbering(ParagraphType listType, String listId, int referenceParIndex) {
-        var indexAndLevel = new HashMap<Integer, Integer>();
-        
-        var fromParIndex = this.findListStartAndFillLevel(referenceParIndex, indexAndLevel);
-        var toParIndex = this.findListEndAndFillLevel(referenceParIndex, indexAndLevel);
-
+    private void applyOrRemoveListNumbering(
+            ParagraphType listType, 
+            String listId, 
+            int fromParIndex, 
+            int toParIndex, 
+            Map<Integer, Integer>
+            indexAndLevel, 
+            boolean apply, 
+            boolean skipCorrectNumbering) {
         var calculation = NumberListNode.calculateItemsNumbering(fromParIndex, toParIndex, indexAndLevel);
         var isLevelPreserved = calculation.getValue();
         var indexNumberMap = calculation.getKey();
@@ -142,8 +151,11 @@ public class ListManager {
         for (int i = fromParIndex; i <= toParIndex; i++) {
             var currentStyle = editor.getArea().getParagraph(i).getParagraphStyle();
             // skip if already correct numbering
-            if (currentStyle.lineCount == indexNumberMap.get(i) && 
-                currentStyle.level == indexAndLevel.get(i))
+            if (
+                skipCorrectNumbering && 
+                currentStyle.lineCount == indexNumberMap.get(i) && 
+                currentStyle.level == indexAndLevel.get(i)
+            )
                 continue;
             
             var state = new ParagraphListItemInfo(
@@ -155,9 +167,41 @@ public class ListManager {
                 listType
             );
             final int index = i; 
-            var newStyle = ParagraphStyleHelper.withListNode(state, listId, true);
+            var newStyle = ParagraphStyleHelper.withListNode(state, apply ? listId : null, apply);
             this.preventHistory(() -> editor.getArea().setParagraphStyle(index, newStyle));
         }
+    }
+
+    public void createOrRemoveListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
+        var indexAndLevel = new HashMap<Integer, Integer>();
+        this.scanSelectedAndFillLevel(fromParIndex, toParIndex, indexAndLevel);
+
+        this.applyOrRemoveListNumbering(
+            listType, 
+            this.generateListId(),
+            fromParIndex, 
+            toParIndex, 
+            indexAndLevel, 
+            apply, 
+            false
+        );
+    }
+
+    public void computeListNumbering(ParagraphType listType, String listId, int referenceParIndex) {
+        var indexAndLevel = new HashMap<Integer, Integer>();
+        
+        var fromParIndex = this.findListStartAndFillLevel(referenceParIndex, indexAndLevel);
+        var toParIndex = this.findListEndAndFillLevel(referenceParIndex, indexAndLevel);
+
+        this.applyOrRemoveListNumbering(
+            listType, 
+            listId,
+            fromParIndex, 
+            toParIndex, 
+            indexAndLevel, 
+            true, 
+            true
+        );
     }
 
     public void adjustListOffset(ParagraphType listType, String listId, int listStartIndex, int adjustBy) {
