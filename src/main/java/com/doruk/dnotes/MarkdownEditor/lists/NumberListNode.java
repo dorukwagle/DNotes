@@ -21,8 +21,14 @@ public class NumberListNode {
 
         Map<Integer, Integer> levelLineCount = new HashMap<>();
 
+        int referenceLevel = 0;
         for (int i = fromParIndex; i <= toParIndex; i++) {
            int level = indexAndLevel.get(i);
+           if (level < referenceLevel)
+                levelLineCount.put(level + 1, 1); // reset the inner level
+
+            referenceLevel = level;
+
            int count = levelLineCount.computeIfAbsent(level, _ -> 1);
 
            indexNumberMap.put(i, count);
