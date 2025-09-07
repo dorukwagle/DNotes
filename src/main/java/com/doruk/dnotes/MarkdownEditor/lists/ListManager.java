@@ -82,6 +82,17 @@ public class ListManager {
         return parIndex - 1;
     }
 
+    private void removeListStyle(int parIndex, ParagraphStyle style) {
+        var indexAndLevel = new HashMap<Integer, Integer>();
+        var toParIndex = this.findListEndAndFillLevel(parIndex, indexAndLevel);
+        
+        // remove all list item numberings downwards, including reference
+        for (int i = parIndex; i <= toParIndex; i++) {
+            final int index = i;
+            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, style));
+        }
+    }
+
     public void createOrRemoveListNode(ParagraphListItemInfo itemInfo) {
         var listState = new ParagraphListItemInfo(
             itemInfo.oldStyle,
@@ -98,21 +109,10 @@ public class ListManager {
         var apply = itemInfo.getApply();
         var style = ParagraphStyleHelper.withListNode(listState, apply ? listId : null, apply);
         
-        this.preventHistory(() -> editor.getArea().setParagraphStyle(itemInfo.paragraphIndex, style));
-
-        // if it's unapply, then remove all items below it
-        var indexAndLevel = new HashMap<Integer, Integer>();
-        var toParIndex = this.findListEndAndFillLevel(itemInfo.paragraphIndex, indexAndLevel);
-
-        // if the reference/current paragraph index is the only index, just return
-        if (indexAndLevel.size() == 1)
-            return;
-        
-        // remove all list item numberings downwards
-        for (int i = itemInfo.paragraphIndex + 1; i <= toParIndex; i++) {
-            final int index = i;
-            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, style));
-        }
+        if (apply)
+            this.preventHistory(() -> editor.getArea().setParagraphStyle(itemInfo.paragraphIndex, style));
+        else
+            this.removeListStyle(itemInfo.paragraphIndex, style);
     }
 
     public void createOrRemoveListNode(ParagraphType listType, int fromParIndex, int toParIndex, boolean apply) {
