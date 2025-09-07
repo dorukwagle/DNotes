@@ -96,10 +96,10 @@ public class ListManager {
         }
 
         // if list items if false, it means some items have stale list levels. 
-        // so ignore leveling, just make first line level anything other than 1, 
+        // so ignore leveling, put -1 as key to the holder map, 
         // rest will be handled by the NumberListNode
         if (!areListItems)
-            holder.put(fromParIndex, Integer.MAX_VALUE);
+            holder.put(-1, Integer.MAX_VALUE);
     }
 
     private void removeListStyle(int parIndex, ParagraphStyle style) {
@@ -144,9 +144,7 @@ public class ListManager {
             indexAndLevel, 
             boolean apply, 
             boolean skipCorrectNumbering) {
-        var calculation = NumberListNode.calculateItemsNumbering(fromParIndex, toParIndex, indexAndLevel);
-        var isLevelPreserved = calculation.getValue();
-        var indexNumberMap = calculation.getKey();
+        var indexNumberMap = NumberListNode.calculateItemsNumbering(fromParIndex, toParIndex, indexAndLevel);
 
         for (int i = fromParIndex; i <= toParIndex; i++) {
             var currentStyle = editor.getArea().getParagraph(i).getParagraphStyle();
@@ -161,7 +159,7 @@ public class ListManager {
             var state = new ParagraphListItemInfo(
                 currentStyle,
                 i,
-                isLevelPreserved ? indexAndLevel.get(i) : 1,
+                indexAndLevel.get(i),
                 indexNumberMap.get(i),
                 false,
                 listType

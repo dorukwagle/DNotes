@@ -3,8 +3,6 @@ package com.doruk.dnotes.MarkdownEditor.lists;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.util.Pair;
-
 public class NumberListNode {
     private static Map<Integer, Integer> calculateSingleLevelNumbering(int fromParIndex, int toParIndex) {
         Map<Integer, Integer> indexNumberMap = new HashMap<>();
@@ -16,12 +14,13 @@ public class NumberListNode {
         return indexNumberMap;
     }
 
-    private static Map<Integer, Integer> calculateMultiLevelNumbering(int fromParIndex, int toParIndex,
-            Map<Integer, Integer> indexAndLevel) {
+    private static Map<Integer, Integer> calculateMultiLevelNumbering(int fromParIndex, int toParIndex, Map<Integer, Integer> indexAndLevel) {
         Map<Integer, Integer> indexNumberMap = new HashMap<>();
 
         Map<Integer, Integer> levelLineCount = new HashMap<>();
 
+        // if any level is less than the pivot, then start the numbering from 2
+        int pivot = indexAndLevel.get(fromParIndex);
         int referenceLevel = 0;
         for (int i = fromParIndex; i <= toParIndex; i++) {
             int level = indexAndLevel.get(i);
@@ -30,7 +29,7 @@ public class NumberListNode {
 
             referenceLevel = level;
 
-            int count = levelLineCount.computeIfAbsent(level, _ -> 1);
+            int count = levelLineCount.computeIfAbsent(level, _ -> level < pivot ? 2 : 1);
 
             indexNumberMap.put(i, count);
             levelLineCount.put(level, count + 1);
@@ -41,23 +40,18 @@ public class NumberListNode {
 
     /**
      * This method calculates the numbering for the given list items.
-     * The returned pair's first element is a map of paragraph index to numbering,
-     * and the second element is a boolean indicating whether the level is
-     * preserved.
+     * Put -1 as key with any value, to remove levels, only apply single level numbering.
      * 
      * @param fromParIndex  the starting paragraph index
      * @param toParIndex    the ending paragraph index
      * @param indexAndLevel a map of paragraph index to level
-     * @return a pair of map and boolean
+     * @return a map of paragraph index to numbering
      */
-    public static Pair<Map<Integer, Integer>, Boolean> calculateItemsNumbering(int fromParIndex, int toParIndex,
+    public static Map<Integer, Integer> calculateItemsNumbering(int fromParIndex, int toParIndex,
             Map<Integer, Integer> indexAndLevel) {
-        // if the first list item contains level > 1, don't preserve the levels
-        // if first item has level 1, then preserve the default levels.
-        var preserve = indexAndLevel.get(fromParIndex) == 1;
-        return new Pair<>(
-                preserve ? calculateMultiLevelNumbering(fromParIndex, toParIndex, indexAndLevel)
-                        : calculateSingleLevelNumbering(fromParIndex, toParIndex),
-                preserve);
+        if (indexAndLevel.containsKey(-1))
+            return calculateSingleLevelNumbering(fromParIndex, toParIndex);
+        
+        return calculateMultiLevelNumbering(fromParIndex, toParIndex, indexAndLevel);
     }
 }
