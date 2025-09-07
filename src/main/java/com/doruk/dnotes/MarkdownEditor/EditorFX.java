@@ -7,7 +7,6 @@ import java.util.Objects;
 import org.fxmisc.richtext.GenericStyledArea;
 import org.fxmisc.richtext.TextExt;
 import org.fxmisc.richtext.model.SegmentOps;
-import org.fxmisc.richtext.model.TextChange;
 import org.fxmisc.richtext.model.TwoDimensional.Bias;
 import org.reactfx.SuspendableYes;
 

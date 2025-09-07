@@ -17,6 +17,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.View;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.BulletListKeyHandler;
+import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.CheckListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.KeyEventDispatcher;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.NumberListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
@@ -139,6 +140,7 @@ public class MarkdownEditor implements IMarkdownEditor {
     private void initializeKeyEventHandlers() {
         KeyEventDispatcher.addHandler(new BulletListKeyHandler());
         KeyEventDispatcher.addHandler(new NumberListKeyHandler());
+        KeyEventDispatcher.addHandler(new CheckListKeyHandler());
 
         this.editorView.getEditor().getArea()
             .addEventFilter(KeyEvent.KEY_PRESSED, event -> {                
