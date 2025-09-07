@@ -5,6 +5,7 @@ import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.KeyEventHandler;
 import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+import com.doruk.dnotes.store.GlobalConstants;
 
 import javafx.application.Platform;
 import javafx.scene.input.Clipboard;
@@ -96,9 +97,10 @@ public class NumberListKeyHandler implements KeyEventHandler {
         
         // if first item, then increase the offset
         if (style.level == 1 && style.lineCount == 1) {
-            ListManager.getInstance()
-                .increaseListOffset(ParagraphType.NUMBER_LIST_ITEM, 
-                    style.numberListId, editor.getParagraphIndexAtPos(pos));
+            if (style.offset < GlobalConstants.MAX_LIST_ITEM_OFFSET)
+                ListManager.getInstance()
+                    .increaseListOffset(ParagraphType.NUMBER_LIST_ITEM, 
+                        style.numberListId, editor.getParagraphIndexAtPos(pos));
             return;
         }
         if (style.lineCount == 1)
@@ -155,10 +157,21 @@ public class NumberListKeyHandler implements KeyEventHandler {
         var paragraph = area.getParagraph(editor.getParagraphIndexAtPos(pos));
         var style = paragraph.getParagraphStyle();
 
-        if (style.level == 1)
-            return;
+        
+        if (style.level == 1 && style.lineCount > 1)
+        return;
         
         event.consume();
+        
+        // if first item, then decrease the offset
+        if (style.level == 1 && style.lineCount == 1) {
+            if (style.offset > 0)
+                ListManager.getInstance()
+                    .decreaseListOffset(ParagraphType.NUMBER_LIST_ITEM, 
+                        style.numberListId, editor.getParagraphIndexAtPos(pos));
+            return;
+        }
+
 
         ListManager.getInstance()
             .decreaseItemLevel(

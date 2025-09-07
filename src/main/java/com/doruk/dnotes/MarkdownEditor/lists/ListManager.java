@@ -156,8 +156,41 @@ public class ListManager {
         }
     }
 
+    public void adjustListOffset(ParagraphType listType, String listId, int listStartIndex, int adjustBy) {
+        var area = editor.getArea();
+        var parIndex = listStartIndex;
+        var totalParagraphs = area.getParagraphs().size();
+        var offset = area.getParagraph(parIndex).getParagraphStyle().offset + adjustBy;
+
+        while (parIndex < totalParagraphs) {
+            var curPar = area.getParagraph(parIndex);
+            var curStyle = curPar.getParagraphStyle();
+            
+            if (!listId.equals(curStyle.numberListId))
+                break;
+            
+            var state = new ParagraphListItemInfo(
+                curStyle,
+                parIndex,
+                curStyle.level,
+                curStyle.lineCount,
+                false,
+                listType
+            );
+            final int index = parIndex; 
+            var newStyle = ParagraphStyleHelper.withListNode(state, listId, offset, true);
+            this.preventHistory(() -> editor.getArea().setParagraphStyle(index, newStyle));
+            
+            ++parIndex; 
+        }
+    }
+
     public void increaseListOffset(ParagraphType listType, String listId, int listStartIndex) {
-        
+        this.adjustListOffset(listType, listId, listStartIndex, 1);
+    }
+
+    public void decreaseListOffset(ParagraphType listType, String listId, int listStartIndex) {
+        this.adjustListOffset(listType, listId, listStartIndex, -1);
     }
 
     public void increaseItemLevel(ParagraphType listType, String listId, int itemParIndex, ParagraphStyle curStyle) {
