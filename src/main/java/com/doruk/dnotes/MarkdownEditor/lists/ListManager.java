@@ -180,7 +180,7 @@ public class ListManager {
             listType, 
             this.generateListId(),
             fromParIndex, 
-            toParIndex, 
+            toParIndex,
             indexAndLevel, 
             apply, 
             false
