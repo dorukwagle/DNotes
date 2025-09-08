@@ -22,6 +22,7 @@ public class BlockquoteRenderer implements Renderer<TextFlow, ParagraphStyle> {
             "-fx-border-insets: 15px 100px 10px 35px;" +
             "-fx-border-color: -color-accent-6;" +
             "-fx-border-width: 0 0 0 10px;" +
+            "-fx-padding: 0px 0px 0px 5px;" +
             "-fx-font-family: 'Magnolia Script';"
         );
     }

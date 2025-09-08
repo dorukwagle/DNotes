@@ -56,28 +56,6 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         
         textFlow.setStyle(textFlow.getStyle() + 
             "-fx-padding: 2px 0 2px 20px;");
-        // var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
-        // if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM))
-        //     return;
         
-        // int indent = style.level;
-        // String bullet = labels[indent % labels.length]; // cycle if deeper
-        // var labelInset = 20;
-        // var flowInset = (style.level + 1) * labelInset + labelInset;
-
-        // Label bulletNode = new Label();
-        // bulletNode.setGraphic(new FontIcon(bullet));
-        
-        // bulletNode.setStyle("-fx-font-size: 12px; -fx-padding: 0px 0px 0px -" + labelInset + "px;");
-        // // Insert at the start of the flow
-        // textFlow.getChildren().add(0, bulletNode); 
-
-        // // padding so text aligns nicely
-        
-        
-        // textFlow.setStyle(textFlow.getStyle() + 
-        //     "-fx-border-insets: 0px 0px 0px " + flowInset + "px;" +
-        //     "-fx-background-insets: 0px 0px 0px " + flowInset + "px;"
-        // );
     }
 }

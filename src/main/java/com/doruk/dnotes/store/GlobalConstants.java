@@ -14,4 +14,5 @@ public class GlobalConstants {
     public static final int H4_FONT_SIZE = 24;
     public static final int DEFAULT_LIST_ITEM_INSET = 30;
     public static final int MAX_LIST_ITEM_OFFSET = 10;
+    public static final int DEFAULT_LIST_SPACE = 20;
 }
