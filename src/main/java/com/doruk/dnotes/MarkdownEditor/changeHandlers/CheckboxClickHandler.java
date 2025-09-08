@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
 import com.doruk.dnotes.MarkdownEditor.ToolsMediator;
-import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolsEvent;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;

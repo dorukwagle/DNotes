@@ -40,18 +40,6 @@ public class ParagraphStyleHelper {
                 StyleGroupRegistry.getGroup(ParagraphType.ALIGN_LEFT), apply ? ParagraphType.ALIGN_LEFT : null);
     }
 
-    public static ParagraphStyle withBulletList(ParagraphStyle oldStyle, int level, int lineCount, boolean apply) {
-        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked)
-                .withStyle(oldStyle, StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM),
-                        apply ? ParagraphType.BULLET_LIST_ITEM : null);
-    }
-
-    public static ParagraphStyle withNumberList(ParagraphStyle oldStyle, int level, int lineCount, boolean apply) {
-        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked)
-                .withStyle(oldStyle,
-                        StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
-    }
-
     public static ParagraphStyle withListNode(ParagraphListItemInfo itemInfo, String listId, boolean apply) {
         return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, itemInfo.oldStyle.offset)
                 .withStyle(itemInfo.oldStyle,
@@ -62,35 +50,5 @@ public class ParagraphStyleHelper {
         return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, offset)
                 .withStyle(itemInfo.oldStyle,
                         StyleGroupRegistry.getGroup(itemInfo.listType), apply ? itemInfo.listType : null);
-    }
-
-    public static ParagraphStyle withCheckList(ParagraphStyle oldStyle, boolean checked, boolean apply) {
-        return new ParagraphStyle(oldStyle.level, oldStyle.lineCount, checked)
-                .withStyle(oldStyle,
-                        StyleGroupRegistry.getGroup(ParagraphType.CHECK_LIST_ITEM), apply ? ParagraphType.CHECK_LIST_ITEM : null);
-    }
-    
-    public static ParagraphStyle withBulletList(ParagraphStyle oldStyle, int level, int lineCount, int offset, boolean apply) {
-        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked, offset)
-                .withStyle(oldStyle, StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM),
-                        apply ? ParagraphType.BULLET_LIST_ITEM : null);
-    }
-
-    public static ParagraphStyle withNumberList(ParagraphStyle oldStyle, int level, int lineCount, int offset, boolean apply) {
-        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked, offset)
-                .withStyle(oldStyle,
-                        StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
-    }
-
-    public static ParagraphStyle withNumberList(ParagraphStyle oldStyle, int level, int lineCount, String numberListId, int offset, boolean apply) {
-        return new ParagraphStyle(level, lineCount, oldStyle.isItemChecked, numberListId, offset)
-                .withStyle(oldStyle,
-                        StyleGroupRegistry.getGroup(ParagraphType.NUMBER_LIST_ITEM), apply ? ParagraphType.NUMBER_LIST_ITEM : null);
-    }
-
-    public static ParagraphStyle withCheckList(ParagraphStyle oldStyle, boolean checked, int offset, boolean apply) {
-        return new ParagraphStyle(oldStyle.level, oldStyle.lineCount, checked, offset)
-                .withStyle(oldStyle,
-                        StyleGroupRegistry.getGroup(ParagraphType.CHECK_LIST_ITEM), apply ? ParagraphType.CHECK_LIST_ITEM : null);
     }
 }

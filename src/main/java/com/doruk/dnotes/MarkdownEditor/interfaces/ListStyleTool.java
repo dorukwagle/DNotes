@@ -4,7 +4,6 @@ import org.fxmisc.richtext.model.TwoDimensional.Bias;
 
 import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
-import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
 public abstract class ListStyleTool extends ParagraphStyleTool {
     public ListStyleTool(FXTextEditor editor) {
@@ -42,13 +41,4 @@ public abstract class ListStyleTool extends ParagraphStyleTool {
 
         ListManager.getInstance().createOrRemoveListNode(state);
     }
-
-    public void applyWithUpdatedState(FXTextEditor editor, ParagraphListItemInfo state) {
-        var style = editor.getArea().getParagraph(state.paragraphIndex).getParagraphStyle();
-
-        var newStyle = ParagraphStyleHelper.withNumberList(style, state.level, 
-            state.lineCount, 
-            true);
-        editor.getArea().setParagraphStyle(state.paragraphIndex, newStyle);
-    }   
 }
