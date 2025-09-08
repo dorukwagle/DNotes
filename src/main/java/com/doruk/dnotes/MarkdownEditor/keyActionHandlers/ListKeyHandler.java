@@ -82,6 +82,8 @@ public abstract class ListKeyHandler implements KeyEventHandler {
         // consume the event and insert new paragraph to the editor, before applying
         event.consume();
         editor.getArea().insertText(pos, "\n");
+        // follow the caret, scroll into view
+        editor.getArea().requestFollowCaret();
 
         // get the current paragraph index after insert
         var currentParagraph = editor.getParagraphIndexAtPos(pos) + 1;
