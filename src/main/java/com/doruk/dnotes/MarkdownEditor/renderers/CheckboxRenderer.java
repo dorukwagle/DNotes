@@ -1,5 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor.renderers;
 
+import java.util.Map;
+
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.MarkdownEditor.ToolsMediator;
@@ -18,9 +20,30 @@ import javafx.scene.control.Label;
 import javafx.scene.text.TextFlow;
 
 public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
-    private static final String CHECKED = "mdi2s-sticker-check";
-    private static final String UNCHECKED = "mdi2s-sticker-outline";
+    private enum LabelType {
+        CHECKED,
+        UNCHECKED
+    };
+
+    private static final Map<Integer, Map<LabelType, String>> LEVEL_LABEL = Map.of(
+        0, Map.of(
+            LabelType.CHECKED, "mdi2s-sticker-check", 
+            LabelType.UNCHECKED, "mdi2s-sticker-outline"),
+        1, Map.of(
+            LabelType.UNCHECKED, "mdi2c-checkbox-blank-circle-outline", 
+            LabelType.CHECKED, "mdi2c-checkbox-marked-circle"),
+        2, Map.of(
+            LabelType.CHECKED, "mdi2c-checkbox-multiple-marked", 
+            LabelType.UNCHECKED, "mdi2c-checkbox-multiple-blank-outline"),
+        3, Map.of(
+            LabelType.UNCHECKED, "mdi2c-checkbox-multiple-blank-circle-outline", 
+            LabelType.CHECKED, "mdi2c-checkbox-multiple-marked-circle")
+    );
     
+    private String getLabel(LabelType type, int level) {
+        return LEVEL_LABEL.get((level - 1) % LEVEL_LABEL.size()).get(type);
+    }
+
     private boolean isApplied(ParagraphStyle style) {
         var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.CHECK_LIST_ITEM));
         return appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.CHECK_LIST_ITEM;
@@ -33,8 +56,6 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
         
         var styleString = "-fx-padding: 5px 0 5px 20px;";
         String nodeStyle = "-fx-fill: -color-fg-muted; -fx-strikethrough: true;";
-
-        System.out.println("isChecked: " + style.isItemChecked);
 
         textFlow.setStyle(textFlow.getStyle() + styleString);
 
@@ -51,7 +72,7 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
             style.level * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
         
         Label bulletNode = new Label();
-        var icon = new FontIcon(style.isItemChecked ? CHECKED : UNCHECKED);
+        var icon = new FontIcon(getLabel(style.isItemChecked ? LabelType.CHECKED : LabelType.UNCHECKED, style.level));
         bulletNode.setGraphic(icon);
         icon.setScaleX(1.3);
         icon.setScaleY(1.3);

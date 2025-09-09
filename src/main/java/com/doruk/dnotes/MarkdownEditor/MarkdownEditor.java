@@ -1,11 +1,6 @@
 package com.doruk.dnotes.MarkdownEditor;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CaretSelectionHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CheckboxClickHandler;
