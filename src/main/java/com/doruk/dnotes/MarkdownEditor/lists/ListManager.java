@@ -119,7 +119,7 @@ public class ListManager {
             itemInfo.paragraphIndex,
             1,
             1,
-            false,
+            itemInfo.isChecked, // default creation state, unchecked
             itemInfo.listType
         );
 
@@ -161,7 +161,7 @@ public class ListManager {
                 i,
                 indexAndLevel.get(i),
                 indexNumberMap.get(i),
-                false,
+                currentStyle.isItemChecked,
                 listType
             );
             final int index = i; 
@@ -220,7 +220,7 @@ public class ListManager {
                 parIndex,
                 curStyle.level,
                 curStyle.lineCount,
-                false,
+                curStyle.isItemChecked,
                 listType
             );
             final int index = parIndex; 
@@ -254,7 +254,7 @@ public class ListManager {
                 itemParIndex, 
                 curStyle.level + adjustBy,
                 curStyle.lineCount,
-                false,
+                curStyle.isItemChecked,
                 listType
             ), 
             listId, 
