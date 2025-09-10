@@ -56,6 +56,13 @@ public class CaretSelectionHandler {
         caretChange.successionEnds(DELAY)
                 .subscribe(this::onCaretPosChange);
 
+        // also track what style is applied at each caret pos, and change the insertion style
+        caretChange.successionEnds(Duration.ofMillis(20))
+                .subscribe((pos) -> {
+                    var style = area.getStyleAtPosition(pos.getNewValue());
+                    editor.getArea().setTextInsertionStyle(style);
+                });
+
         selectionChange.successionEnds(DELAY)
                 .subscribe(this::onSelectionChange);
     }
