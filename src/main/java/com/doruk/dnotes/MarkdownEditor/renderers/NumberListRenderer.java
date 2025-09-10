@@ -70,7 +70,7 @@ public class NumberListRenderer implements Renderer<TextFlow, ParagraphStyle> {
         Label bulletNode = new Label(getLabel(labelType, style.lineCount) + ".");
         bulletNode.setStyle("-fx-font-weight: normal; -fx-font-size: 22px;");
         bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
-        bulletNode.setAlignment(Pos.BASELINE_LEFT);
+        bulletNode.setAlignment(Pos.TOP_CENTER);
         bulletNode.setTextAlignment(TextAlignment.LEFT);
 
         return bulletNode;

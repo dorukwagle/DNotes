@@ -54,7 +54,7 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
         if (!isApplied(style))
             return;
         
-        var styleString = "-fx-padding: 5px 0 5px 20px;";
+        var styleString = "-fx-padding: 6px 0px 2px 20px;";
         String nodeStyle = "-fx-fill: -color-fg-muted; -fx-strikethrough: true;";
 
         textFlow.setStyle(textFlow.getStyle() + styleString);
@@ -76,9 +76,9 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
         bulletNode.setGraphic(icon);
         icon.setScaleX(1.3);
         icon.setScaleY(1.3);
-        bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
+        bulletNode.setPadding(new Insets(10, 0, 0, flowInset));
         bulletNode.setCursor(Cursor.HAND);
-        bulletNode.setAlignment(Pos.BASELINE_CENTER);
+        bulletNode.setAlignment(Pos.TOP_CENTER);
 
         bulletNode.hoverProperty().addListener((_, _, newVal) -> {
             if (newVal){

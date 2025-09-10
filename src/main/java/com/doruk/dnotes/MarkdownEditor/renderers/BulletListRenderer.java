@@ -44,8 +44,8 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
 
         Label bulletNode = new Label();
         bulletNode.setGraphic(new FontIcon(bullet));
-        bulletNode.setPadding(new Insets(0, 0, 0, flowInset));
-        bulletNode.setAlignment(Pos.BASELINE_CENTER);
+        bulletNode.setPadding(new Insets(10, 0, 0, flowInset));
+        bulletNode.setAlignment(Pos.TOP_CENTER);
         return bulletNode;
     }
     
@@ -55,7 +55,7 @@ public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
             return;
         
         textFlow.setStyle(textFlow.getStyle() + 
-            "-fx-padding: 2px 0 2px 20px;");
+            "-fx-padding: 6px 0 2px 20px;");
         
     }
 }
