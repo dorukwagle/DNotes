@@ -169,27 +169,11 @@ public class MarkdownEditor implements IMarkdownEditor {
     @Override
     public void setOnClose(Runnable onClose) {
         this.editorView.getCloseButton()
-                .setOnAction(_ -> onClose.run());
+                .setOnAction(_ -> {
+                    // cleanup the resources
+                    Factory.close();
+                    // finally call method passed by the parent
+                    onClose.run();
+                });
     }
 }
-
-/**
- * MEDIATOR:
- * -> to update tools state with UI state change
- * -> to listen caret pos, selection, then check tools and update UI toggles
- * 
- * VISITOR PATTERN:
- * -> to handle keyboard events (Enter, Tab, Backspace)
- * and perform specific tasks for each active tools
- * 
- */
-
-/**
- * FOR EMOJI SUPPORT IN LINUX
- * 
- * If you want, I can outline a dynamic FreeType rendering pipeline for RichTextFX that:
- * Takes Noto Color Emoji TTF
- * Rasterizes any requested emoji glyph on-demand
- * Inserts it as a NodeSegment into your editor
- * This way, you never have to ship thousands of static images, and it will work on Linux.
- */

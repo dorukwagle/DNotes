@@ -88,6 +88,10 @@ public class Factory {
         return editor;
     }
 
+    public static void destoryFXTextEditor() {
+        editor = null;
+    }
+
     public static Renderer<TextExt, TextStyle> createTextRenderer(ToolName toolName) {
         return switch (toolName) {
             case Bold -> new BoldRenderer();
@@ -115,5 +119,10 @@ public class Factory {
             case CheckList -> new CheckboxRenderer();
             default -> null;
         };
+    }
+
+    public static void close() {
+        editor = null;
+        tools = null;
     }
 }
