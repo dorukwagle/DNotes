@@ -166,14 +166,18 @@ public class MarkdownEditor implements IMarkdownEditor {
         return this.editorView.getView();
     }
 
+    // set, what to do when the red close button is clicked in control panel
     @Override
     public void setOnClose(Runnable onClose) {
         this.editorView.getCloseButton()
                 .setOnAction(_ -> {
-                    // cleanup the resources
-                    Factory.close();
-                    // finally call method passed by the parent
                     onClose.run();
                 });
+    }
+
+    @Override
+    public void close() {
+        // cleanup the resources
+        Factory.close();
     }
 }

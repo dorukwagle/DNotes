@@ -8,6 +8,7 @@ import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
+import com.doruk.dnotes.interfaces.IShutdownListener;
 
 import javafx.scene.Parent;
 
@@ -16,6 +17,8 @@ public class EditorController implements IEditorController {
     private final IMarkdownEditor markdownEditor;
     private final INavigationController navigationController;
     private final IPreference preference;
+
+    private static final IShutdownListener onShutdown = EditorController::saveEditorDocument;
 
     public EditorController(IMarkdownEditor markdownEditor, INavigationController navigationController) {
         this.markdownEditor = markdownEditor;
@@ -32,8 +35,10 @@ public class EditorController implements IEditorController {
 
     private void setupActions() {
         this.markdownEditor.setOnClose(() -> {
+            this.close();
             this.navigationController.goToBooksPage();
         });
+        DIFactory.createShutdownManager().register(onShutdown);
     }
 
     @Override
@@ -43,10 +48,17 @@ public class EditorController implements IEditorController {
 
     @Override
     public void close() {
-        // close editor gracefully
         // save the texts and notes
+        saveEditorDocument();
 
-        // then finally
-        this.navigationController.goToBooksPage();
+        // close editor gracefully
+        this.markdownEditor.close();
+
+        // remove the shutdown listener
+        DIFactory.createShutdownManager().unregister(onShutdown);
+    }
+
+    private static void saveEditorDocument() {
+        System.out.println("Saving editor document...");
     }
 }
