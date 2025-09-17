@@ -1,10 +1,13 @@
 package com.doruk.dnotes.MarkdownEditor.codecs.codec;
 
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
+import com.doruk.dnotes.MarkdownEditor.codecs.enums.ParagraphModifiers;
 import com.doruk.dnotes.MarkdownEditor.codecs.interfaces.Codec;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 
-public class NumberListCodec implements Codec<ParagraphNode, ParagraphStyle> {
+public class NumberListCodec extends Codec<ParagraphNode, ParagraphStyle> {
     @Override
     public CodecType getCodecType() {
         return CodecType.ParagraphCodec;
@@ -12,6 +15,18 @@ public class NumberListCodec implements Codec<ParagraphNode, ParagraphStyle> {
 
     @Override
     public void encode(ParagraphNode node, ParagraphStyle style) {
-        
+        if (!this.isApplied(style, ParagraphType.NUMBER_LIST_ITEM))
+            return;
+
+        node.addGlobalStyle(ToolName.NumberList);
+
+        // numberListId = list_(and numbers)
+        long listId = Long.parseLong(style.numberListId.split("_")[1]);
+
+        // list modifiers
+        node.addModifier(ParagraphModifiers.NumberListId, listId);
+        node.addModifier(ParagraphModifiers.LineCount, style.lineCount);
+        node.addModifier(ParagraphModifiers.Level, style.level);
+        node.addModifier(ParagraphModifiers.Offset, style.offset);
     }
 }

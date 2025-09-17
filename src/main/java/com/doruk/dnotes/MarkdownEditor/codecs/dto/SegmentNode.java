@@ -10,7 +10,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 public class SegmentNode {
     private final Set<ToolName> styles;
     private final String text;
-    private final Map<ToolName, Long> stateValues;
+    private final Map<ToolName, Integer> stateValues;
 
     public SegmentNode(String text) {
         this.styles = new HashSet<>();
@@ -26,7 +26,7 @@ public class SegmentNode {
         return text;
     }
 
-    public Map<ToolName, Long> getStateValues() {
+    public Map<ToolName, Integer> getStateValues() {
         return stateValues;
     }
 
@@ -34,7 +34,7 @@ public class SegmentNode {
         this.styles.add(style);
     }
 
-    public void addStateValue(ToolName style, long value) {
+    public void addStateValue(ToolName style, int value) {
         this.stateValues.put(style, value);
     }
 }
