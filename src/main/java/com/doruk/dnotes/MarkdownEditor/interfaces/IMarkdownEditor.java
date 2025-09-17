@@ -10,5 +10,6 @@ public interface IMarkdownEditor {
     void setOnClose(Runnable onClose);
     Parent getView();
     void setEditorBackground(EditorColor color);
+    String[] getCodecsValues();
     void close();
 }

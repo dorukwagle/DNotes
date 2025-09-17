@@ -27,7 +27,7 @@ public class FontBGColorHandler {
         var tool = (StatefulTextStyleTool<Color>)Factory.createTool(ToolName.FontBG, null);
         
         Platform.runLater(() -> editor.getArea().requestFocus());
-
+        
         tool.setState(value);
         if (controlPanel.getStyleButtons().stream()
             .anyMatch(btn -> btn.getId().equals(ToolName.FontBG.name()) && btn.isSelected()))

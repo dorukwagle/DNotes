@@ -180,4 +180,9 @@ public class MarkdownEditor implements IMarkdownEditor {
         // cleanup the resources
         Factory.close();
     }
+
+    @Override
+    public String[] getCodecsValues() {
+        return null;
+    }
 }
