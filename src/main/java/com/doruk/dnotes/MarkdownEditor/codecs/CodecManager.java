@@ -3,14 +3,10 @@ package com.doruk.dnotes.MarkdownEditor.codecs;
 import java.util.stream.Stream;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
-import com.doruk.dnotes.MarkdownEditor.codecs.codec.H1Codec;
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.SegmentNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.enums.ParagraphModifiers;
-import com.doruk.dnotes.MarkdownEditor.codecs.interfaces.Codec;
 import com.doruk.dnotes.MarkdownEditor.codecs.interfaces.Codec.CodecType;
-import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
-import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ICodecManager;
@@ -29,9 +25,9 @@ public class CodecManager implements ICodecManager {
                     var paragraphNode = new ParagraphNode();
 
                     // first scan the paragraph for all the styles it has, using paragraph codecs
+                    // Codec<ParagraphNode, ParagraphStyle>
                     codecsList.stream()
                             .filter(codec -> codec.getCodecType() == CodecType.ParagraphCodec)
-                            .map(codec -> (Codec<ParagraphNode, ParagraphStyle>) codec)
                             .forEach(codec -> codec.encode(paragraphNode, paragraph.getParagraphStyle()));
 
                     // then scan the paragraph for all the styles it has, using text codecs
@@ -41,9 +37,9 @@ public class CodecManager implements ICodecManager {
                                 var segmentNode = new SegmentNode(segment.getSegment());
 
                                 // iterate over each segment/text codecs
+                                // Codec<SegmentNode, TextStyle>
                                 codecsList.stream()
                                         .filter(codec -> codec.getCodecType() == CodecType.TextCodec)
-                                        .map(codec -> (Codec<SegmentNode, TextStyle>) codec)
                                         .forEach(codec -> codec.encode(segmentNode, segment.getStyle()));
 
                                 paragraphNode.addSegment(segmentNode);
