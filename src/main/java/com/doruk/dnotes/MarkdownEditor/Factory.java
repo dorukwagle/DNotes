@@ -1,10 +1,29 @@
 package com.doruk.dnotes.MarkdownEditor;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import org.fxmisc.richtext.TextExt;
 
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.AlignCenterCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.AlignLeftCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.BlockquoteCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.BoldCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.BulletListCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.CheckListCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.FontBGCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.FontCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.FontColorCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.H1Codec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.H2Codec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.H3Codec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.H4Codec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.ItalicCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.NumberListCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.StrikethroughCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.codec.UnderlineCodec;
+import com.doruk.dnotes.MarkdownEditor.codecs.interfaces.Codec;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
@@ -51,6 +70,7 @@ import javafx.scene.text.TextFlow;
 public class Factory {
     private static Map<ToolName, ToolCmdStrategy> tools;
     private static FXTextEditor editor;
+    private static List<Codec> codecs;
 
     private static void initializeTools(FXTextEditor editor) {
         tools = new EnumMap<>(ToolName.class);
@@ -88,10 +108,6 @@ public class Factory {
         return editor;
     }
 
-    public static void destoryFXTextEditor() {
-        editor = null;
-    }
-
     public static Renderer<TextExt, TextStyle> createTextRenderer(ToolName toolName) {
         return switch (toolName) {
             case Bold -> new BoldRenderer();
@@ -121,8 +137,34 @@ public class Factory {
         };
     }
 
+    public static List<Codec> createCodecs() {
+        if (codecs == null)
+            codecs = List.of(
+                new AlignCenterCodec(),
+                new AlignLeftCodec(),
+                new BlockquoteCodec(),
+                new BoldCodec(),
+                new BulletListCodec(),
+                new CheckListCodec(),
+                new FontColorCodec(),
+                new FontBGCodec(),
+                new FontCodec(),
+                new H1Codec(),
+                new H2Codec(),
+                new H3Codec(),
+                new H4Codec(),
+                new ItalicCodec(),
+                new NumberListCodec(),
+                new StrikethroughCodec(),
+                new UnderlineCodec()
+            );
+        
+        return codecs;
+    }
+
     public static void close() {
         editor = null;
         tools = null;
+        codecs = null;
     }
 }

@@ -39,4 +39,10 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
     exports com.doruk.dnotes.MarkdownEditor.tools;
     exports com.doruk.dnotes.MarkdownEditor.renderers;
+    
+    exports com.doruk.dnotes.MarkdownEditor.codecs;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.codec;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.interfaces;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.dto;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.enums;
 }
