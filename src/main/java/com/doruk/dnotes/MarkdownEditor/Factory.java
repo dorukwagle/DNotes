@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.fxmisc.richtext.TextExt;
 
+import com.doruk.dnotes.MarkdownEditor.codecs.CodecManager;
 import com.doruk.dnotes.MarkdownEditor.codecs.codec.AlignCenterCodec;
 import com.doruk.dnotes.MarkdownEditor.codecs.codec.AlignLeftCodec;
 import com.doruk.dnotes.MarkdownEditor.codecs.codec.BlockquoteCodec;
@@ -28,6 +29,7 @@ import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
+import com.doruk.dnotes.MarkdownEditor.interfaces.ICodecManager;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ToolCmdStrategy;
 import com.doruk.dnotes.MarkdownEditor.renderers.AlignCenterRenderer;
@@ -160,6 +162,10 @@ public class Factory {
             );
         
         return codecs;
+    }
+
+    public static ICodecManager createCodecManager() {
+        return new CodecManager();
     }
 
     public static void close() {

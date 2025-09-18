@@ -1,12 +1,14 @@
 package com.doruk.dnotes.MarkdownEditor;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CaretSelectionHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CheckboxClickHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontBGColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontSizeHandler;
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
@@ -18,6 +20,7 @@ import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.NumberListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.store.GlobalConstants;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -179,10 +182,37 @@ public class MarkdownEditor implements IMarkdownEditor {
     public void close() {
         // cleanup the resources
         Factory.close();
+        this.dummyPrintEditor();
     }
 
     @Override
     public String[] getCodecsValues() {
         return null;
+    }
+
+    @Override
+    public Stream<ParagraphNode> encodeAndDump() {
+        return Factory.createCodecManager()
+            .dumpEditorDocument(editorView.getEditor());
+    }
+
+    public void dummyPrintEditor() {
+        var encoded = this.encodeAndDump();
+        encoded.forEach(paragraph -> {
+            paragraph.getGlobalStyles().forEach(System.out::println);
+            paragraph.getSegments().forEach(segment -> {
+                segment.getStyles().forEach(style -> {
+                    System.out.print(style + " ");
+                    switch (style) {
+                        case Font -> System.out.println(segment.getStateValues().get(ToolName.Font));
+                        case FontColor -> System.out.println(segment.getStateValues().get(ToolName.FontColor));
+                        case FontBG -> System.out.println(segment.getStateValues().get(ToolName.FontBG));
+                        default -> {}
+                    }
+                });
+                System.out.println(segment.getText());
+            });
+            System.out.println("\n");
+        });
     }
 }

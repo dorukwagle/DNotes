@@ -1,5 +1,8 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
+import java.util.stream.Stream;
+
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 
 import javafx.scene.Parent;
@@ -11,5 +14,6 @@ public interface IMarkdownEditor {
     Parent getView();
     void setEditorBackground(EditorColor color);
     String[] getCodecsValues();
+    Stream<ParagraphNode> encodeAndDump();
     void close();
 }
