@@ -3,9 +3,7 @@ package com.doruk.dnotes.dataUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.doruk.dnotes.interfaces.ProcessingStage;
-
-public abstract class BinaryParser implements ProcessingStage {
+public abstract class BinaryParser {
     protected static final class Markers {
         public static final byte PARAGRAPH_START = 101;
         public static final byte GLOBALS_START = 102;

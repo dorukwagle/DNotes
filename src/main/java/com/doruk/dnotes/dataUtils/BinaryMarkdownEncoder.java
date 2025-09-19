@@ -1,14 +1,18 @@
 package com.doruk.dnotes.dataUtils;
 
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.stream.Stream;
 
-public class BinaryMarkdownEncoder extends BinaryParser {
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
+import com.doruk.dnotes.interfaces.MarkdownEncoder;
+
+public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncoder {
     public BinaryMarkdownEncoder(String[] codecsName) {
         super(codecsName);
     }
 
     @Override
-    public InputStream apply(InputStream input) {
-        return null;
+    public void encode(Stream<ParagraphNode> nodes, OutputStream output) {
+        
     }
 }

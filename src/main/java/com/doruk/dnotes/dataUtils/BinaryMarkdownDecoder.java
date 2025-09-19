@@ -2,7 +2,9 @@ package com.doruk.dnotes.dataUtils;
 
 import java.io.InputStream;
 
-public class BinaryMarkdownDecoder extends BinaryParser {
+import com.doruk.dnotes.interfaces.ProcessingInputStage;
+
+public class BinaryMarkdownDecoder extends BinaryParser implements ProcessingInputStage {
     public BinaryMarkdownDecoder(String[] codecsName) {
         super(codecsName);
     }
