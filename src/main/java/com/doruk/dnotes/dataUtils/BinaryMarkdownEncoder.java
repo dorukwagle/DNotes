@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
@@ -21,7 +26,7 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
         super(codecsName);
     }
 
-    private byte[] toContinuationBytes(int value) {
+    private List<Byte> toContinuationBytes(int value) {
         var bytes = new ArrayList<Byte>(10);
         int shift = 0;
 
@@ -37,25 +42,40 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
             bytes.add((byte) (byteValue | 0x80));  // add continuation bit
             shift += 7;
         }
-        var cursor = 0;
-        var arr = new byte[bytes.size()];
-        for (byte b : bytes)
-            arr[cursor++] = b;
-        return arr;
+        return bytes;
     }
 
     // returns the bytes length as int
     private void encodeStatelessStyles(Set<ToolName> styles, ByteArrayOutputStream stream) throws IOException {
         var lengthBytes = toContinuationBytes(styles.size());
-        stream.write(lengthBytes);
+        lengthBytes.forEach(b -> stream.write(b));
         
         for (ToolName style : styles)
             stream.write(codecsByteMap.get(style.name()));
     }
 
-    // either Object = either ParagraphModifiers or ToolName, either way, contains to Name
-    private int encodeStatefulStyles(Map<Enum, Integer> states) {
-        return 0;
+    // either Object = either ParagraphModifiers or ToolName, either way, contains name()
+    private void encodeStatefulStyles(Map<Enum, Integer> states, ByteArrayOutputStream stream) {
+        var totalBytesLength = new AtomicInteger(states.size()); // each key = 1 byte
+
+        Map<Byte, List<Byte>> encodings = states.entrySet().stream()
+            .map(entry -> {
+                var contBytes = toContinuationBytes(entry.getValue());
+                totalBytesLength.addAndGet(contBytes.size());
+               
+               return Map.entry(codecsByteMap.get(entry.getKey().name()), contBytes);
+            })
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        
+        // write the length bytes
+        var lengthBytes = toContinuationBytes(totalBytesLength.get());
+        lengthBytes.forEach(stream::write);
+        
+        // write the encodings
+        encodings.forEach((key, value) -> {
+            stream.write(key);
+            value.forEach(stream::write);
+        });
     }
 
     private ByteArrayOutputStream encodeParagraph(ParagraphNode node) {
