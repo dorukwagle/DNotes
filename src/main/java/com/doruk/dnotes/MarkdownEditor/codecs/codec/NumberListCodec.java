@@ -21,7 +21,7 @@ public class NumberListCodec extends Codec<ParagraphNode, ParagraphStyle> {
         node.addGlobalStyle(ToolName.NumberList);
 
         // numberListId = list_(and numbers)
-        long listId = Long.parseLong(style.numberListId.split("_")[1]);
+        int listId = Integer.parseInt(style.numberListId.split("_")[1]);
 
         // list modifiers
         node.addModifier(ParagraphModifiers.NumberListId, listId);

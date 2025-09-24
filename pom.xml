@@ -224,6 +224,30 @@
                 </configuration>
             </plugin>
 
+            <!-- graalvm native build -->
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.10.6</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>build-native</id>
+                        <goals>
+                            <goal>compile-no-fork</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.doruk.dnotes/com.doruk.dnotes.App</mainClass>
+                    <imageName>${project.artifactId}</imageName> <!-- Name of the final executable -->
+                    <buildArgs>
+                        <buildArg>--no-fallback</buildArg>
+                        <buildArg>-H:ConfigurationFileDirectories=src/main/resources/META-INF/native-image</buildArg>
+                    </buildArgs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

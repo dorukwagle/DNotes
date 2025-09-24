@@ -21,7 +21,7 @@ public class BulletListCodec extends Codec<ParagraphNode, ParagraphStyle> {
         node.addGlobalStyle(ToolName.BulletList);
 
         // numberListId = list_(and numbers)
-        long listId = Long.parseLong(style.numberListId.split("_")[1]);
+        int listId = Integer.parseInt(style.numberListId.split("_")[1]);
 
         // same list modifiers
         node.addModifier(ParagraphModifiers.NumberListId, listId);

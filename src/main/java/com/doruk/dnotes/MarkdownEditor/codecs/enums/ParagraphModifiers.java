@@ -6,5 +6,4 @@ public enum ParagraphModifiers {
     LineCount,
     NumberListId,
     IsItemChecked;
-
 }

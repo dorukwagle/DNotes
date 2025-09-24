@@ -266,6 +266,10 @@ public class ListManager {
     }
 
     private String generateListId() {
-        return "list_" + System.currentTimeMillis();
+        String currentTimeMillis = String.valueOf(System.currentTimeMillis());
+        return "list_" + Integer.parseInt(
+            currentTimeMillis
+                .substring(currentTimeMillis.length() - 8)
+        );
     }
 }

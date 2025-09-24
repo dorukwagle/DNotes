@@ -8,9 +8,8 @@ public final class Markers {
     }
     
     public final class FileType {
-        public static final byte MARKDOWN = 21;
-        public static final byte BACKUP = 22;
-        public static final byte SHARED = 23;
+        public static final byte BACKUP = 21;
+        public static final byte SHARED = 22;
     }
     
     // keys to store data, they contain their corresponding value
@@ -33,6 +32,8 @@ public final class Markers {
     public static final byte DATABASE_START = 4;
 
     public static final byte DOC_DATA_START = 5;
+
+    public static final byte PROTECTED_DOC_START = 6;
 
     public static final byte TERMINATOR = 0;
 }

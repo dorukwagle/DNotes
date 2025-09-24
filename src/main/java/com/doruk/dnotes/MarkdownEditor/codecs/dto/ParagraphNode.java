@@ -10,7 +10,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 
 public class ParagraphNode {
     private final Set<ToolName> globalStyles;
-    private final Map<ParagraphModifiers, Long> modifiers;
+    private final Map<ParagraphModifiers, Integer> modifiers;
     private final Set<SegmentNode> segments;
 
     public ParagraphNode() {
@@ -27,7 +27,7 @@ public class ParagraphNode {
         return segments;
     }
 
-    public Map<ParagraphModifiers, Long> getModifiers() {
+    public Map<ParagraphModifiers, Integer> getModifiers() {
         return modifiers;
     }
 
@@ -35,7 +35,7 @@ public class ParagraphNode {
         this.globalStyles.add(style);
     }
 
-    public void addModifier(ParagraphModifiers modifier, long value) {
+    public void addModifier(ParagraphModifiers modifier, int value) {
         this.modifiers.put(modifier, value);
     }
 
