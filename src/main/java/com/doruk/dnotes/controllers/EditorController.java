@@ -1,12 +1,19 @@
 package com.doruk.dnotes.controllers;
 
 import com.doruk.dnotes.interfaces.IEditorController;
+
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
+import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.interfaces.IShutdownListener;
@@ -27,8 +34,8 @@ public class EditorController implements IEditorController {
         this.preference = DIFactory.createGlobalPreference();
 
         var selectedColor = preference.loadLong(Preference.EditorColor, 0);
-        var color = MarkdownEditorColor.fromId((int) selectedColor) == MarkdownEditorColor.Subtle ?
-            EditorColor.Subtle : EditorColor.Muted;
+        var color = MarkdownEditorColor.fromId((int) selectedColor) == MarkdownEditorColor.Subtle ? EditorColor.Subtle
+                : EditorColor.Muted;
         markdownEditor.setEditorBackground(color);
 
         if (onShutdown == null)
@@ -65,25 +72,15 @@ public class EditorController implements IEditorController {
 
     private void saveEditorDocument() {
         var encoded = markdownEditor.encodeAndDump();
-        encoded.forEach(paragraph -> {
-            System.out.println("===paragraph init===");
-            System.out.print("global styles: ");
-            paragraph.getGlobalStyles().forEach(System.out::println);
-            paragraph.getSegments().forEach(segment -> {
-                System.out.println("---segment---");
-                System.out.print("styles: ");
-                segment.getStyles().forEach(style -> {
-                    System.out.print(style + " ");
-                    switch (style) {
-                        case Font -> System.out.println(segment.getStateValues().get(ToolName.Font));
-                        case FontColor -> System.out.println(segment.getStateValues().get(ToolName.FontColor));
-                        case FontBG -> System.out.println(segment.getStateValues().get(ToolName.FontBG));
-                        default -> {}
-                    }
-                });
-                System.out.println("text: " + segment.getText());
-            });
-            System.out.println("===end paragraph===\n");
-        });
+        var encoder = DIFactory.createMarkdownEncoder(markdownEditor.getCodecsValues());
+        try {
+            var stream = new BufferedOutputStream(Files.newOutputStream(Path.of("test.dnt")));
+            encoder.encode(encoded, stream);
+            stream.flush();
+            stream.close();
+        } catch (IOException | ProcessingStageException e) {
+            throw new ProcessingStageException(
+                    e instanceof IOException ? "Failed to create output file" : e.getMessage(), e);
+        }
     }
 }

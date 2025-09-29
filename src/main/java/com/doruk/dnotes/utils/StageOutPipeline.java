@@ -4,19 +4,19 @@ import java.io.OutputStream;
 import java.util.List;
 
 import com.doruk.dnotes.exceptions.ProcessingStageException;
-import com.doruk.dnotes.interfaces.ProcessingOutStage;
+import com.doruk.dnotes.interfaces.ProcessingOutputStage;
 
 public class StageOutPipeline {
-    private final List<ProcessingOutStage> stages;
+    private final List<ProcessingOutputStage> stages;
 
-    public StageOutPipeline(ProcessingOutStage... stages) {
+    public StageOutPipeline(ProcessingOutputStage... stages) {
         this.stages = List.of(stages);
     }
 
     public OutputStream build(OutputStream output) throws ProcessingStageException {
         OutputStream result = output;
         
-        for (ProcessingOutStage stage : stages) 
+        for (ProcessingOutputStage stage : stages) 
             result = stage.apply(result);
         
         return result;

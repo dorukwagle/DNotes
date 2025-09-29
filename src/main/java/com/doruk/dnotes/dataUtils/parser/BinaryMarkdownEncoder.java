@@ -1,7 +1,8 @@
-package com.doruk.dnotes.dataUtils;
+package com.doruk.dnotes.dataUtils.parser;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
 
             // write segment text start
             stream.write(Markers.SEGMENT_TEXT);
-            byte[] textBytes = segment.getText().getBytes();
+            byte[] textBytes = segment.getText().getBytes(StandardCharsets.UTF_8);
             // write segment text length
             var lengthBytes = toContinuationBytes(textBytes.length);
             for (byte b: lengthBytes)

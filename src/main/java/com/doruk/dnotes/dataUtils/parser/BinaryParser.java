@@ -1,4 +1,4 @@
-package com.doruk.dnotes.dataUtils;
+package com.doruk.dnotes.dataUtils.parser;
 
 import java.util.HashMap;
 import java.util.Map;

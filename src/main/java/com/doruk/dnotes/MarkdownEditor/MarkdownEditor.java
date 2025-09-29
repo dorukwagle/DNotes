@@ -185,7 +185,8 @@ public class MarkdownEditor implements IMarkdownEditor {
 
     @Override
     public String[] getCodecsValues() {
-        return null;
+        return Factory.createCodecManager()
+            .getCodecsValues();
     }
 
     @Override

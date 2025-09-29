@@ -1,5 +1,6 @@
 package com.doruk.dnotes;
 
+import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownEncoder;
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.CollectionDto;
@@ -10,6 +11,7 @@ import com.doruk.dnotes.interfaces.IOptionsModal;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.interfaces.IPromptModal;
 import com.doruk.dnotes.interfaces.IShutdownManager;
+import com.doruk.dnotes.interfaces.MarkdownEncoder;
 import com.doruk.dnotes.models.BookModel;
 import com.doruk.dnotes.models.BookPagesModel;
 import com.doruk.dnotes.models.CollectionModel;
@@ -60,5 +62,9 @@ public class DIFactory {
 
     public static IModel<BookPageDto> createNoteModel() {
         return new BookPagesModel();
+    }
+
+    public static MarkdownEncoder createMarkdownEncoder(String[] codecsName) {
+        return new BinaryMarkdownEncoder(codecsName);
     }
 }
