@@ -32,7 +32,6 @@ public class CodecManager implements ICodecManager {
 
                     // then scan the paragraph for all the styles it has, using text codecs
                     paragraph.getStyledSegments()
-                            .stream()
                             .forEach(segment -> {
                                 var segmentNode = new SegmentNode(segment.getSegment());
 
@@ -55,32 +54,32 @@ public class CodecManager implements ICodecManager {
     }
 
     @Override
-    public String[] getCodecsValues() {
+    public Enum<?>[] getCodecsValues() {
         // manually add codecs avoiding loops, to maintain consistency and same order
         // always
-        return new String[] {
-                ParagraphModifiers.IsItemChecked.name(),
-                ParagraphModifiers.Level.name(),
-                ParagraphModifiers.LineCount.name(),
-                ParagraphModifiers.NumberListId.name(),
-                ParagraphModifiers.Offset.name(),
-                ToolName.Underline.name(),
-                ToolName.AlignLeft.name(),
-                ToolName.CheckList.name(),
-                ToolName.H1.name(),
-                ToolName.H2.name(),
-                ToolName.H3.name(),
-                ToolName.BulletList.name(),
-                ToolName.NumberList.name(),
-                ToolName.H4.name(),
-                ToolName.Bold.name(),
-                ToolName.Italic.name(),
-                ToolName.Blockquote.name(),
-                ToolName.AlignCenter.name(),
-                ToolName.Strikethrough.name(),
-                ToolName.FontColor.name(),
-                ToolName.FontBG.name(),
-                ToolName.Font.name()
+        return new Enum[] {
+                ParagraphModifiers.IsItemChecked,
+                ParagraphModifiers.Level,
+                ParagraphModifiers.LineCount,
+                ParagraphModifiers.NumberListId,
+                ParagraphModifiers.Offset,
+                ToolName.Underline,
+                ToolName.AlignLeft,
+                ToolName.CheckList,
+                ToolName.H1,
+                ToolName.H2,
+                ToolName.H3,
+                ToolName.BulletList,
+                ToolName.NumberList,
+                ToolName.H4,
+                ToolName.Bold,
+                ToolName.Italic,
+                ToolName.Blockquote,
+                ToolName.AlignCenter,
+                ToolName.Strikethrough,
+                ToolName.FontColor,
+                ToolName.FontBG,
+                ToolName.Font,
         };
     }
 }

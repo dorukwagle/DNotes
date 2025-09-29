@@ -13,7 +13,7 @@ public interface IMarkdownEditor {
     void setOnClose(Runnable onClose);
     Parent getView();
     void setEditorBackground(EditorColor color);
-    String[] getCodecsValues();
+    Enum<?>[] getCodecsValues();
     Stream<ParagraphNode> encodeAndDump();
     void close();
 }

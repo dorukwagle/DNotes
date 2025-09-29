@@ -7,7 +7,7 @@ import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.interfaces.MarkdownDecoder;
 
 public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecoder {
-    public BinaryMarkdownDecoder(String[] codecsName) {
+    public BinaryMarkdownDecoder(Enum<?>[] codecsName) {
         super(codecsName);
     }
 

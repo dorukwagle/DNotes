@@ -18,7 +18,7 @@ import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.MarkdownEncoder;
 
 public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncoder {
-    public BinaryMarkdownEncoder(String[] codecsName) {
+    public BinaryMarkdownEncoder(Enum<?>[] codecsName) {
         super(codecsName);
     }
 
@@ -48,11 +48,11 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
             stream.write(b);
         
         for (ToolName style : styles)
-            stream.write(codecsByteMap.get(style.name()));
+            stream.write(codecsByteMap.get(style));
     }
 
     // either Object = either ParagraphModifiers or ToolName, either way, contains name()
-    private void encodeStatefulStyles(Map<? extends Enum, Integer> states, OutputStream stream) throws IOException {
+    private void encodeStatefulStyles(Map<? extends Enum<?>, Integer> states, OutputStream stream) throws IOException {
         var totalBytesLength = new AtomicInteger(states.size()); // each key = 1 byte
 
         Map<Byte, List<Byte>> encodings = states.entrySet().stream()
@@ -60,7 +60,7 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
                 var contBytes = toContinuationBytes(entry.getValue());
                 totalBytesLength.addAndGet(contBytes.size());
                
-               return Map.entry(codecsByteMap.get(entry.getKey().name()), contBytes);
+               return Map.entry(codecsByteMap.get(entry.getKey()), contBytes);
             })
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         
@@ -122,33 +122,6 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
         stream.write(Markers.PARAGRAPH_END);
     }
 
-    /**
-     * ORDER OF ENCODING: SKELETON FORMAT OF MARKDOWN
-     * 1. PARAGRAPH START MARKER
-     * 2. GLOBALS START MARKER
-     * 3. GLOBALS LENGTH
-     * 4. GLOBALS
-     * 5. MODIFIERS START MARKER
-     * 6. MODIFIERS LENGTH
-     * 7. MODIFIERS
-     * 8. SEGMENT START MARKER
-     * 9. SEGMENT STYLES MARKER
-     * 10. SEGMENT STYLES LENGTH
-     * 11. SEGMENT STYLES
-     * 12. SEGMENT STATE VALUE MARKERS
-     * 13. SEGMENT STATE VALUES LENGTH
-     * 14. SEGMENT STATE VALUES
-     * 15. SEGMENT TEXT START MARKER
-     * 16. SEGMENT TEXT LENGTH
-     * 17. SEGMENT TEXT
-     * 
-     * # ALL LENGTH ARE REPRESENTED IN 7 BITs, WHERE 1 EXTRA BIT IS CONTINUATION BIT
-     * # EVERY KEY VALUES LIKE: MODIFIERS, SEGMENT STATE VALUES, HAVE FOLLOWING LENGTH BYTES.
-     * 
-     * @param nodes
-     * @param output
-     * @return
-     */
     @Override
     public void encode(Stream<ParagraphNode> nodes, OutputStream output) {
         nodes.forEach(node -> {

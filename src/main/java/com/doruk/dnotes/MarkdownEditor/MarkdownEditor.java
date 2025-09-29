@@ -58,16 +58,14 @@ public class MarkdownEditor implements IMarkdownEditor {
     private boolean shouldHandleKeyAction(KeyEvent event, KeyCode action) {
         if (keyActions.contains(action))
             return true;
-        
-        if ((event.isControlDown() || event.isMetaDown()) && 
-            modifierKeyActions.contains(action))
-                return true;
-        
-        return false;
+
+        return (event.isControlDown() || event.isMetaDown()) &&
+            modifierKeyActions.contains(action);
     }
 
     private void loadFonts() {
         Font.loadFont(getClass().getResourceAsStream("/fonts/magnolia_script_regular.otf"), 0);
+
     }
 
     private void initialSetup() {
@@ -82,7 +80,6 @@ public class MarkdownEditor implements IMarkdownEditor {
         // loop over each buttons, then apply each tools
         this.editorView.getControlPanel()
                 .getStyleButtons()
-                .stream()
                 .forEach(btn -> {
                     var tool = Factory.createTool(ToolName.fromName(btn.getId()), editorView.getEditor());
                     btn.setOnAction(_ -> {
@@ -99,7 +96,6 @@ public class MarkdownEditor implements IMarkdownEditor {
         // add event filter to resolve and unselect conflicting tools
         this.editorView.getControlPanel()
                 .getStyleButtons()
-                .stream()
                 .forEach(btn -> {
                     btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
                         var toolName = ToolName.fromName(btn.getId());
@@ -184,7 +180,7 @@ public class MarkdownEditor implements IMarkdownEditor {
     }
 
     @Override
-    public String[] getCodecsValues() {
+    public Enum<?>[] getCodecsValues() {
         return Factory.createCodecManager()
             .getCodecsValues();
     }

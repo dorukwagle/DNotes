@@ -7,5 +7,5 @@ import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 public interface ICodecManager {
     Stream<ParagraphNode> dumpEditorDocument(FXTextEditor editor);
     void loadEditorDocument(FXTextEditor editor);
-    String[] getCodecsValues();
+    Enum<?>[] getCodecsValues();
 }

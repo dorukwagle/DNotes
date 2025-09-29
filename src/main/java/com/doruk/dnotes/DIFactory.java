@@ -64,7 +64,7 @@ public class DIFactory {
         return new BookPagesModel();
     }
 
-    public static MarkdownEncoder createMarkdownEncoder(String[] codecsName) {
+    public static MarkdownEncoder createMarkdownEncoder(Enum<?>[] codecsName) {
         return new BinaryMarkdownEncoder(codecsName);
     }
 }
