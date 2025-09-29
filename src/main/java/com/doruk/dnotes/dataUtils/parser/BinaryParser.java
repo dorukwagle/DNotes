@@ -12,6 +12,7 @@ public abstract class BinaryParser {
         public static final byte SEGMENT_STYLES = 105;
         public static final byte SEGMENT_STATE_VALUES = 106;
         public static final byte SEGMENT_TEXT = 107;
+        public static final byte PARAGRAPH_END = 108;
     }
 
     protected final static Map<String, Byte> codecsByteMap = new HashMap<>();

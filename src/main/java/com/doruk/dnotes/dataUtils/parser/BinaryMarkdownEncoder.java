@@ -117,6 +117,9 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
             // write all text as bytes
             stream.write(textBytes);
         }
+
+        // mark the end of the paragraph
+        stream.write(Markers.PARAGRAPH_END);
     }
 
     /**
