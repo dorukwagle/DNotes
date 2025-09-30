@@ -16,4 +16,6 @@ public interface IMarkdownEditor {
     Enum<?>[] getCodecsValues();
     Stream<ParagraphNode> encodeAndDump();
     void close();
+
+    void decodeAndLoad(ParagraphNode node);
 }

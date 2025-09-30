@@ -155,7 +155,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         readGlobalModifiers(input, paragraphNode);
 
         byte[] sb = new byte[1];
-        while (input.read(sb) != -1) {
+        while (input.read(sb) != -1 || sb[0] != Markers.PARAGRAPH_END) {
             if (sb[0] != Markers.SEGMENT_START)
                 throw new ProcessingStageException("Invalid segment start byte");
 

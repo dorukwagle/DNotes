@@ -1,7 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor.utils;
 
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.MutableTextStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.TextStyle;
-
 import javafx.scene.paint.Color;
 
 public class StyleHelper {
@@ -57,5 +57,13 @@ public class StyleHelper {
 
     public static TextStyle textWithFontSize(TextStyle style, int fontSize) {
         return new TextStyle(style.bold, style.italic, style.underline, style.strikethrough, style.textColor, style.backgroundColor, fontSize);
+    }
+
+    public static TextStyle convertToTextStyle(MutableTextStyle mutableStyle) {
+        return new TextStyle(mutableStyle.bold, mutableStyle.italic, mutableStyle.underline, mutableStyle.strikethrough,
+                colorFromInteger(mutableStyle.textColor),
+                colorFromInteger(mutableStyle.backgroundColor),
+                mutableStyle.fontSize
+        );
     }
 }

@@ -49,7 +49,7 @@ public class CodecManager implements ICodecManager {
     }
 
     @Override
-    public void loadEditorDocument(FXTextEditor editor) {
+    public void loadEditorDocument(FXTextEditor editor, ParagraphNode node) {
 
     }
 

@@ -9,7 +9,7 @@ import com.doruk.dnotes.MarkdownEditor.enums.StyleGroup;
 
 public class ParagraphStyle {
     // hold only one paragraph style per group
-    private final Map<StyleGroup, ParagraphType> groupMap = new EnumMap<>(StyleGroup.class);
+    private Map<StyleGroup, ParagraphType> groupMap = new EnumMap<>(StyleGroup.class);
 
     // for list items
     public final int level; // indent level
@@ -70,6 +70,11 @@ public class ParagraphStyle {
     public ParagraphStyle withStyle(ParagraphStyle oldStyle, StyleGroup group, ParagraphType style) {
         this.groupMap.putAll(oldStyle.groupMap);
         this.groupMap.put(group, style);
+        return this;
+    }
+
+    public ParagraphStyle withStyles(EnumMap<StyleGroup, ParagraphType> groupMap) {
+        this.groupMap = groupMap;
         return this;
     }
 }

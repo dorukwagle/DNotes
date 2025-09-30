@@ -2,6 +2,7 @@ package com.doruk.dnotes.controllers;
 
 import com.doruk.dnotes.interfaces.IEditorController;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.interfaces.IShutdownListener;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 
 public class EditorController implements IEditorController {
@@ -42,6 +44,8 @@ public class EditorController implements IEditorController {
             onShutdown = this::saveEditorDocument;
 
         setupActions();
+
+//        Platform.runLater(this::loadEditorDocument);
     }
 
     private void setupActions() {
@@ -81,6 +85,17 @@ public class EditorController implements IEditorController {
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to create output file" : e.getMessage(), e);
+        }
+    }
+
+    private void loadEditorDocument() {
+        var decoder = DIFactory.createMarkdownDecoder(markdownEditor.getCodecsValues());
+        try {
+            var stream = new BufferedInputStream(Files.newInputStream(Path.of("test.dnt")));
+            decoder.decode(stream, markdownEditor::decodeAndLoad);
+        } catch (IOException | ProcessingStageException e) {
+            throw new ProcessingStageException(
+                    e instanceof IOException ? "Failed to load input file" : e.getMessage(), e);
         }
     }
 }

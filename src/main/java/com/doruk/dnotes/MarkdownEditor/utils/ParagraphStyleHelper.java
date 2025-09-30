@@ -1,8 +1,13 @@
 package com.doruk.dnotes.MarkdownEditor.utils;
 
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.MutableParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.dto.ParagraphListItemInfo;
 import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.enums.StyleGroup;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class ParagraphStyleHelper {
     public static ParagraphStyle withHeading1(ParagraphStyle oldStyle, boolean apply) {
@@ -50,5 +55,13 @@ public class ParagraphStyleHelper {
         return new ParagraphStyle(itemInfo.level, itemInfo.lineCount, itemInfo.isChecked, listId, offset)
                 .withStyle(itemInfo.oldStyle,
                         StyleGroupRegistry.getGroup(itemInfo.listType), apply ? itemInfo.listType : null);
+    }
+
+    public static ParagraphStyle convertToParagraphStyle(MutableParagraphStyle mutableStyle) {
+        EnumMap<StyleGroup, ParagraphType> groupMap = new EnumMap<>(StyleGroup.class);
+        mutableStyle.getStyles().forEach(style -> groupMap.put(StyleGroupRegistry.getGroup(style), style));
+
+        return new ParagraphStyle(mutableStyle.level, mutableStyle.lineCount, mutableStyle.isItemChecked, mutableStyle.numberListId, mutableStyle.offset)
+                .withStyles(groupMap);
     }
 }

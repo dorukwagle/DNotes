@@ -29,7 +29,7 @@ import javafx.scene.text.Font;
 public class MarkdownEditor implements IMarkdownEditor {
 
     private StringBuilder editorText;
-    private View editorView;
+    private final View editorView;
     private static final Set<KeyCode> keyActions = Set.of(
         KeyCode.ENTER, 
         KeyCode.TAB, 
@@ -189,5 +189,11 @@ public class MarkdownEditor implements IMarkdownEditor {
     public Stream<ParagraphNode> encodeAndDump() {
         return Factory.createCodecManager()
             .dumpEditorDocument(editorView.getEditor());
+    }
+
+    @Override
+    public void decodeAndLoad(ParagraphNode node) {
+        Factory.createCodecManager()
+                .loadEditorDocument(editorView.getEditor(), node);
     }
 }
