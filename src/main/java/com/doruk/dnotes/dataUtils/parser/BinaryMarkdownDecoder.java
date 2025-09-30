@@ -3,10 +3,12 @@ package com.doruk.dnotes.dataUtils.parser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.SegmentNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.enums.ParagraphModifiers;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
@@ -78,40 +80,103 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         }
     }
 
-    private void readSegmentStyles(InputStream stream, ParagraphNode node) {
+    private void readSegmentStyles(InputStream stream, SegmentNode node) throws IOException {
+        byte[] marker = new byte[1];
+        if (stream.read(marker) == -1 || marker[0] != Markers.SEGMENT_STYLES)
+            throw new ProcessingStageException("Invalid byte found while reading segment styles");
 
+        int length = continuousBytesToInteger(stream);
+        byte[] segmentBytes = new byte[length];
+
+        if (stream.read(segmentBytes) == -1)
+            return;
+
+        for (byte b : segmentBytes) {
+            var style = bytesCodecMap.get(b);
+            if (style == null)
+                throw new ProcessingStageException("Unrecognized segment style byte");
+            node.addStyle((ToolName) style);
+        }
     }
 
-    private void readSegmentStateValues(InputStream stream, ParagraphNode node) {
+    private void readSegmentStateValues(InputStream stream, SegmentNode node) throws IOException {
+        byte[] marker = new byte[1];
+        if (stream.read(marker) == -1 || marker[0] != Markers.SEGMENT_STATE_VALUES)
+            throw new ProcessingStageException("Invalid byte found while reading segment state values");
 
+        int length = continuousBytesToInteger(stream);
+        byte[] segmentBytes = new byte[length];
+
+        if (stream.read(segmentBytes) == -1)
+            return;
+
+        var stateStream = new ByteArrayInputStream(segmentBytes);
+        byte[] modifier = new byte[1];
+
+        while (stateStream.read(modifier) != -1) {
+            var style = bytesCodecMap.get(modifier[0]);
+            if (style == null)
+                throw new ProcessingStageException("Unrecognized segment state value byte");
+
+            int value = continuousBytesToInteger(stateStream);
+            node.addStateValue((ToolName) style, value);
+        }
     }
 
-    private void readSegmentText(InputStream stream, ParagraphNode node) {
+    private void readSegmentText(InputStream stream, SegmentNode node) throws IOException {
+        byte[] marker = new byte[1];
+        if (stream.read(marker) == -1 || marker[0] != Markers.SEGMENT_TEXT)
+            throw new ProcessingStageException("Invalid byte found while reading segment text");
 
+        int length = continuousBytesToInteger(stream);
+        byte[] textBytes = new byte[length];
+
+        if (stream.read(textBytes) == -1)
+            return;
+
+        node.setText(new String(textBytes, StandardCharsets.UTF_8));
     }
 
     private ParagraphNode readParagraphNode(InputStream input) throws IOException {
         // read  start byte
-        byte[] b = new byte[1];
-        var read = input.read(b);
+        byte[] marker = new byte[1];
+        if (input.read(marker) == -1)
+            return null;
 
-        if (b[0] != Markers.PARAGRAPH_START)
+        if (marker[0] != Markers.PARAGRAPH_START)
             throw new ProcessingStageException("Invalid paragraph start byte");
 
-        return  null;
+        var paragraphNode = new ParagraphNode();
+
+        // read global styles
+        readGlobalStyles(input, paragraphNode);
+
+        // read global modifiers
+        readGlobalModifiers(input, paragraphNode);
+
+        byte[] sb = new byte[1];
+        while (input.read(sb) != -1) {
+            if (sb[0] != Markers.SEGMENT_START)
+                throw new ProcessingStageException("Invalid segment start byte");
+
+            SegmentNode segment = new SegmentNode();
+            readSegmentStyles(input, segment);
+            readSegmentStateValues(input, segment);
+            readSegmentText(input, segment);
+            paragraphNode.addSegment(segment);
+        }
+
+        return  paragraphNode;
     }
 
     @Override
     public void decode(InputStream input, Consumer<ParagraphNode> consumer) {
         try {
-            byte[] marker = new byte[1];
-
-            while (input.read(marker) != -1 && marker[0] == Markers.PARAGRAPH_START)
-                consumer.accept(readParagraphNode(input));
-
+            ParagraphNode node;
+            while ((node = readParagraphNode(input)) != null)
+                consumer.accept(node);
         } catch (Exception e) {
             throw new ProcessingStageException(e.getMessage(), e);
         }
-
     }
 }
