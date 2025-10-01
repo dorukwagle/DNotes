@@ -61,8 +61,8 @@ public class StyleHelper {
 
     public static TextStyle convertToTextStyle(MutableTextStyle mutableStyle) {
         return new TextStyle(mutableStyle.bold, mutableStyle.italic, mutableStyle.underline, mutableStyle.strikethrough,
-                colorFromInteger(mutableStyle.textColor),
-                colorFromInteger(mutableStyle.backgroundColor),
+                mutableStyle.textColor,
+                mutableStyle.backgroundColor,
                 mutableStyle.fontSize
         );
     }

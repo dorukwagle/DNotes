@@ -6,7 +6,8 @@ import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 
 // N: Node type
 // S: Style type
-public abstract class Codec<N, S> {
+// M: Mutable style type, output for decoders
+public abstract class Codec<N, S, M> {
     public enum CodecType {
         ParagraphCodec,
         TextCodec;
@@ -25,4 +26,6 @@ public abstract class Codec<N, S> {
     }
 
     public abstract void encode(N node, S style);
+
+    public abstract void decode(N node, M style);
 }

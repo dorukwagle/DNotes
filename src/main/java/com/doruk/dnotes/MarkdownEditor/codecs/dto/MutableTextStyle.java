@@ -9,8 +9,8 @@ public class MutableTextStyle {
     public boolean italic;
     public boolean underline;
     public boolean strikethrough;
-    public int textColor;
-    public int backgroundColor;
+    public Color textColor;
+    public Color backgroundColor;
     public int fontSize;
 
     public MutableTextStyle() {
@@ -18,8 +18,8 @@ public class MutableTextStyle {
         this.italic = false;
         this.underline = false;
         this.strikethrough = false;
-        this.textColor = 0;
-        this.backgroundColor = 0;
+        this.textColor = GlobalConstants.DEFAULT_FONT_COLOR;
+        this.backgroundColor = GlobalConstants.DEFAULT_FONT_BG_COLOR;
         this.fontSize = GlobalConstants.DEFAULT_FONT_SIZE;
     }
 }
