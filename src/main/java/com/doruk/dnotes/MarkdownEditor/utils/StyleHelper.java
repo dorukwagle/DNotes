@@ -23,9 +23,9 @@ public class StyleHelper {
     }
 
     public static Color colorFromInteger(int color) {
-        var alpha = (color >> 24) & 0xFF;
-        var red = (color >> 16) & 0xFF;
-        var green = (color >> 8) & 0xFF;
+        var alpha = (color >>> 24) & 0xFF;
+        var red = (color >>> 16) & 0xFF;
+        var green = (color >>> 8) & 0xFF;
         var blue = color & 0xFF;
 
         return Color.color(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0);
