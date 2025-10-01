@@ -17,7 +17,6 @@ public class FontBGCodec extends Codec<SegmentNode, TextStyle, MutableTextStyle>
 
     @Override
     public void encode(SegmentNode node, TextStyle style) {
-        node.addStyle(ToolName.FontBG);
         var bgColor = style.backgroundColor == null ? GlobalConstants.DEFAULT_FONT_BG_COLOR : style.backgroundColor;
         node.addStateValue(ToolName.FontBG, StyleHelper.colorToInteger(bgColor));
     }

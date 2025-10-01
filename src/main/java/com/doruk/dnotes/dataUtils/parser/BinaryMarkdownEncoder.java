@@ -24,19 +24,18 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
 
     private List<Byte> toContinuationBytes(int value) {
         var bytes = new ArrayList<Byte>(10);
-        int shift = 0;
 
         while (true) {
-            byte shifted = (byte) (value >> shift);
-            byte byteValue = (byte) (shifted & 0x7F); // extract 7 bits
+            byte chunk = (byte) (value & 0x7F); // extract 7 bits
+            // shift the value right by 7 bits
+            value >>>= 7;
 
-            if ((shifted & 0x80) == 0) { // check the MSB
-                bytes.add(byteValue);
+            if (value == 0) { // check if it's the last chunk
+                bytes.add(chunk);
                 break;
             }
 
-            bytes.add((byte) (byteValue | 0x80));  // add continuation bit
-            shift += 7;
+            bytes.add((byte) (chunk | 0x80));  // add continuation bit
         }
         return bytes;
     }

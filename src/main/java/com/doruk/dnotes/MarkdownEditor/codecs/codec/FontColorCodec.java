@@ -16,7 +16,6 @@ public class FontColorCodec extends Codec<SegmentNode, TextStyle, MutableTextSty
 
     @Override
     public void encode(SegmentNode node, TextStyle style) {
-        node.addStyle(ToolName.FontColor);
         var textColor = style.textColor == null ? GlobalConstants.DEFAULT_FONT_COLOR : style.textColor;
         node.addStateValue(ToolName.FontColor, StyleHelper.colorToInteger(textColor));
     }

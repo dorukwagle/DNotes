@@ -14,8 +14,6 @@ public class FontCodec extends Codec<SegmentNode, TextStyle, MutableTextStyle> {
 
     @Override
     public void encode(SegmentNode node, TextStyle style) {
-        node.addStyle(ToolName.Font);
-
         node.addStateValue(ToolName.Font, style.fontSize);
     }
 
