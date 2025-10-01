@@ -16,7 +16,6 @@ module com.doruk.dnotes {
     requires org.fxmisc.undo;
     requires transitive org.fxmisc.richtext;
     requires transitive reactfx;
-    requires com.doruk.dnotes;
 
     exports com.doruk.dnotes;
     exports com.doruk.dnotes.views;

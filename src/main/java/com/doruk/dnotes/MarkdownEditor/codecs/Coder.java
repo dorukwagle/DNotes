@@ -3,6 +3,8 @@ package com.doruk.dnotes.MarkdownEditor.codecs;
 import java.util.stream.Stream;
 
 import com.doruk.dnotes.MarkdownEditor.Factory;
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.MutableParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.MutableTextStyle;
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.SegmentNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.enums.ParagraphModifiers;
@@ -10,8 +12,10 @@ import com.doruk.dnotes.MarkdownEditor.codecs.interfaces.Codec.CodecType;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ICodecManager;
+import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 
-public class CodecManager implements ICodecManager {
+public class Coder implements ICodecManager {
     @SuppressWarnings("unchecked")
     @Override
     public Stream<ParagraphNode> dumpEditorDocument(FXTextEditor editor) {
@@ -48,9 +52,45 @@ public class CodecManager implements ICodecManager {
                 });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void loadEditorDocument(FXTextEditor editor, ParagraphNode node) {
+        var area = editor.getArea();
+        var codecsList = Factory.createCodecs();
 
+        var dataLen = area.getLength();
+        dataLen = dataLen > 0 ? dataLen - 1 : 0;
+
+        // create mutable paragraph style, then populate it
+        var paragraphStyle = new MutableParagraphStyle();
+
+        codecsList.stream()
+                .filter(codec -> codec.getCodecType() == CodecType.ParagraphCodec)
+                .forEach(codec -> codec.decode(node, paragraphStyle));
+
+        // set paragraph style
+        area.setParagraphInsertionStyle(
+                ParagraphStyleHelper.convertToParagraphStyle(paragraphStyle)
+        );
+
+        // iterate each segments and decode them
+        for (var segment : node.getSegments()) {
+            var textStyle = new MutableTextStyle();
+
+            codecsList.stream()
+                    .filter(codec -> codec.getCodecType() == CodecType.TextCodec)
+                    .forEach(codec -> codec.decode(segment, textStyle));
+
+            // apply the segment style
+            area.setTextInsertionStyle(StyleHelper.convertToTextStyle(textStyle));
+
+            // add the text to the document, then increment the data length
+            area.insertText(dataLen, segment.getText());
+            dataLen += segment.getText().length();
+        }
+
+        // insert a new line
+        area.insertText(dataLen, "\n");
     }
 
     @Override

@@ -45,7 +45,7 @@ public class EditorController implements IEditorController {
 
         setupActions();
 
-//        Platform.runLater(this::loadEditorDocument);
+        Platform.runLater(this::loadEditorDocument);
     }
 
     private void setupActions() {
