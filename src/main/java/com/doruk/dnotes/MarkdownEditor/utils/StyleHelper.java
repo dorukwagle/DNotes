@@ -31,6 +31,10 @@ public class StyleHelper {
         return Color.color(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0);
     }
 
+    public static TextStyle defaultStyle() {
+        return TextStyle.EMPTY;
+    }
+
     public static TextStyle textWithBold(TextStyle style, boolean bold) {
         return new TextStyle(bold, style.italic, style.underline, style.strikethrough, style.textColor, style.backgroundColor, style.fontSize);
     }

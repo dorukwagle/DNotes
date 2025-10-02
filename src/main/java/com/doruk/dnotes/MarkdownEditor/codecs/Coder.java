@@ -71,11 +71,6 @@ public class Coder implements ICodecManager {
                 .filter(codec -> codec.getCodecType() == CodecType.ParagraphCodec)
                 .forEach(codec -> codec.decode(node, paragraphStyle));
 
-        // set paragraph style
-        area.setParagraphInsertionStyle(
-                ParagraphStyleHelper.convertToParagraphStyle(paragraphStyle)
-        );
-
         // iterate each segments and decode them
         for (var segment : node.getSegments()) {
             var textStyle = new MutableTextStyle();
@@ -91,6 +86,13 @@ public class Coder implements ICodecManager {
             area.insertText(dataLen, segment.getText());
             dataLen += segment.getText().length();
         }
+
+        // set paragraph style
+        var parIndex = editor.getParagraphIndexAtPos(dataLen);
+        area.setParagraphStyle(
+                parIndex,
+                ParagraphStyleHelper.convertToParagraphStyle(paragraphStyle)
+        );
     }
 
     @Override

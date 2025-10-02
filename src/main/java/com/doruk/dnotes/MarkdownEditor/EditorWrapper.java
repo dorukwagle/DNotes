@@ -16,10 +16,10 @@ import javafx.scene.layout.VBox;
 
 
 public class EditorWrapper implements View {
-    private VBox root;
-    private ControlPanelView controlPanel;
-    private HBox reference;
-    private FXTextEditor editor;
+    private final VBox root;
+    private final ControlPanelView controlPanel;
+    private final HBox reference;
+    private final FXTextEditor editor;
 
     public EditorWrapper() {
         root = new VBox();

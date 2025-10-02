@@ -93,6 +93,7 @@ public class EditorController implements IEditorController {
         try {
             var stream = new BufferedInputStream(Files.newInputStream(Path.of("test.dnt")));
             decoder.decode(stream, markdownEditor::decodeAndLoad);
+            stream.close();
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to load input file" : e.getMessage(), e);

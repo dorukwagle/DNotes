@@ -47,13 +47,11 @@ public class EditorFX implements FXTextEditor {
             var style = paragraph.getParagraphStyle();
 
             // Call all renderers that can render graphics
-            Node graphic = this.paragraphRenderers.values().stream()
+            return this.paragraphRenderers.values().stream()
                 .map(renderer -> renderer.renderParagraphGraphic(style, index))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
-
-            return graphic;
         });
 
         area.setWrapText(true);

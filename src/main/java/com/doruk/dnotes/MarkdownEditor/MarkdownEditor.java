@@ -1,6 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.CaretSelectionHandler;
@@ -9,6 +10,7 @@ import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontBGColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontColorHandler;
 import com.doruk.dnotes.MarkdownEditor.changeHandlers.FontSizeHandler;
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
@@ -17,9 +19,12 @@ import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.BulletListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.CheckListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.KeyEventDispatcher;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.NumberListKeyHandler;
+import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 import com.doruk.dnotes.store.GlobalConstants;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -53,6 +58,10 @@ public class MarkdownEditor implements IMarkdownEditor {
         initializeChangeHandlers();
 
         initializeKeyEventHandlers();
+
+        // set default style
+        this.editorView.getEditor().getArea()
+                .setTextInsertionStyle(StyleHelper.defaultStyle());
     }
 
     private boolean shouldHandleKeyAction(KeyEvent event, KeyCode action) {
@@ -65,7 +74,6 @@ public class MarkdownEditor implements IMarkdownEditor {
 
     private void loadFonts() {
         Font.loadFont(getClass().getResourceAsStream("/fonts/magnolia_script_regular.otf"), 0);
-
     }
 
     private void initialSetup() {
@@ -112,11 +120,28 @@ public class MarkdownEditor implements IMarkdownEditor {
                     });
                 });
 
-        var area = editorView.getEditor().getArea();
-//        area.insertText(0, "hello test\n");
-//        area.insertText(area.getLength() - 1, "hello ⚾world \n hi world{\u2028} 😄testing world {\r}brave world");
-//        area.insertText(area.getLength() -1, "\nagain hi world");
-//        area.insertText(area.getLength() -1, "\n haha");
+//        CompletableFuture.runAsync(() -> {
+//            try {
+//                Thread.sleep(3000);
+//
+//                Platform.runLater(() -> {
+//                    var area = editorView.getEditor().getArea();
+//                    area.insertText(0, "hello test\n");
+//                    area.setParagraphStyle(0, ParagraphStyleHelper.withBlockquote(
+//                            ParagraphStyle.EMPTY, true));
+//
+//                    area.insertText(area.getLength() - 1, "hello ⚾world \n hi world{\u2028} 😄testing world {\r}brave world");
+//                    area.setParagraphStyle(1, ParagraphStyleHelper.withHeading2(
+//                            ParagraphStyle.EMPTY, true));
+//
+//                    area.insertText(area.getLength() -1, "\nagain hi world");
+//                    editorView.getControlPanel().getView().requestFocus();
+//                    area.insertText(area.getLength() -1, "\n haha");
+//                });
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
     }
 
     private void initializeChangeHandlers() {
@@ -195,5 +220,9 @@ public class MarkdownEditor implements IMarkdownEditor {
     public void decodeAndLoad(ParagraphNode node) {
         Factory.createCodecManager()
                 .loadEditorDocument(editorView.getEditor(), node);
+
+        // since, cursor goes to the end, remove the focus, let user click and replace the cursor
+        // take away the focus
+        this.editorView.getView().requestFocus();
     }
 }
