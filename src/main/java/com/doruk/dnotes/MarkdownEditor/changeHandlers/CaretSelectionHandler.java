@@ -3,8 +3,10 @@ package com.doruk.dnotes.MarkdownEditor.changeHandlers;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javafx.scene.control.ToggleButton;
 import org.fxmisc.richtext.GenericStyledArea;
 import org.reactfx.Change;
 import org.reactfx.EventStreams;
@@ -25,10 +27,10 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 public class CaretSelectionHandler {
-    private GenericStyledArea<ParagraphStyle, String, TextStyle> area;
-    private ControlPanelView controlPanel;
-    private FXTextEditor editor;
-    private AtomicInteger caretChangeCount = new AtomicInteger(0);
+    private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
+    private final ControlPanelView controlPanel;
+    private final FXTextEditor editor;
+    private final AtomicInteger caretChangeCount = new AtomicInteger(0);
     private static final Duration DELAY = Duration.ofMillis(300);
 
     public CaretSelectionHandler(FXTextEditor editor, ControlPanelView controlPanel) {
@@ -42,7 +44,7 @@ public class CaretSelectionHandler {
         // detect text changes
         area.plainTextChanges()
                 .subscribe(change -> {
-                    var insertion = change.getInserted().length() > 0 && change.getRemoved().isEmpty();
+                    var insertion = !change.getInserted().isEmpty() && change.getRemoved().isEmpty();
                     if (insertion)
                         caretChangeCount.getAndDecrement();
                 });
@@ -52,19 +54,34 @@ public class CaretSelectionHandler {
             caretChangeCount.getAndIncrement();
         });
 
-        // wait for 600ms before calling
+        // check of new caret position every delay, then update the tools
         caretChange.successionEnds(DELAY)
                 .subscribe(this::onCaretPosChange);
 
-        // also track what style is applied at each caret pos, and change the insertion style
+        // track what style is applied at each caret pos, and change the insertion style
+        // do this every 20ms
         caretChange.successionEnds(Duration.ofMillis(20))
-                .subscribe((pos) -> {
-                    var style = area.getStyleAtPosition(pos.getNewValue());
-                    editor.getArea().setTextInsertionStyle(style);
-                });
+                .subscribe((pos) -> this.updateInsertionStyle(pos.getNewValue()));
 
         selectionChange.successionEnds(DELAY)
                 .subscribe(this::onSelectionChange);
+
+        // also monitor the focus received
+        area.focusedProperty()
+                .subscribe(focused -> {
+                    System.out.println("received focus: " + focused);
+                    if (!focused) return;
+                    var caretPos = area.getCaretPosition();
+                    this.updateInsertionStyle(caretPos);
+                    // increase the caret change count, to simulate change
+                    caretChangeCount.set(1);
+                    this.onCaretPosChange(new Change<>(caretPos - 1, caretPos));
+                });
+    }
+
+    private void updateInsertionStyle(int pos) {
+        var style = area.getStyleAtPosition(pos);
+        editor.getArea().setTextInsertionStyle(style);
     }
 
     private void onCaretPosChange(Change<Integer> caretPos) {
@@ -74,68 +91,21 @@ public class CaretSelectionHandler {
                 area.getSelection().getLength() > 0)
             return;
 
-        var btnMap = controlPanel.getStyleButtons()
-                .stream()
-                .collect(Collectors.toMap(
-                        btn -> btn.getId(),
-                        btn -> btn));
-
-        List<Pair<String, ToolCmdStrategy>> allTools = btnMap.values()
-                .stream()
-                .map(btn -> new Pair<>(btn.getId(), Factory.createTool(
-                        ToolName.fromName(btn.getId()), null)))
-                .toList();
-
-        allTools.forEach(tuple -> {
-            var isApplied = tuple.getValue().isApplied(editor);
-            btnMap.get(tuple.getKey()).setSelected(isApplied);
-            if (!isApplied)
-                return;
-
-            // also check if it's stateful tool
-            var tool = tuple.getValue();
-            if (!(tool instanceof StatefulTextStyleTool stateTool))
-                return;
-
-            switch (ToolName.fromName(tuple.getKey())) {
-                case FontColor -> {
-                    var color = (Color) stateTool.getState();
-                    Platform.runLater(() -> controlPanel.getTextColorPicker().setValue(color));
-
-                    if (GlobalConstants.DEFAULT_FONT_COLOR.equals(color))
-                        btnMap.get(tuple.getKey()).setSelected(false);
-                }
-                case FontBG -> {
-                    var color = (Color) stateTool.getState();
-                    Platform.runLater(() -> controlPanel.getHighColorPicker().setValue(color));
-
-                    if (GlobalConstants.DEFAULT_FONT_BG_COLOR.equals(color))
-                        btnMap.get(tuple.getKey()).setSelected(false);
-                }
-                default -> {
-                    return;
-                }
-            }
-        });
-
-        // also process font tool, it's not in the allTools list
-        var fontTool = Factory.createTool(ToolName.Font, null);
-        if (!(fontTool.isApplied(editor) && fontTool instanceof StatefulTextStyleTool fontStateTool))
-            return;
-        
-        var size = (Integer) fontStateTool.getState();
-        Platform.runLater(() -> controlPanel.getFontSizeCombo()
-            .setValue(size.toString()));
+        this.updateUiStates(tool -> tool.isApplied(editor));
     }
 
     private void onSelectionChange(Change<IndexRange> change) {
         if (change.getNewValue().getLength() == 0)
             return;
 
+        this.updateUiStates(tool -> tool.isAppliedOnSelection(editor));
+    }
+
+    private void updateUiStates(Predicate<ToolCmdStrategy> checkApplied) {
         var btnMap = controlPanel.getStyleButtons()
                 .stream()
                 .collect(Collectors.toMap(
-                        btn -> btn.getId(),
+                        ToggleButton::getId,
                         btn -> btn));
 
         List<Pair<String, ToolCmdStrategy>> allTools = btnMap.values()
@@ -145,7 +115,7 @@ public class CaretSelectionHandler {
                 .toList();
 
         allTools.forEach(tuple -> {
-            var isApplied = tuple.getValue().isAppliedOnSelection(editor);
+            var isApplied = checkApplied.test(tuple.getValue());
             btnMap.get(tuple.getKey()).setSelected(isApplied);
             if (!isApplied)
                 return;
@@ -170,21 +140,19 @@ public class CaretSelectionHandler {
                     if (GlobalConstants.DEFAULT_FONT_BG_COLOR.equals(color))
                         btnMap.get(tuple.getKey()).setSelected(false);
                 }
-                default -> {
-                    return;
-                }
+                default -> {}
             }
         });
 
         // also process font tool, it's not in the allTools list
         var fontTool = Factory.createTool(ToolName.Font, null);
-        var isApplied = fontTool.isAppliedOnSelection(editor);
+        var isApplied = checkApplied.test(fontTool);
 
-        if (!(fontTool instanceof StatefulTextStyleTool fontStateTool))
+        if (!(isApplied && fontTool instanceof StatefulTextStyleTool fontStateTool))
             return;
-        
-        var size = isApplied ? (Integer) fontStateTool.getState() : "";
+
+        var size = (Integer) fontStateTool.getState();
         Platform.runLater(() -> controlPanel.getFontSizeCombo()
-            .setValue(size.toString()));
+                .setValue(size.toString()));
     }
 }
