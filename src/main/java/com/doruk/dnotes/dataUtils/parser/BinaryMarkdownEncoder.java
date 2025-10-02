@@ -77,8 +77,6 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
     }
 
     private void encodeParagraph(ParagraphNode node, OutputStream stream) throws IOException {
-        // var stream = new ByteArrayOutputStream();
-
         // first mark the start of the paragraph
         stream.write(Markers.PARAGRAPH_START);
 
@@ -92,10 +90,10 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
         // write paragraph modifiers
         encodeStatefulStyles(node.getModifiers(), stream);
 
-        // write segments start
-        stream.write(Markers.SEGMENT_START);
         // write segments
         for (SegmentNode segment : node.getSegments()) {
+            // write segments start
+            stream.write(Markers.SEGMENT_START);
             // write segment style start
             stream.write(Markers.SEGMENT_STYLES);
             // write segment styles

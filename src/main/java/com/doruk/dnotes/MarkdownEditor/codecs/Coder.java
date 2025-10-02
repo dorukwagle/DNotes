@@ -59,7 +59,10 @@ public class Coder implements ICodecManager {
         var codecsList = Factory.createCodecs();
 
         var dataLen = area.getLength();
-        dataLen = dataLen > 0 ? dataLen - 1 : 0;
+
+        // insert a new line if it's not first
+        if (dataLen > 0)
+            area.insertText(dataLen++, "\n"); // also increase length after insertion
 
         // create mutable paragraph style, then populate it
         var paragraphStyle = new MutableParagraphStyle();
@@ -88,9 +91,6 @@ public class Coder implements ICodecManager {
             area.insertText(dataLen, segment.getText());
             dataLen += segment.getText().length();
         }
-
-        // insert a new line
-        area.insertText(dataLen, "\n");
     }
 
     @Override

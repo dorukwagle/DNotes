@@ -28,8 +28,8 @@ public class MutableParagraphStyle {
 
     public MutableParagraphStyle() {
         this.paragraphTypes = new ArrayList<>(20);
-        this.level = 0;
-        this.lineCount = 0;
+        this.level = 1;
+        this.lineCount = 1;
         this.numberListId = null;
         this.isItemChecked = false;
         this.offset = 0;

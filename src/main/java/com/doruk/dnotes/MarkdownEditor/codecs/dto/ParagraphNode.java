@@ -2,6 +2,8 @@ package com.doruk.dnotes.MarkdownEditor.codecs.dto;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,19 +13,19 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 public class ParagraphNode {
     private final Set<ToolName> globalStyles;
     private final Map<ParagraphModifiers, Integer> modifiers;
-    private final Set<SegmentNode> segments;
+    private final List<SegmentNode> segments;
 
     public ParagraphNode() {
         this.globalStyles = new HashSet<>();
         this.modifiers = new HashMap<>();
-        this.segments = new HashSet<>();
+        this.segments = new LinkedList<>();
     }
 
     public Set<ToolName> getGlobalStyles() {
         return globalStyles;
     }
 
-    public Set<SegmentNode> getSegments() {
+    public List<SegmentNode> getSegments() {
         return segments;
     }
 
