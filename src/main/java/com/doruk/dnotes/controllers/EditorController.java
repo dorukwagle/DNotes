@@ -1,5 +1,7 @@
 package com.doruk.dnotes.controllers;
 
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.interfaces.IEditorController;
 
 import java.io.BufferedInputStream;
@@ -27,6 +29,7 @@ public class EditorController implements IEditorController {
     private final IMarkdownEditor markdownEditor;
     private final INavigationController navigationController;
     private final IPreference preference;
+    private final byte[] seed;
 
     private static IShutdownListener onShutdown;
 
@@ -42,6 +45,10 @@ public class EditorController implements IEditorController {
 
         if (onShutdown == null)
             onShutdown = this::saveEditorDocument;
+
+        seed = new byte[32];
+        for (int i = 1; i < 33; i++)
+            seed[i-1] = (byte)i;
 
         setupActions();
 
@@ -78,7 +85,9 @@ public class EditorController implements IEditorController {
         var encoded = markdownEditor.encodeAndDump();
         var encoder = DIFactory.createMarkdownEncoder(markdownEditor.getCodecsValues());
         try {
-            var stream = new BufferedOutputStream(Files.newOutputStream(Path.of("test.dnt")));
+            var stream = new BufferedOutputStream(
+                    new ObfuscatorOutputStream(
+                            Files.newOutputStream(Path.of("test.dnt")), seed));
             encoder.encode(encoded, stream);
             stream.flush();
             stream.close();
@@ -91,7 +100,9 @@ public class EditorController implements IEditorController {
     private void loadEditorDocument() {
         var decoder = DIFactory.createMarkdownDecoder(markdownEditor.getCodecsValues());
         try {
-            var stream = new BufferedInputStream(Files.newInputStream(Path.of("test.dnt")));
+            var stream = new BufferedInputStream(
+                    new ObfuscatorInputStream(
+                            Files.newInputStream(Path.of("test.dnt")), seed));
             decoder.decode(stream, markdownEditor::decodeAndLoad);
             stream.close();
         } catch (IOException | ProcessingStageException e) {
