@@ -25,7 +25,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         if (stream.read(marker) == -1 ||marker[0] != Markers.GLOBALS_START)
             throw new ProcessingStageException("Invalid byte found while reading global styles");
 
-        int length = NumberUtils.continuousBytesToInteger(stream);
+        int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] globalBytes = new byte[length];
 
         if (stream.read(globalBytes) == -1)
@@ -44,7 +44,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         if (stream.read(marker) == -1 || marker[0] != Markers.GLOBALS_STATE_VALUES)
             throw new ProcessingStageException("Invalid byte found while reading global modifiers");
 
-        int length = NumberUtils.continuousBytesToInteger(stream);
+        int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] globalBytes = new byte[length];
 
         if (stream.read(globalBytes) == -1)
@@ -58,7 +58,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
             if (style == null)
                 throw new ProcessingStageException("Unrecognized global modifier byte");
 
-            int value = NumberUtils.continuousBytesToInteger(modifierStream);
+            int value = (int)NumberUtils.continuousBytesToLong(modifierStream);
             node.addModifier((ParagraphModifiers) style, value);
         }
     }
@@ -68,7 +68,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         if (stream.read(marker) == -1 || marker[0] != Markers.SEGMENT_STYLES)
             throw new ProcessingStageException("Invalid byte found while reading segment styles");
 
-        int length = NumberUtils.continuousBytesToInteger(stream);
+        int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] segmentBytes = new byte[length];
 
         if (stream.read(segmentBytes) == -1)
@@ -87,7 +87,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         if (stream.read(marker) == -1 || marker[0] != Markers.SEGMENT_STATE_VALUES)
             throw new ProcessingStageException("Invalid byte found while reading segment state values");
 
-        int length = NumberUtils.continuousBytesToInteger(stream);
+        int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] segmentBytes = new byte[length];
 
         if (stream.read(segmentBytes) == -1)
@@ -101,7 +101,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
             if (style == null)
                 throw new ProcessingStageException("Unrecognized segment state value byte");
 
-            int value = NumberUtils.continuousBytesToInteger(stateStream);
+            int value = (int)NumberUtils.continuousBytesToLong(stateStream);
             node.addStateValue((ToolName) style, value);
         }
     }
@@ -111,7 +111,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         if (stream.read(marker) == -1 || marker[0] != Markers.SEGMENT_TEXT)
             throw new ProcessingStageException("Invalid byte found while reading segment text");
 
-        int length = NumberUtils.continuousBytesToInteger(stream);
+        int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] textBytes = new byte[length];
 
         if (stream.read(textBytes) == -1)

@@ -3,7 +3,6 @@ package com.doruk.dnotes.dataUtils;
 import com.doruk.dnotes.store.GlobalConstants;
 import com.doruk.dnotes.utils.NumberUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +45,7 @@ public class MetaWriter {
         // obfuscation seed
         buff[cursor++] = Markers.Keys.OBFUSCATION_SEED_KEY;
         // write length of seed, always 32
-        buff[cursor++] = 32;
+        buff[cursor++] = GlobalConstants.OBFUSCATION_SEED_LENGTH;
         for (byte b : obfuscationSeed)
             buff[cursor++] = b;
     }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NumberUtils {
-    public static int continuousBytesToInteger(InputStream stream) throws IOException {
+    public static long continuousBytesToLong(InputStream stream) throws IOException {
         byte[] ref = new byte[1];
         int value = 0;
         int shift = 0;
