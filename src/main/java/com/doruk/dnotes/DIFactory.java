@@ -1,5 +1,7 @@
 package com.doruk.dnotes;
 
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownDecoder;
 import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownEncoder;
 import com.doruk.dnotes.dto.BookDto;
@@ -16,6 +18,9 @@ import com.doruk.dnotes.utils.ShutdownManager;
 import com.doruk.dnotes.views.components.ConfirmationModal;
 import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.views.components.PromptModal;
+
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DIFactory {
     public static IPreference createGlobalPreference() {
@@ -64,5 +69,13 @@ public class DIFactory {
 
     public static MarkdownDecoder createMarkdownDecoder(Enum<?>[] codecsName) {
         return new BinaryMarkdownDecoder(codecsName);
+    }
+
+    public static  InputStream createObfuscator(InputStream in, byte[] seed) {
+        return new ObfuscatorInputStream(in, seed);
+    }
+
+    public static OutputStream createObfuscator(OutputStream out, byte[] seed) {
+        return new ObfuscatorOutputStream(out, seed);
     }
 }

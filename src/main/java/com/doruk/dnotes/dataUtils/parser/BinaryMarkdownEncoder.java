@@ -16,33 +16,16 @@ import com.doruk.dnotes.MarkdownEditor.codecs.dto.SegmentNode;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.MarkdownEncoder;
+import com.doruk.dnotes.utils.NumberUtils;
 
 public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncoder {
     public BinaryMarkdownEncoder(Enum<?>[] codecsName) {
         super(codecsName);
     }
 
-    private List<Byte> toContinuationBytes(int value) {
-        var bytes = new ArrayList<Byte>(10);
-
-        while (true) {
-            byte chunk = (byte) (value & 0x7F); // extract 7 bits
-            // shift the value right by 7 bits
-            value >>>= 7;
-
-            if (value == 0) { // check if it's the last chunk
-                bytes.add(chunk);
-                break;
-            }
-
-            bytes.add((byte) (chunk | 0x80));  // add continuation bit
-        }
-        return bytes;
-    }
-
     // returns the bytes length as int
     private void encodeStatelessStyles(Set<ToolName> styles, OutputStream stream) throws IOException {
-        var lengthBytes = toContinuationBytes(styles.size());
+        var lengthBytes = NumberUtils.toContinuationBytes(styles.size());
         for (byte b : lengthBytes)
             stream.write(b);
         
@@ -56,7 +39,7 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
 
         Map<Byte, List<Byte>> encodings = states.entrySet().stream()
             .map(entry -> {
-                var contBytes = toContinuationBytes(entry.getValue());
+                var contBytes = NumberUtils.toContinuationBytes(entry.getValue());
                 totalBytesLength.addAndGet(contBytes.size());
                
                return Map.entry(codecsByteMap.get(entry.getKey()), contBytes);
@@ -64,7 +47,7 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         
         // write the length bytes
-        var lengthBytes = toContinuationBytes(totalBytesLength.get());
+        var lengthBytes = NumberUtils.toContinuationBytes(totalBytesLength.get());
         for (byte b: lengthBytes)
             stream.write(b);
         
@@ -108,7 +91,7 @@ public class BinaryMarkdownEncoder extends BinaryParser implements MarkdownEncod
             stream.write(Markers.SEGMENT_TEXT);
             byte[] textBytes = segment.getText().getBytes(StandardCharsets.UTF_8);
             // write segment text length
-            var lengthBytes = toContinuationBytes(textBytes.length);
+            var lengthBytes = NumberUtils.toContinuationBytes(textBytes.length);
             for (byte b: lengthBytes)
                 stream.write(b);
             // write all text as bytes
