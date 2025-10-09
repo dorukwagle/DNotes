@@ -69,7 +69,6 @@ public class CaretSelectionHandler {
         // also monitor the focus received
         area.focusedProperty()
                 .subscribe(focused -> {
-                    System.out.println("received focus: " + focused);
                     if (!focused) return;
                     var caretPos = area.getCaretPosition();
                     this.updateInsertionStyle(caretPos);

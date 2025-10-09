@@ -40,4 +40,8 @@ public class NumberUtils {
         }
         return bytes;
     }
+
+    public static List<Byte> toContinuationBytes(int value) {
+        return toContinuationBytes(Integer.toUnsignedLong(value));
+    }
 }

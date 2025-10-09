@@ -9,6 +9,8 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
@@ -86,8 +88,8 @@ public class EditorController implements IEditorController {
         var encoder = DIFactory.createMarkdownEncoder(markdownEditor.getCodecsValues());
         try {
             var stream = new BufferedOutputStream(
-                    new ObfuscatorOutputStream(
-                            Files.newOutputStream(Path.of("test.dnt")), seed));
+                    new GZIPOutputStream(new ObfuscatorOutputStream(
+                            Files.newOutputStream(Path.of("test.dnt")), seed)));
             encoder.encode(encoded, stream);
             stream.flush();
             stream.close();
@@ -101,8 +103,8 @@ public class EditorController implements IEditorController {
         var decoder = DIFactory.createMarkdownDecoder(markdownEditor.getCodecsValues());
         try {
             var stream = new BufferedInputStream(
-                    new ObfuscatorInputStream(
-                            Files.newInputStream(Path.of("test.dnt")), seed));
+                    new GZIPInputStream(new ObfuscatorInputStream(
+                            Files.newInputStream(Path.of("test.dnt")), seed)));
             decoder.decode(stream, markdownEditor::decodeAndLoad);
             stream.close();
         } catch (IOException | ProcessingStageException e) {
