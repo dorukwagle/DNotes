@@ -2,3 +2,4 @@ mvn
 target/
 .idea/
 test.java
+out/
