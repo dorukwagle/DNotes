@@ -5,15 +5,22 @@ import com.doruk.dnotes.utils.NumberUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class MetaWriter {
-    private final FileOutputStream stream;
+    private final OutputStream stream;
     private final byte[] buff = new byte[300];
     private int cursor = 0;
 
-    public MetaWriter(FileOutputStream stream) throws IOException {
+    /**
+     * Note: Always pass the FileOutputStream
+     * @param stream
+     * @throws IOException
+     *
+     */
+    public MetaWriter(OutputStream stream) throws IOException {
         this.stream = stream;
         writeVersion();
     }
@@ -51,7 +58,7 @@ public class MetaWriter {
     }
 
     // default metadata, while saving a note
-    private void writeDefaultsMeta(Date createdAt, byte[] obfuscationSeed) {
+    public void writeDefaultsMeta(Date createdAt, byte[] obfuscationSeed) {
         this.writeMeta(Markers.FileType.NORMAL, createdAt, Markers.Transforms.OBFUSCATED, obfuscationSeed);
     }
 

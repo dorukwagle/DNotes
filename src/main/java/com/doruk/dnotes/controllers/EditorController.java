@@ -84,15 +84,9 @@ public class EditorController implements IEditorController {
     }
 
     private void saveEditorDocument() {
-        var encoded = markdownEditor.encodeAndDump();
-        var encoder = DIFactory.createMarkdownEncoder(markdownEditor.getCodecsValues());
         try {
-            var stream = new BufferedOutputStream(
-                    new GZIPOutputStream(new ObfuscatorOutputStream(
-                            Files.newOutputStream(Path.of("test.dnt")), seed)));
-            encoder.encode(encoded, stream);
-            stream.flush();
-            stream.close();
+            DIFactory.createNoteWriter(markdownEditor)
+                    .write();
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to create output file" : e.getMessage(), e);
