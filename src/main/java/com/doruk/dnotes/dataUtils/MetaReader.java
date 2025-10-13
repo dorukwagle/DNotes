@@ -5,13 +5,13 @@ import com.doruk.dnotes.store.GlobalConstants;
 import com.doruk.dnotes.utils.NumberUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class MetaReader {
-    private final FileInputStream stream;
+    private final InputStream stream;
     private boolean isEncrypted = false;
     private final byte[] obfuscationSeed = new byte[GlobalConstants.OBFUSCATION_SEED_LENGTH];
     private String sharedBy = "";
@@ -21,7 +21,11 @@ public class MetaReader {
     // temporary bytes stream
     private ByteArrayInputStream tempStream;
 
-    public MetaReader(FileInputStream stream) {
+    /**
+     * Try to pass the file input stream
+     * @param stream
+     */
+    public MetaReader(InputStream stream) {
         this.stream = stream;
     }
 

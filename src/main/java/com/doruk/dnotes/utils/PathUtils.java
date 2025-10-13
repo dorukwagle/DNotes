@@ -49,12 +49,18 @@ public class PathUtils {
         return createDirRecursive(System.getProperty("user.home") + File.separator + GlobalConstants.APP_NAME + File.separator + "shared");
     }
 
-    public static String generateRandomFilename() {
-        var uid = String.join("",
+    public static String generateFileId() {
+        return String.join("",
                 UUID.randomUUID()
                         .toString()
                         .substring(9)
                         .split("-")
+        );
+    }
+
+    public static String generateNoteFilename(String fileId) {
+        var uid = String.join("",
+                fileId
         );
 
         var dt = String.valueOf(new Date().getTime()).substring(2);

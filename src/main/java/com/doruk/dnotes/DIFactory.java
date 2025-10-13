@@ -84,8 +84,8 @@ public class DIFactory {
         return new ObfuscatorOutputStream(out, seed);
     }
 
-    public static IReader createNoteReader() {
-        return new NoteReader();
+    public static IReader createNoteReader(IMarkdownEditor editor) {
+        return new NoteReader(editor);
     }
 
     public static IWriter createNoteWriter(IMarkdownEditor editor) {

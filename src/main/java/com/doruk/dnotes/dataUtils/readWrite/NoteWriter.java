@@ -6,6 +6,7 @@ import com.doruk.dnotes.dataUtils.MetaWriter;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.interfaces.IWriter;
 import com.doruk.dnotes.utils.KeyUtil;
+import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -22,7 +23,14 @@ public class NoteWriter implements IWriter {
     }
 
     @Override
-    public void write() throws IOException {
+    public void write(String fileId) throws IOException {
+        writeNote(PathUtils.generateNoteFilename(fileId));
+    }
+
+    public void writeNote(String filename) throws IOException {
+        // convert fileId to full path
+        var filePath = Path.of(PathUtils.generateNoteFilename(filename));
+
         // encode the markdown data into nodes, then create encoder to further encode them
         var nodes = editor.encodeAndDump();
         var encoder = DIFactory.createMarkdownEncoder(editor.getCodecsValues());
@@ -31,7 +39,7 @@ public class NoteWriter implements IWriter {
         var seed = KeyUtil.generateSeed();
 
         // create file output stream
-        var fileOut = Files.newOutputStream(Path.of("test.dnt"));
+        var fileOut = Files.newOutputStream(filePath);
 
         // create meta writer
         var metaWriter = new MetaWriter(fileOut);

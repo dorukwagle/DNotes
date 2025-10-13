@@ -1,30 +1,19 @@
 package com.doruk.dnotes.controllers;
 
-import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
-import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
-import com.doruk.dnotes.interfaces.IEditorController;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
-import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
+import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.interfaces.IShutdownListener;
-
 import javafx.application.Platform;
 import javafx.scene.Parent;
+
+import java.io.IOException;
 
 public class EditorController implements IEditorController {
 
@@ -50,7 +39,7 @@ public class EditorController implements IEditorController {
 
         seed = new byte[32];
         for (int i = 1; i < 33; i++)
-            seed[i-1] = (byte)i;
+            seed[i - 1] = (byte) i;
 
         setupActions();
 
@@ -86,7 +75,7 @@ public class EditorController implements IEditorController {
     private void saveEditorDocument() {
         try {
             DIFactory.createNoteWriter(markdownEditor)
-                    .write();
+                    .write("test");
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to create output file" : e.getMessage(), e);
@@ -94,13 +83,13 @@ public class EditorController implements IEditorController {
     }
 
     private void loadEditorDocument() {
-        var decoder = DIFactory.createMarkdownDecoder(markdownEditor.getCodecsValues());
+        this.loadEditorDocument("test");
+    }
+
+    private void loadEditorDocument(String fileId) {
         try {
-            var stream = new BufferedInputStream(
-                    new GZIPInputStream(new ObfuscatorInputStream(
-                            Files.newInputStream(Path.of("test.dnt")), seed)));
-            decoder.decode(stream, markdownEditor::decodeAndLoad);
-            stream.close();
+            DIFactory.createNoteReader(markdownEditor)
+                    .read(fileId);
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to load input file" : e.getMessage(), e);
