@@ -35,7 +35,7 @@ public class NoteReader implements IReader {
     @Override
     public void read(String fileId) throws IOException {
         // convert fileId to full path
-        var filePath = Path.of(PathUtils.generateNoteFilename(fileId));
+        var filePath = Path.of(PathUtils.getNoteFilename(fileId));
 
         // check if the file exists
         if (!Files.exists(filePath))

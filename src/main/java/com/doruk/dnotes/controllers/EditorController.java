@@ -3,6 +3,7 @@ package com.doruk.dnotes.controllers;
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
 import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
@@ -13,7 +14,11 @@ import com.doruk.dnotes.interfaces.IShutdownListener;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.zip.GZIPInputStream;
 
 public class EditorController implements IEditorController {
 

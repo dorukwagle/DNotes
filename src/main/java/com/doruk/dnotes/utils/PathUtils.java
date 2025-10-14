@@ -50,22 +50,20 @@ public class PathUtils {
     }
 
     public static String generateFileId() {
-        return String.join("",
+        var uid = String.join("",
                 UUID.randomUUID()
                         .toString()
                         .substring(9)
                         .split("-")
         );
-    }
-
-    public static String generateNoteFilename(String fileId) {
-        var uid = String.join("",
-                fileId
-        );
 
         var dt = String.valueOf(new Date().getTime()).substring(2);
 
-        return join(getNotesDir(), uid + dt + GlobalConstants.APP_FORMAT);
+        return uid + dt;
+    }
+
+    public static String getNoteFilename(String fileId) {
+        return join(getNotesDir(), fileId + GlobalConstants.APP_FORMAT);
     }
 
     public static String name(String path) {

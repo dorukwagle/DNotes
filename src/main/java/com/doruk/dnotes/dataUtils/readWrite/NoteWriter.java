@@ -23,13 +23,9 @@ public class NoteWriter implements IWriter {
     }
 
     @Override
-    public void write(String fileId) throws IOException {
-        writeNote(PathUtils.generateNoteFilename(fileId));
-    }
-
-    public void writeNote(String filename) throws IOException {
+    public void write(String filename) throws IOException {
         // convert fileId to full path
-        var filePath = Path.of(PathUtils.generateNoteFilename(filename));
+        var filePath = Path.of(PathUtils.getNoteFilename(filename));
 
         // encode the markdown data into nodes, then create encoder to further encode them
         var nodes = editor.encodeAndDump();

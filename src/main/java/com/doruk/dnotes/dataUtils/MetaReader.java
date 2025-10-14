@@ -17,6 +17,7 @@ public class MetaReader {
     private String sharedBy = "";
     private Date createdAt = null;
     private byte fileType = 0;
+    private int version = 0;
 
     // temporary bytes stream
     private ByteArrayInputStream tempStream;
@@ -35,6 +36,11 @@ public class MetaReader {
         try {
             while (tempStream.read(marker) != -1) {
                 switch (marker[0]) {
+                    case Markers.Keys.DNT_VERSION_KEY -> {
+                        this.version = (int)NumberUtils.continuousBytesToLong(tempStream);
+                        if (this.version < 1) throw new ProcessingStageException("Unable to read version.");
+                        this.version = tmpBuff[0];
+                    }
                     case Markers.Keys.FILE_TYPE_KEY -> {
                         if (tempStream.read(tmpBuff) < 1) throw new ProcessingStageException("Unable to read file type.");
                         this.fileType = tmpBuff[0];
@@ -121,5 +127,9 @@ public class MetaReader {
 
     public byte getFileType() {
         return fileType;
+    }
+
+    public int getVersion() {
+        return version;
     }
 }
