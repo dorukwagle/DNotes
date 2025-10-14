@@ -83,6 +83,8 @@ public class EditorController implements IEditorController {
 
     @Override
     public void loadEditorDocument(String fileId) {
+        if (fileId == null)
+            throw new IllegalArgumentException("Expected fileId: null received...");
         this.currentFileId = fileId;
         try {
             DIFactory.createNoteReader(markdownEditor)

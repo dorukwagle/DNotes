@@ -76,8 +76,8 @@ public class BookController implements IController {
         // if disabled, or no last note found: just return
         if (!openLastNote || lastNoteId.isEmpty())
             return;
-        
-        var lastNote = new BookPageDto().setId(lastNoteId);
+
+        var lastNote = this.noteModel.get(lastNoteId);
         this.view.setSelectedSidebarItem(lastNote);
         this.openNote(lastNote);
     }

@@ -106,6 +106,28 @@ public class BookPagesModel implements IModel<BookPageDto> {
     }
 
     @Override
+    public BookPageDto get(String id) {
+        try {
+            var stmt = connection.prepareStatement("SELECT * FROM bookPages WHERE id = ?");
+            stmt.setString(1, id);
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
+
+                return new BookPageDto(
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("bookId"),
+                    rs.getString("name"),
+                    rs.getString("content"),
+                    rs.getDate("updatedAt").toString()
+                );
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get note", e);
+        }
+    }
+
+    @Override
     public List<BookPageDto> getAll(PaginationParams paginationParams) {
         try {
             var stmt = new PaginateQuery("bookPageView", paginationParams)

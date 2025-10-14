@@ -14,4 +14,8 @@ public interface IModel<T> {
     List<T> getAllDeleted(PaginationParams paginationParams) throws DataAccessException;
     T restore(String id) throws DataAccessException;
     IModel<T> ofParentId(String parentId);
+
+    default T get(String id) throws DataAccessException {
+        return null;
+    }
 }
