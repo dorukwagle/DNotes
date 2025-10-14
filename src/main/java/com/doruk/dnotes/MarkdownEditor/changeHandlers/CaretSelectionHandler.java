@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javafx.event.EventType;
 import javafx.scene.control.ToggleButton;
 import org.fxmisc.richtext.GenericStyledArea;
 import org.reactfx.Change;
@@ -25,12 +26,14 @@ import javafx.application.Platform;
 import javafx.scene.control.IndexRange;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import org.w3c.dom.events.MouseEvent;
 
 public class CaretSelectionHandler {
     private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
     private final ControlPanelView controlPanel;
     private final FXTextEditor editor;
     private final AtomicInteger caretChangeCount = new AtomicInteger(0);
+    private boolean isFirstHover = true;
     private static final Duration DELAY = Duration.ofMillis(300);
 
     public CaretSelectionHandler(FXTextEditor editor, ControlPanelView controlPanel) {
@@ -67,9 +70,12 @@ public class CaretSelectionHandler {
                 .subscribe(this::onSelectionChange);
 
         // also monitor the focus received
-        area.focusedProperty()
-                .subscribe(focused -> {
-                    if (!focused) return;
+        area.setOnMouseClicked(
+                _ -> {
+                    // only for the first hover, once the contents are loaded, update the control panel state
+                    if (!isFirstHover)
+                        return;
+                    isFirstHover = false;
                     var caretPos = area.getCaretPosition();
                     this.updateInsertionStyle(caretPos);
                     // increase the caret change count, to simulate change
