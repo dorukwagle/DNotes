@@ -5,6 +5,7 @@ import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 
+import com.doruk.dnotes.store.GlobalConstants;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -32,7 +33,7 @@ public class NavigationController implements INavigationController {
         this.createScene(defaultW, defaultH);
         stage.setScene(scene);
 
-        stage.setTitle("DNotes");
+        stage.setTitle(GlobalConstants.APP_NAME);
         stage.show();
         
         // center the screen once the stage is fully initialized
