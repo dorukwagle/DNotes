@@ -103,7 +103,7 @@ public class App extends Application {
             var lastVisitedPage = prefs.loadLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
             var page = ViewPage.fromId((int)lastVisitedPage);
             switch (page) {
-                case HOME -> navigationController.goToHomePage();
+//                case HOME -> navigationController.goToHomePage();
                 case BOOK -> {
                     var bookId = prefs.loadString(Preference.LastOpenedBookId, "");
                     BookStore.setSelectedBook(new BookDto(bookId, "", "", ""));
