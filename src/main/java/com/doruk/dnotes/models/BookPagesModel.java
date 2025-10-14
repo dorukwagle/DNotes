@@ -70,7 +70,7 @@ public class BookPagesModel implements IModel<BookPageDto> {
                     bookPage.getId(),
                     bookPage.getBookId(),
                     bookPage.getName(),
-                    bookPage.getContent(),
+                    bookPage.getContentId(),
                     rs.getDate("updatedAt").toString()
                 );
             }
@@ -102,6 +102,28 @@ public class BookPagesModel implements IModel<BookPageDto> {
             stmt.close();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to delete note", e);
+        }
+    }
+
+    @Override
+    public BookPageDto get(String id) {
+        try {
+            var stmt = connection.prepareStatement("SELECT * FROM bookPages WHERE id = ?");
+            stmt.setString(1, id);
+            try (var rs = stmt.executeQuery()) {
+                // since only one row returned
+                rs.next();
+
+                return new BookPageDto(
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("bookId"),
+                    rs.getString("name"),
+                    rs.getString("content"),
+                    rs.getDate("updatedAt").toString()
+                );
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get note", e);
         }
     }
 

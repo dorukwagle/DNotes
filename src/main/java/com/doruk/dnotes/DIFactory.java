@@ -1,15 +1,17 @@
 package com.doruk.dnotes;
 
+import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
+import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
+import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
+import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownDecoder;
+import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownEncoder;
+import com.doruk.dnotes.dataUtils.readWrite.NoteReader;
+import com.doruk.dnotes.dataUtils.readWrite.NoteWriter;
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.CollectionDto;
-import com.doruk.dnotes.interfaces.IConfirmationModal;
-import com.doruk.dnotes.interfaces.ILogger;
-import com.doruk.dnotes.interfaces.IModel;
-import com.doruk.dnotes.interfaces.IOptionsModal;
-import com.doruk.dnotes.interfaces.IPreference;
-import com.doruk.dnotes.interfaces.IPromptModal;
-import com.doruk.dnotes.interfaces.IShutdownManager;
+import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.models.BookModel;
 import com.doruk.dnotes.models.BookPagesModel;
 import com.doruk.dnotes.models.CollectionModel;
@@ -20,6 +22,10 @@ import com.doruk.dnotes.utils.ShutdownManager;
 import com.doruk.dnotes.views.components.ConfirmationModal;
 import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.views.components.PromptModal;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.stream.Stream;
 
 public class DIFactory {
     public static IPreference createGlobalPreference() {
@@ -60,5 +66,29 @@ public class DIFactory {
 
     public static IModel<BookPageDto> createNoteModel() {
         return new BookPagesModel();
+    }
+
+    public static MarkdownEncoder createMarkdownEncoder(Enum<?>[] codecsName) {
+        return new BinaryMarkdownEncoder(codecsName);
+    }
+
+    public static MarkdownDecoder createMarkdownDecoder(Enum<?>[] codecsName) {
+        return new BinaryMarkdownDecoder(codecsName);
+    }
+
+    public static  InputStream createObfuscator(InputStream in, byte[] seed) {
+        return new ObfuscatorInputStream(in, seed);
+    }
+
+    public static OutputStream createObfuscator(OutputStream out, byte[] seed) {
+        return new ObfuscatorOutputStream(out, seed);
+    }
+
+    public static IReader createNoteReader(IMarkdownEditor editor) {
+        return new NoteReader(editor);
+    }
+
+    public static IWriter createNoteWriter(IMarkdownEditor editor) {
+        return new NoteWriter(editor);
     }
 }

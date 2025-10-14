@@ -1,14 +1,14 @@
 package com.doruk.dnotes.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.doruk.dnotes.interfaces.IShutdownListener;
 import com.doruk.dnotes.interfaces.IShutdownManager;
 
 public class ShutdownManager implements IShutdownManager {
     private static final ShutdownManager instance = new ShutdownManager();
-    private final List<IShutdownListener> listeners = new ArrayList<>();
+    private final Set<IShutdownListener> listeners = new HashSet<>();
 
     private ShutdownManager() {}
 

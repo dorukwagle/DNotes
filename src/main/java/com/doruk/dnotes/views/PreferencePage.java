@@ -20,7 +20,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 
 import com.doruk.dnotes.enums.AppStartup;
-import com.doruk.dnotes.enums.EditorColor;
+import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.interfaces.IPreferenceView;
 import atlantafx.base.theme.Styles;
@@ -99,7 +99,7 @@ public class PreferencePage implements IPreferenceView {
         var editorSection = createSection(centerContainer, "Editor Color");
         editorToggleGroup = new ToggleGroup();
         
-        for (var color : EditorColor.values()) {
+        for (var color : MarkdownEditorColor.values()) {
             RadioButton radioButton = new RadioButton(color.name());
             radioButton.setToggleGroup(editorToggleGroup);
             radioButton.setUserData(color.getId());
@@ -235,7 +235,7 @@ public class PreferencePage implements IPreferenceView {
     }
 
     @Override
-    public void setSelectedEditorColor(EditorColor color) {
+    public void setSelectedEditorColor(MarkdownEditorColor color) {
         var toggle = this.editorToggleGroup.getToggles()
             .filtered(t -> t.getUserData().equals(color.getId()))
             .get(0);

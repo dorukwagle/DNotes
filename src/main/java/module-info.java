@@ -2,8 +2,8 @@ module com.doruk.dnotes {
     requires transitive javafx.base;
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
+    requires transitive java.prefs;
     requires java.base;
-    requires java.prefs;
     requires atlantafx.base;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.core;
@@ -13,9 +13,10 @@ module com.doruk.dnotes {
     requires org.xerial.sqlitejdbc;
 
     requires org.fxmisc.flowless;
-    requires org.fxmisc.richtext;
-    requires reactfx;
-    
+    requires org.fxmisc.undo;
+    requires transitive org.fxmisc.richtext;
+    requires transitive reactfx;
+
     exports com.doruk.dnotes;
     exports com.doruk.dnotes.views;
     exports com.doruk.dnotes.views.components;
@@ -27,4 +28,21 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.store;
     exports com.doruk.dnotes.prefs;
     exports com.doruk.dnotes.exceptions;
+
+    
+    exports com.doruk.dnotes.MarkdownEditor.interfaces;
+    exports com.doruk.dnotes.MarkdownEditor.enums;
+    exports com.doruk.dnotes.MarkdownEditor.docstyle;
+    exports com.doruk.dnotes.MarkdownEditor.dto;
+    exports com.doruk.dnotes.MarkdownEditor.utils;
+    exports com.doruk.dnotes.MarkdownEditor.changeHandlers;
+    exports com.doruk.dnotes.MarkdownEditor.keyActionHandlers;
+    exports com.doruk.dnotes.MarkdownEditor.tools;
+    exports com.doruk.dnotes.MarkdownEditor.renderers;
+    
+    exports com.doruk.dnotes.MarkdownEditor.codecs;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.codec;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.interfaces;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.dto;
+    exports com.doruk.dnotes.MarkdownEditor.codecs.enums;
 }

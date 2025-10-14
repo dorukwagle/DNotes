@@ -1,13 +1,16 @@
 package com.doruk.dnotes.utils;
 
+import com.doruk.dnotes.store.GlobalConstants;
+
 import java.io.File;
+import java.util.Date;
+import java.util.UUID;
 
 public class PathUtils {
-    
+
     private static String createDirRecursive(String path) {
         File dir = new File(path);
-        if (!dir.exists())
-            dir.mkdirs();
+        if (!dir.exists()) dir.mkdirs();
         return path;
     }
 
@@ -23,7 +26,7 @@ public class PathUtils {
             baseDir = System.getProperty("user.home") + "/.local/share";
         }
 
-        return createDirRecursive(baseDir + File.separator + "com.doruk.dNotes");
+        return createDirRecursive(baseDir + File.separator + GlobalConstants.PACKAGE_NAME);
     }
 
     public static String getNotesDir() {
@@ -35,6 +38,39 @@ public class PathUtils {
     }
 
     public static String getLogDir() {
-        return createDirRecursive(System.getProperty("user.home") + File.separator + "dNotes");
+        return createDirRecursive(System.getProperty("user.home") + File.separator + GlobalConstants.APP_NAME + File.separator + "logs");
+    }
+
+    public static String getBackupDir() {
+        return createDirRecursive(System.getProperty("user.home") + File.separator + GlobalConstants.APP_NAME + File.separator + "backups");
+    }
+
+    public static String getShareDir() {
+        return createDirRecursive(System.getProperty("user.home") + File.separator + GlobalConstants.APP_NAME + File.separator + "shared");
+    }
+
+    public static String generateFileId() {
+        var uid = String.join("",
+                UUID.randomUUID()
+                        .toString()
+                        .substring(9)
+                        .split("-")
+        );
+
+        var dt = String.valueOf(new Date().getTime()).substring(2);
+
+        return uid + dt;
+    }
+
+    public static String getNoteFilename(String fileId) {
+        return join(getNotesDir(), fileId + GlobalConstants.APP_FORMAT);
+    }
+
+    public static String name(String path) {
+        return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+    }
+
+    public static String join(String... paths) {
+        return String.join(File.separator, paths);
     }
 }

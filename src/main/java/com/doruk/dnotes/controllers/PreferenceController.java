@@ -4,7 +4,7 @@ import javafx.scene.Parent;
 
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.enums.AppStartup;
-import com.doruk.dnotes.enums.EditorColor;
+import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.interfaces.IController;
@@ -27,7 +27,7 @@ public class PreferenceController implements IController {
                 Themes.fromId(
                         (int) this.preference.loadLong(Preference.Theme, 0)));
         this.view.setSelectedEditorColor(
-                EditorColor.fromId(
+                MarkdownEditorColor.fromId(
                         (int) this.preference.loadLong(Preference.EditorColor, 0)));
         this.view.setSelectedAppStartup(
                 AppStartup.fromId(

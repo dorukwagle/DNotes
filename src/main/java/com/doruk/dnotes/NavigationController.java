@@ -5,6 +5,7 @@ import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 
+import com.doruk.dnotes.store.GlobalConstants;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -25,14 +26,14 @@ public class NavigationController implements INavigationController {
         // calculate screen size
         double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
         double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-        // scale app to 70%, 80% of screen size
-        this.defaultW = screenWidth * 0.74;
+        // scale app to 75%, 80% of screen size
+        this.defaultW = screenWidth * 0.75;
         this.defaultH = screenHeight * 0.8;
 
         this.createScene(defaultW, defaultH);
         stage.setScene(scene);
 
-        stage.setTitle("DNotes");
+        stage.setTitle(GlobalConstants.APP_NAME);
         stage.show();
         
         // center the screen once the stage is fully initialized

@@ -1,0 +1,61 @@
+package com.doruk.dnotes.MarkdownEditor.renderers;
+
+
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
+import com.doruk.dnotes.MarkdownEditor.enums.ParagraphType;
+import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
+import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
+import com.doruk.dnotes.store.GlobalConstants;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.text.TextFlow;
+
+public class BulletListRenderer implements Renderer<TextFlow, ParagraphStyle> {
+    private static final String[] labels = {
+        "mdi2r-rhombus-split", 
+        "mdi2a-arrow-right-bold", 
+        "mdi2r-rhombus",
+        "mdi2c-circle"
+    };
+
+    private boolean isApplied(ParagraphStyle style) {
+        var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
+        return appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM;
+    }
+    
+    @Override
+    public Node renderParagraphGraphic(ParagraphStyle style, int index) {
+        if (!isApplied(style))
+            return null;
+        
+        var appliedStyle = style.getStyle(StyleGroupRegistry.getGroup(ParagraphType.BULLET_LIST_ITEM));
+        if (!(appliedStyle.isPresent() && appliedStyle.get() == ParagraphType.BULLET_LIST_ITEM))
+            return null;
+        
+        int indent = style.level;
+        String bullet = labels[(indent - 1) % labels.length]; // cycle if deeper
+        var flowInset = style.offset * GlobalConstants.DEFAULT_LIST_ITEM_INSET + 
+            indent * GlobalConstants.DEFAULT_LIST_ITEM_INSET;
+
+        Label bulletNode = new Label();
+        bulletNode.setGraphic(new FontIcon(bullet));
+        bulletNode.setPadding(new Insets(10, 0, 0, flowInset));
+        bulletNode.setAlignment(Pos.TOP_CENTER);
+        return bulletNode;
+    }
+    
+    @Override
+    public void render(TextFlow textFlow, ParagraphStyle style) {
+        if (!isApplied(style))
+            return;
+        
+        textFlow.setStyle(textFlow.getStyle() + 
+            "-fx-padding: 6px 0 2px 20px;");
+        
+    }
+}

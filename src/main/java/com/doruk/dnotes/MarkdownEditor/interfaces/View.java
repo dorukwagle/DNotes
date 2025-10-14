@@ -1,6 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor.interfaces;
 
-import com.doruk.dnotes.enums.EditorColor;
+import com.doruk.dnotes.MarkdownEditor.ControlPanelView;
+import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -9,4 +10,6 @@ public interface View {
     Button getCloseButton();
     Parent getView();
     void setEditorBackground(EditorColor color);
+    FXTextEditor getEditor();
+    ControlPanelView getControlPanel();
 }

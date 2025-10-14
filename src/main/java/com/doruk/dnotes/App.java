@@ -13,7 +13,7 @@ import com.doruk.dnotes.controllers.HomePageController;
 import com.doruk.dnotes.controllers.PreferenceController;
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.enums.AppStartup;
-import com.doruk.dnotes.enums.EditorColor;
+import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
@@ -103,7 +103,7 @@ public class App extends Application {
             var lastVisitedPage = prefs.loadLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
             var page = ViewPage.fromId((int)lastVisitedPage);
             switch (page) {
-                case HOME -> navigationController.goToHomePage();
+//                case HOME -> navigationController.goToHomePage();
                 case BOOK -> {
                     var bookId = prefs.loadString(Preference.LastOpenedBookId, "");
                     BookStore.setSelectedBook(new BookDto(bookId, "", "", ""));
@@ -124,7 +124,7 @@ public class App extends Application {
             return;
         
         prefs.saveLong(Preference.Theme, Themes.CupertinoDark.getId());
-        prefs.saveLong(Preference.EditorColor, EditorColor.Muted.getId());
+        prefs.saveLong(Preference.EditorColor, MarkdownEditorColor.Muted.getId());
         prefs.saveBoolean(Preference.IsFirstRun, false);
         prefs.saveLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
         prefs.saveLong(Preference.AppStartup, AppStartup.StartFresh.getId());
