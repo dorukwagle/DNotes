@@ -90,7 +90,7 @@ public class MarkdownEditor implements IMarkdownEditor {
                 .getStyleButtons()
                 .forEach(btn -> {
                     var tool = Factory.createTool(ToolName.fromName(btn.getId()), editorView.getEditor());
-                    btn.setOnAction(_ -> {
+                    btn.setOnMouseClicked(_ -> {
                         var area = editorView.getEditor().getArea();
                         area.requestFocus();
 
@@ -104,7 +104,7 @@ public class MarkdownEditor implements IMarkdownEditor {
         // add event filter to resolve and unselect conflicting tools
         this.editorView.getControlPanel()
                 .getStyleButtons()
-                .forEach(btn -> {
+                .forEach(btn ->
                     btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
                         var toolName = ToolName.fromName(btn.getId());
                         var conflictingTools = StyleGroupRegistry.getConflictingTools(toolName);
@@ -117,8 +117,7 @@ public class MarkdownEditor implements IMarkdownEditor {
                                 && toggle.isSelected();
                             })
                             .forEach(toggle -> toggle.setSelected(false));
-                    });
-                });
+                    }));
 
 //        CompletableFuture.runAsync(() -> {
 //            try {
