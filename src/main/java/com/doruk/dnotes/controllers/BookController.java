@@ -20,6 +20,7 @@ import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.BookStore;
 
+import com.doruk.dnotes.utils.PathUtils;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 
@@ -109,6 +110,9 @@ public class BookController implements IController {
 
         this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR,
                 this.navigationController);
+        // load the note into markdown editor
+        this.editorController.loadEditorDocument(note.getContentId());
+
         this.view.displayEditor(this.editorController.getView());
 
         this.currentEditingNote = note;
@@ -122,11 +126,12 @@ public class BookController implements IController {
         if (!res.isPresent() || res.get().trim().isEmpty())
             return;
 
+        // create a new note, with the fileId as content
         var note = this.noteModel.add(new BookPageDto(
                 "",
                 BookStore.getSelectedBook().get().getId(),
                 res.get(),
-                "", 
+                PathUtils.generateFileId(),
                 "")
             );
 
@@ -176,7 +181,7 @@ public class BookController implements IController {
                 note.getId(),
                 BookStore.getSelectedBook().get().getId(),
                 updatedName,
-                note.getContent(), 
+                note.getContentId(),
                 "")
             );
 

@@ -70,7 +70,7 @@ public class BookPagesModel implements IModel<BookPageDto> {
                     bookPage.getId(),
                     bookPage.getBookId(),
                     bookPage.getName(),
-                    bookPage.getContent(),
+                    bookPage.getContentId(),
                     rs.getDate("updatedAt").toString()
                 );
             }

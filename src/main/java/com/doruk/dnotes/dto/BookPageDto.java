@@ -6,17 +6,17 @@ public class BookPageDto implements ISidebarItem {
     private String id;
     private String bookId;
     private String name;
-    private String content;
+    private String contentId;
     private String updatedAt;
 
     public BookPageDto() {
     }
 
-    public BookPageDto(String id, String bookId, String name, String content, String updatedAt) {
+    public BookPageDto(String id, String bookId, String name, String contentId, String updatedAt) {
         this.id = id;
         this.bookId = bookId;
         this.name = name;
-        this.content = content;
+        this.contentId = contentId;
         this.updatedAt = updatedAt;
     }
 
@@ -29,8 +29,8 @@ public class BookPageDto implements ISidebarItem {
         return bookId;
     }
 
-    public String getContent() {
-        return content;
+    public String getContentId() {
+        return contentId;
     }
 
     public String getUpdatedAt() {

@@ -21,6 +21,7 @@ public class EditorController implements IEditorController {
     private final INavigationController navigationController;
     private final IPreference preference;
     private final byte[] seed;
+    private String currentFileId;
 
     private static IShutdownListener onShutdown;
 
@@ -42,8 +43,6 @@ public class EditorController implements IEditorController {
             seed[i - 1] = (byte) i;
 
         setupActions();
-
-        Platform.runLater(this::loadEditorDocument);
     }
 
     private void setupActions() {
@@ -75,18 +74,16 @@ public class EditorController implements IEditorController {
     private void saveEditorDocument() {
         try {
             DIFactory.createNoteWriter(markdownEditor)
-                    .write("test");
+                    .write(this.currentFileId);
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to create output file" : e.getMessage(), e);
         }
     }
 
-    private void loadEditorDocument() {
-        this.loadEditorDocument("test");
-    }
-
-    private void loadEditorDocument(String fileId) {
+    @Override
+    public void loadEditorDocument(String fileId) {
+        this.currentFileId = fileId;
         try {
             DIFactory.createNoteReader(markdownEditor)
                     .read(fileId);
