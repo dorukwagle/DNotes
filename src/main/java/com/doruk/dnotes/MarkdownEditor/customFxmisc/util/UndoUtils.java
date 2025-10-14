@@ -34,14 +34,14 @@ public final class UndoUtils {
      * if {@link GenericStyledArea#isPreserveStyle() the area's preserveStyle flag is true}, the returned UndoManager
      * can undo/redo multiple {@link RichTextChange}s; otherwise, it can undo/redo multiple {@link PlainTextChange}s.
      */
-    public static <PS, SEG, S> UndoManager defaultUndoManager(GenericStyledArea<PS, SEG, S> area) {
+    public static <PS, SEG, S> UndoManager<?> defaultUndoManager(GenericStyledArea<PS, SEG, S> area) {
         return area.isPreserveStyle()
                 ? richTextUndoManager(area)
                 : plainTextUndoManager(area);
     }
     
-    public static UndoManager noOpUndoManager() {
-        return new UndoManager() {
+    public static UndoManager<?> noOpUndoManager() {
+        return new UndoManager<>() {
 
             private final Val<Boolean> alwaysFalse = Val.constant(false);
 
@@ -55,8 +55,8 @@ public final class UndoUtils {
             @Override public boolean isAtMarkedPosition() { return false; }
             
             // not sure whether these may throw NPEs at some point
-            @Override public Val nextUndoProperty() { return null; }
-            @Override public Val nextRedoProperty() { return null; }
+            @Override public Val<Object> nextUndoProperty() { return null; }
+            @Override public Val<Object> nextRedoProperty() { return null; }
             @Override public ObservableBooleanValue performingActionProperty() { return null; }
             @Override public UndoPosition getCurrentPosition() { return null; }
             @Override public ObservableBooleanValue atMarkedPositionProperty() { return null; }
@@ -94,7 +94,7 @@ public final class UndoUtils {
     public static <PS, SEG, S> UndoManager<List<RichTextChange<PS, SEG, S>>> richTextUndoManager(
             GenericStyledArea<PS, SEG, S> area, Duration preventMergeDelay) {
         return richTextUndoManager(area, UndoManagerFactory.unlimitedHistoryFactory(), preventMergeDelay);
-    };
+    }
 
     /**
      * Returns an UndoManager that can undo/redo {@link RichTextChange}s. New changes
@@ -104,7 +104,7 @@ public final class UndoUtils {
     public static <PS, SEG, S> UndoManager<List<RichTextChange<PS, SEG, S>>> richTextUndoManager(
             GenericStyledArea<PS, SEG, S> area, UndoManagerFactory factory) {
         return richTextUndoManager(area, factory, DEFAULT_PREVENT_MERGE_DELAY);
-    };
+    }
 
     /**
      * Returns an UndoManager that can undo/redo {@link RichTextChange}s. New changes
@@ -119,7 +119,7 @@ public final class UndoUtils {
                 TextChange::mergeWith,
                 TextChange::isIdentity,
                 preventMergeDelay);
-    };
+    }
 
     /**
      * Returns an UndoManager with an unlimited history that can undo/redo {@link RichTextChange}s. New changes
@@ -151,7 +151,7 @@ public final class UndoUtils {
           	area.multiRichChanges().conditionOn(suspendUndo),
           	preventMergeDelay
         );
-    };
+    }
 
     /**
      * Returns an UndoManager with an unlimited history that can undo/redo {@link PlainTextChange}s. New changes

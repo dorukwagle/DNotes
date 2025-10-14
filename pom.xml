@@ -9,46 +9,19 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
-        <javafx.version>24.0.1</javafx.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <javafx.version>25</javafx.version>
         <atlantafx.version>2.0.1</atlantafx.version>
         <ikonli.version>12.3.1</ikonli.version>
     </properties>
 
     <dependencies>
-        <!-- JavaFX -->
+        <!-- JavaFX modules -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-
-        <!-- RichTextFX and its non-modular dependencies -->
-        <dependency>
-            <groupId>org.fxmisc.richtext</groupId>
-            <artifactId>richtextfx</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.reactfx</groupId>
-            <artifactId>reactfx</artifactId>
-            <version>2.0-M5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.fxmisc.flowless</groupId>
-            <artifactId>flowless</artifactId>
-            <version>0.6.10</version>
         </dependency>
 
         <!-- Atlantafx -->
@@ -70,7 +43,29 @@
             <version>${ikonli.version}</version>
         </dependency>
 
-        <!-- SQLite -->
+        <!-- RichTextFX and its transitive dependencies -->
+        <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>0.11.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reactfx</groupId>
+            <artifactId>reactfx</artifactId>
+            <version>2.0-M6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fxmisc.flowless</groupId>
+            <artifactId>flowless</artifactId>
+            <version>0.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fxmisc.undo</groupId>
+            <artifactId>undofx</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <!-- SQLite JDBC -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
@@ -80,92 +75,52 @@
 
     <build>
         <plugins>
-            <!-- Compiler -->
+            <!-- Java Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.14.1</version>
                 <configuration>
-                    <release>24</release>
-                    <compilerArgs>
-                        <arg>-Xlint:all</arg>
-                        <arg>-Xlint:-requires-automatic</arg>
-                    </compilerArgs>
+                    <release>25</release>
                 </configuration>
             </plugin>
 
-            <!-- JavaFX jlink -->
+<!--            javafx maven plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <id>jlink</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jlink</goal>
-                        </goals>
+                        <id>default-cli</id>
                         <configuration>
                             <stripDebug>true</stripDebug>
                             <compress>2</compress>
                             <noHeaderFiles>true</noHeaderFiles>
                             <noManPages>true</noManPages>
-                            <launcher>DNotes</launcher>
-                            <jlinkImageName>dnotes-runtime</jlinkImageName>
-                            <jlinkZipName>dnotes-distribution</jlinkZipName>
                             <mainClass>com.doruk.dnotes/com.doruk.dnotes.App</mainClass>
-                            <modulePath>
-                                ${project.build.directory}/modular-deps
-                                ${java.home}/jmods
-                            </modulePath>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- JPackage -->
+            <!-- 1. Gathers all necessary JARs into one folder -->
             <plugin>
-                <groupId>org.panteleyev</groupId>
-                <artifactId>jpackage-maven-plugin</artifactId>
-                <version>1.6.6</version>
-                <configuration>
-                    <type>DEB</type>
-                    <runtimeImage>${project.build.directory}/dnotes-runtime</runtimeImage>
-                    <destination>${project.build.directory}/installer</destination>
-                    <name>DNotes</name>
-                    <appVersion>1.0.0</appVersion>
-                    <mainClass>com.doruk.dnotes.App</mainClass>
-                    <module>com.doruk.dnotes</module>
-                    <icon>src/main/resources/dnotes.png</icon>
-                    <vendor>Doruk</vendor>
-                    <copyright>Doruk © 2025</copyright>
-                </configuration>
-            </plugin>
-
-            <!-- graalvm native build -->
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.6</version>
-                <extensions>true</extensions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
-                        <id>build-native</id>
-                        <goals>
-                            <goal>compile-no-fork</goal>
-                        </goals>
+                        <id>copy-dependencies</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>com.doruk.dnotes/com.doruk.dnotes.App</mainClass>
-                    <imageName>${project.artifactId}</imageName> <!-- Name of the final executable -->
-                    <buildArgs>
-                        <buildArg>--no-fallback</buildArg>
-                        <buildArg>-H:ConfigurationFileDirectories=src/main/resources/META-INF/native-image</buildArg>
-                    </buildArgs>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -45,4 +45,6 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.MarkdownEditor.codecs.interfaces;
     exports com.doruk.dnotes.MarkdownEditor.codecs.dto;
     exports com.doruk.dnotes.MarkdownEditor.codecs.enums;
+
+    exports com.doruk.dnotes.MarkdownEditor.customFxmisc.util;
 }
