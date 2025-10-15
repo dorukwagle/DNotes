@@ -1,4 +1,10 @@
-native-image -jar target/DNotes-1.0.0.jar \                                                               ─╯
+
+mvn clean package
+
+java -agentlib:native-image-agent=config-output-dir=META-INF/native-image -jar target/DNotes-1.0.0.jar
+
+
+native-image -jar target/DNotes-1.0.0.jar \
 -H:ConfigurationFileDirectories=META-INF/native-image \
 -H:Name=DNotes \
 --no-fallback \
