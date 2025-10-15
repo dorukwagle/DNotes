@@ -20,6 +20,10 @@ import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.ISidebarItem;
 
 import atlantafx.base.theme.Styles;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 
 public class Sidebar <T extends ISidebarItem> {
     private final VBox root;
@@ -68,7 +72,7 @@ public class Sidebar <T extends ISidebarItem> {
         searchContainer.setMaxHeight(50);
 
         // Search icon
-        FontIcon searchIcon = new FontIcon("mdi2m-magnify");
+        FontIcon searchIcon = new FontIcon(MaterialDesignM.MAGNIFY);
         searchIcon.setIconSize(18);
         searchIcon.getStyleClass().add("muted");
 
@@ -94,21 +98,21 @@ public class Sidebar <T extends ISidebarItem> {
 
         // Sort by toggle (Date/Alphabetical)
         sortByToggle = new ToggleButton("Date");
-        sortByToggle.setGraphic(new FontIcon("mdi2c-calendar-month-outline"));
+        sortByToggle.setGraphic(new FontIcon(MaterialDesignC.CALENDAR_MONTH_OUTLINE));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
         sortByToggle.selectedProperty().addListener((_, _, newVal) -> {
             sortByToggle
-                    .setGraphic(new FontIcon(newVal ? "mdi2a-alphabetical-variant" : "mdi2c-calendar-month-outline"));
+                    .setGraphic(new FontIcon(newVal ? MaterialDesignA.ALPHABETICAL_VARIANT : MaterialDesignC.CALENDAR_MONTH_OUTLINE));
         });
 
         // Sort order toggle (Ascending/Descending)
         sortOrderToggle = new ToggleButton("");
-        sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-descending"));
+        sortOrderToggle.setGraphic(new FontIcon(MaterialDesignS.SORT_DESCENDING));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
         sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
-            sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-ascending" : "mdi2s-sort-descending"));
+            sortOrderToggle.setGraphic(new FontIcon(newVal ? MaterialDesignS.SORT_ASCENDING : MaterialDesignS.SORT_DESCENDING));
         });
 
         sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);

@@ -37,7 +37,7 @@ public class FAB extends Button {
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 2, 2);");
 
         // Create menu items
-        Button addBookBtn = createMenuItem("mdi2b-book-plus", "Book");
+        Button addBookBtn = createMenuItem( "mdi2b-book-plus", "Book");
         Button addCollectionBtn = createMenuItem("mdi2f-folder-plus", "Collection");
 
         // Add click handlers
