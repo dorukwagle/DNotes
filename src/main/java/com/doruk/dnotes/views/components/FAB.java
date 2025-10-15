@@ -3,6 +3,7 @@ package com.doruk.dnotes.views.components;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import atlantafx.base.theme.Styles;
@@ -14,6 +15,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 public class FAB extends Button {
     private VBox itemsPane;
@@ -37,8 +40,8 @@ public class FAB extends Button {
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 2, 2);");
 
         // Create menu items
-        Button addBookBtn = createMenuItem( "mdi2b-book-plus", "Book");
-        Button addCollectionBtn = createMenuItem("mdi2f-folder-plus", "Collection");
+        Button addBookBtn = createMenuItem(MaterialDesignB.BOOK_PLUS, "Book");
+        Button addCollectionBtn = createMenuItem(MaterialDesignF.FOLDER_PLUS, "Collection");
 
         // Add click handlers
         addBookBtn.setOnAction(_ -> {
@@ -68,7 +71,7 @@ public class FAB extends Button {
                         "-fx-scale-y: 1;\n" +
                         "-fx-transition: all 1s ease;\n" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);");
-        FontIcon plusIcon = new FontIcon("mdi2b-book-plus-multiple");
+        FontIcon plusIcon = new FontIcon(MaterialDesignB.BOOK_PLUS_MULTIPLE);
         plusIcon.setScaleX(2.3);
         plusIcon.setScaleY(2.3);
         this.setGraphic(plusIcon);
@@ -111,7 +114,7 @@ public class FAB extends Button {
                 });
     }
 
-    private Button createMenuItem(String iconLiteral, String text) {
+    private Button createMenuItem(Ikon iconCode, String text) {
         Button menuItem = new Button(text);
         menuItem.setMaxWidth(Double.MAX_VALUE);
         menuItem.setAlignment(Pos.CENTER_LEFT);
@@ -137,7 +140,7 @@ public class FAB extends Button {
         });
 
         // Add icon
-        FontIcon icon = new FontIcon(iconLiteral);
+        FontIcon icon = new FontIcon(iconCode);
         icon.setIconSize(20);
         icon.setScaleX(1.3);
         icon.setScaleY(1.3);

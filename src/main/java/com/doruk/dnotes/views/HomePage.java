@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignD;
+import org.kordamp.ikonli.materialdesign2.*;
 
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
@@ -88,7 +89,7 @@ public class HomePage implements IHomeView {
         searchContainer.setMaxHeight(45);
         
         // Search icon
-        FontIcon searchIcon = new FontIcon("mdi2m-magnify");
+        FontIcon searchIcon = new FontIcon(MaterialDesignM.MAGNIFY);
         searchIcon.setScaleX(1.3);
         searchIcon.setScaleY(1.3);
         searchIcon.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.LARGE);
@@ -113,20 +114,20 @@ public class HomePage implements IHomeView {
         
         // Sort by toggle (Date/Alphabetical)
         sortByToggle = new ToggleButton("Date");
-        sortByToggle.setGraphic(new FontIcon("mdi2c-calendar-month-outline"));
+        sortByToggle.setGraphic(new FontIcon(MaterialDesignC.CALENDAR_MONTH_OUTLINE));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
         sortByToggle.selectedProperty().addListener((_, _, newVal) -> {
-            sortByToggle.setGraphic(new FontIcon(newVal ? "mdi2a-alphabetical-variant" : "mdi2c-calendar-month-outline"));
+            sortByToggle.setGraphic(new FontIcon(newVal ? MaterialDesignA.ALPHABETICAL_VARIANT : MaterialDesignC.CALENDAR_MONTH_OUTLINE));
         });
         
         // Sort order toggle (Ascending/Descending)
         sortOrderToggle = new ToggleButton("");
-        sortOrderToggle.setGraphic(new FontIcon("mdi2s-sort-descending"));
+        sortOrderToggle.setGraphic(new FontIcon(MaterialDesignS.SORT_DESCENDING));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.LARGE);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
         sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
-            sortOrderToggle.setGraphic(new FontIcon(newVal ? "mdi2s-sort-ascending" : "mdi2s-sort-descending"));
+            sortOrderToggle.setGraphic(new FontIcon(newVal ? MaterialDesignS.SORT_ASCENDING : MaterialDesignS.SORT_DESCENDING));
         });
         
         sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);
@@ -139,7 +140,7 @@ public class HomePage implements IHomeView {
         MenuButton menuButton = new MenuButton();
         menuButton.setStyle("-fx-cursor: hand; -fx-background-color: transparent;");
         menuButton.setPrefHeight(50);
-        FontIcon menuIcon = new FontIcon("mdi2m-menu");
+        FontIcon menuIcon = new FontIcon(MaterialDesignM.MENU);
         menuButton.setGraphic(menuIcon);
         menuIcon.setScaleX(2);
         menuIcon.setScaleY(2);
@@ -191,11 +192,11 @@ public class HomePage implements IHomeView {
 
     private void createMenuList(MenuButton menuButton) {
         // Add menu items with icons
-        Map<MenuItems, String>  menuData = new HashMap<>();
-        menuData.put(MenuItems.Backup, "mdi2e-export");
-        menuData.put(MenuItems.Restore, "mdi2b-backup-restore");
-        menuData.put(MenuItems.Trash, "mdi2d-delete");
-        menuData.put(MenuItems.Preferences, "mdi2a-account-cog");
+        Map<MenuItems, Ikon>  menuData = new HashMap<>();
+        menuData.put(MenuItems.Backup, MaterialDesignE.EXPORT);
+        menuData.put(MenuItems.Restore, MaterialDesignB.BACKUP_RESTORE);
+        menuData.put(MenuItems.Trash, MaterialDesignD.DELETE);
+        menuData.put(MenuItems.Preferences, MaterialDesignA.ACCOUNT_COG);
         
         for (MenuItems item : menuData.keySet()) {
             MenuItem menuItem = new MenuItem(item.name());

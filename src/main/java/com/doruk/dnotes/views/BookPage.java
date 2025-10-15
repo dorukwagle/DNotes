@@ -20,6 +20,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 public class BookPage implements IBookView {
     private Button backButton;
@@ -65,7 +67,7 @@ public class BookPage implements IBookView {
         fabButton = new Button();
         fabButton.setTooltip(new Tooltip("New Page"));
         fabButton.getStyleClass().addAll(Styles.ACCENT, Styles.ELEVATED_3);
-        FontIcon icon = new FontIcon("mdi2f-file-plus");
+        FontIcon icon = new FontIcon(MaterialDesignF.FILE_PLUS);
         icon.setIconSize(24);
         icon.setScaleX(2.3);
         icon.setScaleY(2.3);
@@ -81,7 +83,7 @@ public class BookPage implements IBookView {
 
         // Create and style back button
         backButton = new Button();
-        FontIcon backIcon = new FontIcon("mdi2b-backspace");
+        FontIcon backIcon = new FontIcon(MaterialDesignB.BACKSPACE);
         backIcon.setIconSize(20);
         backIcon.setScaleX(1.3);
         backIcon.setScaleY(1.3);
