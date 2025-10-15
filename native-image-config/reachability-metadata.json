@@ -617,6 +617,32 @@
       ]
     },
     {
+      "type": "com.sun.prism.shader.DrawPgram_Color_Loader",
+      "methods": [
+        {
+          "name": "loadShader",
+          "parameterTypes": [
+            "com.sun.prism.ps.ShaderFactory",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.prism.shader.DrawRoundRect_Color_Loader",
+      "methods": [
+        {
+          "name": "loadShader",
+          "parameterTypes": [
+            "com.sun.prism.ps.ShaderFactory",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        }
+      ]
+    },
+    {
       "type": "com.sun.prism.shader.FillPgram_Color_Loader",
       "methods": [
         {
@@ -687,6 +713,19 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.scenario.effect.impl.prism.PrMergePeer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.sun.scenario.effect.FilterContext",
+            "com.sun.scenario.effect.impl.Renderer",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -1004,6 +1043,9 @@
       "type": "javafx.scene.Camera"
     },
     {
+      "type": "javafx.scene.Group"
+    },
+    {
       "type": "javafx.scene.Node"
     },
     {
@@ -1047,6 +1089,24 @@
           ]
         }
       ]
+    },
+    {
+      "type": "javafx.scene.shape.LineTo"
+    },
+    {
+      "type": "javafx.scene.shape.MoveTo"
+    },
+    {
+      "type": "javafx.scene.shape.Path"
+    },
+    {
+      "type": "javafx.scene.shape.PathElement"
+    },
+    {
+      "type": "javafx.scene.shape.Rectangle"
+    },
+    {
+      "type": "javafx.scene.shape.SVGPath"
     },
     {
       "type": "javafx.scene.shape.Shape"
@@ -1334,6 +1394,15 @@
       "glob": "com/sun/glass/utils/NativeLibLoader.class"
     },
     {
+      "glob": "com/sun/javafx/scene/control/skin/resources/controls.properties"
+    },
+    {
+      "glob": "com/sun/javafx/scene/control/skin/resources/controls_en.properties"
+    },
+    {
+      "glob": "com/sun/javafx/scene/control/skin/resources/controls_en_US.properties"
+    },
+    {
       "glob": "com/sun/javafx/tk/quantum/QuantumMessagesBundle.properties"
     },
     {
@@ -1341,6 +1410,12 @@
     },
     {
       "glob": "com/sun/javafx/tk/quantum/QuantumMessagesBundle_en_US.properties"
+    },
+    {
+      "glob": "com/sun/prism/es2/glsl/DrawPgram_Color.frag"
+    },
+    {
+      "glob": "com/sun/prism/es2/glsl/DrawRoundRect_Color.frag"
     },
     {
       "glob": "com/sun/prism/es2/glsl/FillPgram_Color.frag"
@@ -1356,6 +1431,12 @@
     },
     {
       "glob": "com/sun/prism/es2/glsl/Texture_Color.frag"
+    },
+    {
+      "glob": "com/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_20.frag"
+    },
+    {
+      "glob": "com/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_32.frag"
     },
     {
       "glob": "com/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_8.frag"
@@ -1414,6 +1495,9 @@
     },
     {
       "bundle": "com.sun.org.apache.xml.internal.serializer.XMLEntities"
+    },
+    {
+      "bundle": "com/sun/javafx/scene/control/skin/resources/controls"
     },
     {
       "bundle": "sun.util.logging.resources.logging"

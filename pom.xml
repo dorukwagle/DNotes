@@ -100,34 +100,58 @@
                 </executions>
             </plugin>
 
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.6.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals><goal>shade</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+<!--                            <transformers>-->
+<!--                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                                    <mainClass>com.doruk.dnotes.Main</mainClass>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
+<!--                            <filters>-->
+<!--&lt;!&ndash;                                <filter>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <artifact>*:*</artifact>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <includes>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <include>**/*.class</include>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <include>**/*.css</include>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <include>**/*.png</include>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </includes>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </filter>&ndash;&gt;-->
+<!--                            </filters>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>shade</goal></goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.doruk.dnotes.Main</mainClass>
-                                </transformer>
-                            </transformers>
-                            <filters>
-<!--                                <filter>-->
-<!--                                    <artifact>*:*</artifact>-->
-<!--                                    <includes>-->
-<!--                                        <include>**/*.class</include>-->
-<!--                                        <include>**/*.css</include>-->
-<!--                                        <include>**/*.png</include>-->
-<!--                                    </includes>-->
-<!--                                </filter>-->
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>com.gluonhq</groupId>
+                <artifactId>gluonfx-maven-plugin</artifactId>
+                <version>1.0.27</version>
+                <configuration>
+                    <mainClass>com.doruk.dnotes.App</mainClass>
+                    <target>host</target>
+                    <verbose>true</verbose>
+                    <bundlesList>
+                        <list>com/sun/javafx/tk/quantum/QuantumMessagesBundle</list>
+                    </bundlesList>
+                    <resourcesList>
+                        <list>.*\.css$</list>
+                        <list>.*\.png$</list>
+                        <!-- Add other resource patterns if needed, e.g., FXML -->
+                        <!-- <list>.*\.fxml$</list> -->
+                    </resourcesList>
+                    <reflectionList>
+                        <!-- Add classes requiring reflection, e.g., for RichTextFX -->
+                    </reflectionList>
+                    <enableSWRendering>false</enableSWRendering>
+                </configuration>
             </plugin>
         </plugins>
     </build>
