@@ -1,6 +1,5 @@
 package com.doruk.dnotes;
 
-import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
@@ -18,14 +17,13 @@ import com.doruk.dnotes.models.CollectionModel;
 import com.doruk.dnotes.prefs.EditorPreference;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
-import com.doruk.dnotes.utils.ShutdownManager;
+import com.doruk.dnotes.utils.EventManager;
 import com.doruk.dnotes.views.components.ConfirmationModal;
 import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.views.components.PromptModal;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.stream.Stream;
 
 public class DIFactory {
     public static IPreference createGlobalPreference() {
@@ -48,8 +46,8 @@ public class DIFactory {
         return FileLogger.getInstance();
     }
 
-    public static IShutdownManager createShutdownManager() {
-        return ShutdownManager.getInstance();
+    public static IEventManager createEventManager() {
+        return EventManager.getInstance();
     }
 
     public static IOptionsModal createOptionsModal() {

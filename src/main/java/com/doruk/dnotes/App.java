@@ -18,12 +18,7 @@ import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.exceptions.DataAccessException;
-import com.doruk.dnotes.interfaces.IBookView;
-import com.doruk.dnotes.interfaces.IController;
-import com.doruk.dnotes.interfaces.IHomeView;
-import com.doruk.dnotes.interfaces.INavigationController;
-import com.doruk.dnotes.interfaces.IPreferenceView;
-import com.doruk.dnotes.interfaces.IView;
+import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
@@ -83,7 +78,7 @@ public class App extends Application {
         }
 
         // execute listeners for cleanup before shut down
-        stage.setOnCloseRequest(_ -> DIFactory.createShutdownManager().executeListeners());
+        stage.setOnCloseRequest(_ -> DIFactory.createEventManager().publishEvent(IEventManager.InternalEvent.SHUTDOWN));
 
         // finally start the home page
         // make sure to catch even the startup exceptions

@@ -9,7 +9,6 @@ import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
-import com.doruk.dnotes.interfaces.IShutdownListener;
 import com.doruk.dnotes.store.GlobalConstants;
 import javafx.scene.Parent;
 
@@ -17,6 +16,8 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 
 public class EditorController implements IEditorController {
 
@@ -26,7 +27,7 @@ public class EditorController implements IEditorController {
     private String currentFileId;
     private final ScheduledExecutorService scheduler;
 
-    private static IShutdownListener onShutdown;
+    private static Runnable onShutdown;
 
     public EditorController(IMarkdownEditor markdownEditor, INavigationController navigationController) {
         this.markdownEditor = markdownEditor;
@@ -53,7 +54,7 @@ public class EditorController implements IEditorController {
             this.close();
             this.navigationController.goToBooksPage();
         });
-        DIFactory.createShutdownManager().register(onShutdown);
+        DIFactory.createEventManager().register(InternalEvent.SHUTDOWN, onShutdown);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class EditorController implements IEditorController {
         this.markdownEditor.close();
 
         // remove the shutdown listener
-        DIFactory.createShutdownManager().unregister(onShutdown);
+        DIFactory.createEventManager().unregister(InternalEvent.SHUTDOWN, onShutdown);
         onShutdown = null;
 
         // remove the schedular
