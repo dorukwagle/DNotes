@@ -73,7 +73,6 @@ public class App extends Application {
         // save default settings in first run
         saveDefaultSettings();
 
-        // ThemeManager.getInstance().applyGlobalTheme(Themes.CUPERTINO_DARK);
         ThemeManager.getInstance().applyGlobalTheme();
        
         // initialize database if not already
