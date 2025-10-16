@@ -13,6 +13,10 @@ public class GenericModal {
     private final Stage dialog;
 
     public GenericModal(Parent parent, boolean autoClose) {
+        this(parent, autoClose, 400, 200);
+    }
+
+    public GenericModal(Parent parent, boolean autoClose, int width, int height) {
         this.dialog = new Stage();
         this.dialog.initModality(autoClose ? Modality.NONE : Modality.APPLICATION_MODAL);
         this.dialog.initStyle(StageStyle.TRANSPARENT);
@@ -45,8 +49,8 @@ public class GenericModal {
         var scene = new Scene(stackPane);
         this.dialog.setScene(scene);
 
-        this.dialog.setMinHeight(200);
-        this.dialog.setMinWidth(400);
+        this.dialog.setMinHeight(height);
+        this.dialog.setMinWidth(width);
     }
 
     public void showAndWait() {

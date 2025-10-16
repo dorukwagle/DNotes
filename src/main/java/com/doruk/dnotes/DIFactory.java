@@ -92,7 +92,7 @@ public class DIFactory {
         return new NoteWriter(editor);
     }
 
-    public static GenericModal createGenericModal(Parent scene, boolean autoClose) {
-        return new GenericModal(scene, autoClose);
+    public static GenericModal createGenericModal(Parent scene, boolean autoClose, int width, int height) {
+        return new GenericModal(scene, autoClose, width, height);
     }
 }
