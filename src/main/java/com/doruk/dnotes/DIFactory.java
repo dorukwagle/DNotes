@@ -19,8 +19,10 @@ import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
 import com.doruk.dnotes.utils.EventManager;
 import com.doruk.dnotes.views.components.ConfirmationModal;
+import com.doruk.dnotes.views.components.GenericModal;
 import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.views.components.PromptModal;
+import javafx.scene.Parent;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -88,5 +90,9 @@ public class DIFactory {
 
     public static IWriter createNoteWriter(IMarkdownEditor editor) {
         return new NoteWriter(editor);
+    }
+
+    public static GenericModal createGenericModal(Parent scene, boolean autoClose) {
+        return new GenericModal(scene, autoClose);
     }
 }

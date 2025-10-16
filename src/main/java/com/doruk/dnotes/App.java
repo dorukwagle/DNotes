@@ -28,6 +28,7 @@ import com.doruk.dnotes.views.PreferencePage;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 
@@ -106,6 +107,10 @@ public class App extends Application {
                 case PREFERENCE -> navigationController.goToPreferencePage();
                 default -> navigationController.goToHomePage();
             }
+
+            // finally open the context menu
+            DIFactory.createGenericModal(new Label("Hello"), true)
+                    .showAndWait();
         } catch (Exception e) {
             exceptionHandler.uncaughtException(Thread.currentThread(), e);
         }
