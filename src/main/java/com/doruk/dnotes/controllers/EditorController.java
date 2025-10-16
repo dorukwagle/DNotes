@@ -55,6 +55,7 @@ public class EditorController implements IEditorController {
             this.navigationController.goToBooksPage();
         });
         DIFactory.createEventManager().register(InternalEvent.SHUTDOWN, onShutdown);
+        DIFactory.createEventManager().register(InternalEvent.CONTEXT_SWITCH, onShutdown);
     }
 
     @Override
@@ -72,6 +73,8 @@ public class EditorController implements IEditorController {
 
         // remove the shutdown listener
         DIFactory.createEventManager().unregister(InternalEvent.SHUTDOWN, onShutdown);
+        // also the context switch listener
+        DIFactory.createEventManager().unregister(InternalEvent.CONTEXT_SWITCH, onShutdown);
         onShutdown = null;
 
         // remove the schedular
