@@ -7,10 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.doruk.dnotes.MarkdownEditor.MarkdownEditor;
-import com.doruk.dnotes.controllers.BookController;
-import com.doruk.dnotes.controllers.EditorController;
-import com.doruk.dnotes.controllers.HomePageController;
-import com.doruk.dnotes.controllers.PreferenceController;
+import com.doruk.dnotes.controllers.*;
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.enums.AppStartup;
 import com.doruk.dnotes.enums.MarkdownEditorColor;
@@ -23,6 +20,7 @@ import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
 import com.doruk.dnotes.views.BookPage;
+import com.doruk.dnotes.views.ContextView;
 import com.doruk.dnotes.views.HomePage;
 import com.doruk.dnotes.views.PreferencePage;
 
@@ -109,8 +107,7 @@ public class App extends Application {
             }
 
             // finally open the context menu
-            DIFactory.createGenericModal(new Label("Hello"), true)
-                    .showAndWait();
+            new ContextMenuController(new ContextView()).showContextMenu();
         } catch (Exception e) {
             exceptionHandler.uncaughtException(Thread.currentThread(), e);
         }
@@ -129,7 +126,7 @@ public class App extends Application {
         prefs.saveLong(Preference.AppStartup, AppStartup.StartFresh.getId());
     }
 
-    public static void main(String[] args) {
+    public static void run(String[] args) {
         // catch all uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
         launch();

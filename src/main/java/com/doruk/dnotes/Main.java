@@ -7,6 +7,6 @@ package com.doruk.dnotes;
 public class Main {
     public static void main(String[] args) {
         // This call will correctly start the JavaFX application.
-        App.main(args);
+        App.run(args);
     }
 }

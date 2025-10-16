@@ -1,5 +1,6 @@
 package com.doruk.dnotes.views.components;
 
+import atlantafx.base.theme.Styles;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,7 +15,7 @@ public class GenericModal {
     public GenericModal(Parent parent, boolean autoClose) {
         this.dialog = new Stage();
         this.dialog.initModality(autoClose ? Modality.NONE : Modality.APPLICATION_MODAL);
-        this.dialog.initStyle(StageStyle.UNDECORATED);
+        this.dialog.initStyle(StageStyle.TRANSPARENT);
 
 
         var closeBtn = new Button("Close");
@@ -30,6 +31,16 @@ public class GenericModal {
             if (!isFocused && autoClose)
                 this.close();
         });
+
+        stackPane.setStyle(
+                "-fx-background-color: -color-bg-default;" +
+                "-fx-background-radius: 12;" +
+                "-fx-border-color: -color-border-muted;" +
+                "-fx-border-radius: 12;" +
+                "-fx-border-width: 3px;" +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 24, 0, 0, 0);" +
+                "-fx-padding: 8px;"
+        );
 
         var scene = new Scene(stackPane);
         this.dialog.setScene(scene);
