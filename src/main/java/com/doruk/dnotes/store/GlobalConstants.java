@@ -18,4 +18,5 @@ public class GlobalConstants {
     public static final int OBFUSCATION_SEED_LENGTH = 32;
     public static final String APP_FORMAT = ".dnt";
     public static final String PACKAGE_NAME = "com.doruk.dNotes";
+    public static final int AUTO_SAVE_INTERVAL_SEC = 10;
 }

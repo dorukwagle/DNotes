@@ -10,9 +10,13 @@ import com.doruk.dnotes.interfaces.IEditorController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.interfaces.IShutdownListener;
+import com.doruk.dnotes.store.GlobalConstants;
 import javafx.scene.Parent;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class EditorController implements IEditorController {
 
@@ -21,6 +25,7 @@ public class EditorController implements IEditorController {
     private final IPreference preference;
     private final byte[] seed;
     private String currentFileId;
+    private ScheduledExecutorService scheduler;
 
     private static IShutdownListener onShutdown;
 
@@ -42,6 +47,10 @@ public class EditorController implements IEditorController {
             seed[i - 1] = (byte) i;
 
         setupActions();
+
+        // initiate auto save
+        this.scheduler = Executors.newScheduledThreadPool(1);
+        this.scheduler.scheduleAtFixedRate(this::saveEditorDocument, 1, GlobalConstants.AUTO_SAVE_INTERVAL_SEC, TimeUnit.SECONDS);
     }
 
     private void setupActions() {
@@ -68,6 +77,9 @@ public class EditorController implements IEditorController {
         // remove the shutdown listener
         DIFactory.createShutdownManager().unregister(onShutdown);
         onShutdown = null;
+
+        // remove the schedular
+        this.scheduler.close();
     }
 
     private void saveEditorDocument() {
