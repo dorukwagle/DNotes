@@ -10,7 +10,7 @@ public class ContextMenuController {
 
     public ContextMenuController(ContextView view) {
         this.view = view;
-        this.modal = DIFactory.createGenericModal(this.view.getView(), true, 500, 400);
+        this.modal = DIFactory.createGenericModal(this.view.getView(), true, 550, 400);
     }
 
     public void showContextMenu() {
