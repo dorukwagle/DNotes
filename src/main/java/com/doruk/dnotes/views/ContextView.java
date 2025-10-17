@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -58,19 +59,40 @@ public class ContextView {
     }
 
     private Button createActionButton(String title, Ikon icon, String tooltipText, String shortcut) {
-        Button button = new Button(title.toUpperCase());
-        button.setGraphic(new FontIcon(icon));
+        Button button = new Button();
+        FontIcon fontIcon = new FontIcon(icon);
+        fontIcon.setScaleY(5);
+        fontIcon.setScaleX(5);
+        button.setGraphic(fontIcon);
         button.getStyleClass().addAll(Styles.BUTTON_OUTLINED, Styles.LARGE);
-        button.setStyle("-fx-padding: 20 15; -fx-font-size: 1.1em; -fx-alignment: center-left;");
+
+        // Set button styling
+        String buttonStyle = """
+            -fx-padding: 20;
+            -fx-min-width: 120px;
+            -fx-min-height: 120px;
+            -fx-pref-width: 120px;
+            -fx-pref-height: 120px;
+            -fx-background-radius: 12;
+            -fx-border-radius: 12;
+            -fx-content-display: top;
+            -fx-graphic-text-gap: 10;
+            -fx-alignment: center;
+            -fx-text-alignment: center;
+            -fx-wrap-text: true;
+            -fx-font-size: 0.9em;
+        """;
+
+        button.setStyle(buttonStyle);
 
         // Add hover effect
-        button.hoverProperty().addListener((obs, oldVal, isHovering) -> {
+        button.hoverProperty().addListener((_, _, isHovering) -> {
             if (isHovering) {
-                button.setStyle(button.getStyle() +
+                button.setStyle(buttonStyle +
                         "-fx-background-color: -color-accent-subtle; " +
                         "-fx-border-color: -color-accent-emphasis;");
             } else {
-                button.setStyle(button.getStyle() +
+                button.setStyle(buttonStyle +
                         "-fx-background-color: -color-bg-default; " +
                         "-fx-border-color: -color-border-muted;");
             }
@@ -85,6 +107,9 @@ public class ContextView {
         tooltip.setWrapText(true);
         tooltip.setMaxWidth(300);
         button.setTooltip(tooltip);
+
+        // Set content display to top to place icon above text
+        button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 
         return button;
     }
