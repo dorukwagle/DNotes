@@ -1,22 +1,22 @@
 package com.doruk.dnotes;
 
 import com.doruk.dnotes.controllers.ContextMenuController;
-import javafx.scene.Scene;
+import com.doruk.dnotes.interfaces.INavigationController;
 import javafx.scene.input.KeyCode;
 
 public class GlobalShortcutListener {
-    private final Scene scene;
+    private final INavigationController navigationController;
 
-    public GlobalShortcutListener(Scene scene) {
-        this.scene = scene;
+    public GlobalShortcutListener(INavigationController navigationController) {
+        this.navigationController = navigationController;
         this.registerContextMenuShortcut();
     }
 
     private void registerContextMenuShortcut() {
         // register global shortcut for context menu i.e. Ctrl + K
-        scene.setOnKeyPressed(event -> {
+        this.navigationController.getScene().setOnKeyPressed(event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.K) {
-                new ContextMenuController().showContextMenu();
+                new ContextMenuController(this.navigationController).showContextMenu();
             }
         });
     }

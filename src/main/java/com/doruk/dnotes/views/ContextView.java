@@ -17,9 +17,15 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignN;
 
+import java.util.function.Consumer;
+
 
 public class ContextView {
     private final VBox parent;
+    private Button collectionsButton;
+    private Button sharedWithMeButton;
+    private Button addQuickNoteButton;
+    private Button viewQuickNotesButton;
 
     public ContextView() {
         this.parent = new VBox(20);
@@ -33,14 +39,14 @@ public class ContextView {
 
         // First row of buttons
         HBox firstRow = createButtonRow(
-                createActionButton("Collections", MaterialDesignB.BOOKSHELF, "Browse your saved notes and collections"),
-                createActionButton("Shared With Me", MaterialDesignA.ACCOUNT_GROUP, "View notes shared with you")
+                createActionButton(btn -> this.collectionsButton = btn, "Collections", MaterialDesignB.BOOKSHELF, "Browse your saved notes and collections"),
+                createActionButton(btn -> this.sharedWithMeButton = btn, "Shared With Me", MaterialDesignA.ACCOUNT_GROUP, "View notes shared with you")
         );
 
         // Second row of buttons
         HBox secondRow = createButtonRow(
-                createActionButton("Add quick note", MaterialDesignN.NOTE_PLUS, "Create a new quick note", "Ctrl+Q"),
-                createActionButton("View quick notes", MaterialDesignN.NOTEBOOK_CHECK, "View all your quick notes")
+                createActionButton(btn -> this.addQuickNoteButton = btn, "Add quick note", MaterialDesignN.NOTE_PLUS, "Create a new quick note", "Ctrl+Q"),
+                createActionButton(btn -> this.viewQuickNotesButton = btn, "View quick notes", MaterialDesignN.NOTEBOOK_CHECK, "View all your quick notes")
         );
 
         this.parent.getChildren().addAll(firstRow, secondRow);
@@ -59,13 +65,15 @@ public class ContextView {
         return row;
     }
 
-    private VBox createActionButton(String title, Ikon icon, String tooltipText) {
-        return createActionButton(title, icon, tooltipText, null);
+    private VBox createActionButton(Consumer<Button> consumer, String title, Ikon icon, String tooltipText) {
+        return createActionButton(consumer, title, icon, tooltipText, null);
     }
 
-    private VBox createActionButton(String title, Ikon icon, String tooltipText, String shortcut) {
+    private VBox createActionButton(Consumer<Button> consumer, String title, Ikon icon, String tooltipText, String shortcut) {
         // Create the button
         Button button = new Button();
+        consumer.accept(button);
+
         FontIcon fontIcon = new FontIcon(icon);
         fontIcon.setScaleY(5);
         fontIcon.setScaleX(5);
@@ -135,6 +143,22 @@ public class ContextView {
         container.setAlignment(Pos.CENTER);
         container.setStyle("-fx-padding: 5;");
         return container;
+    }
+
+    public Button getCollectionsButton() {
+        return collectionsButton;
+    }
+
+    public Button getSharedWithMeButton() {
+        return sharedWithMeButton;
+    }
+
+    public Button getAddQuickNoteButton() {
+        return addQuickNoteButton;
+    }
+
+    public Button getViewQuickNotesButton() {
+        return viewQuickNotesButton;
     }
 
     public Parent getView() {

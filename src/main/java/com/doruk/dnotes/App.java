@@ -107,10 +107,10 @@ public class App extends Application {
             }
 
             // register global shortcuts
-            new GlobalShortcutListener(navigationController.getScene());
+            new GlobalShortcutListener(navigationController);
 
             // finally open the context menu
-            new ContextMenuController().showContextMenuAtStartup();
+            new ContextMenuController(navigationController).showContextMenuAtStartup();
         } catch (Exception e) {
             exceptionHandler.uncaughtException(Thread.currentThread(), e);
         }
