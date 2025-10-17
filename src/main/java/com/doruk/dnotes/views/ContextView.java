@@ -27,6 +27,10 @@ public class ContextView {
         this.parent.setMaxWidth(800);
         this.parent.setPadding(new Insets(30));
 
+        var infoLabel = new Label("Context View (Ctrl + K)");
+        infoLabel.setStyle("-fx-font-size: 2em; -fx-font-weight: bold;");
+        this.parent.getChildren().add(infoLabel);
+
         // First row of buttons
         HBox firstRow = createButtonRow(
                 createActionButton("Collections", MaterialDesignB.BOOKSHELF, "Browse your saved notes and collections"),

@@ -106,8 +106,11 @@ public class App extends Application {
                 default -> navigationController.goToHomePage();
             }
 
+            // register global shortcuts
+            new GlobalShortcutListener(navigationController.getScene());
+
             // finally open the context menu
-            new ContextMenuController(new ContextView()).showContextMenu();
+            new ContextMenuController().showContextMenuAtStartup();
         } catch (Exception e) {
             exceptionHandler.uncaughtException(Thread.currentThread(), e);
         }
@@ -124,6 +127,7 @@ public class App extends Application {
         prefs.saveBoolean(Preference.IsFirstRun, false);
         prefs.saveLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
         prefs.saveLong(Preference.AppStartup, AppStartup.StartFresh.getId());
+        prefs.saveBoolean(Preference.ShowContextMenuAtStartup, true);
     }
 
     public static void run(String[] args) {

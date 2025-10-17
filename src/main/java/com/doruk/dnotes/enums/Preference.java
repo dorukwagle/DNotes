@@ -11,5 +11,6 @@ public enum Preference {
     LastVisitedPage,
     LastOpenedCollectionId,
     LastOpenedBookId,
-    LastOpenedNoteId
+    LastOpenedNoteId,
+    ShowContextMenuAtStartup
 }

@@ -37,7 +37,7 @@ public class NavigationController implements INavigationController {
         stage.show();
         
         // center the screen once the stage is fully initialized
-        Platform.runLater(() -> stage.centerOnScreen());
+        Platform.runLater(stage::centerOnScreen);
     }
 
     public static NavigationController getInstance(Stage stage) {
@@ -76,5 +76,10 @@ public class NavigationController implements INavigationController {
     public void goToPreferencePage() {
         this.preference.saveLong(Preference.LastVisitedPage, ViewPage.PREFERENCE.getId());
         scene.setRoot(ControllerFactory.create(ViewPage.PREFERENCE, this).getView());
+    }
+
+    @Override
+    public Scene getScene() {
+        return scene;
     }
 }

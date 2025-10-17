@@ -18,6 +18,7 @@ import com.doruk.dnotes.prefs.EditorPreference;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
 import com.doruk.dnotes.utils.EventManager;
+import com.doruk.dnotes.views.ContextView;
 import com.doruk.dnotes.views.components.ConfirmationModal;
 import com.doruk.dnotes.views.components.GenericModal;
 import com.doruk.dnotes.views.components.OptionsModal;
@@ -94,5 +95,9 @@ public class DIFactory {
 
     public static GenericModal createGenericModal(Parent scene, boolean autoClose, int width, int height) {
         return new GenericModal(scene, autoClose, width, height);
+    }
+
+    public static ContextView createContextView() {
+        return new ContextView();
     }
 }
