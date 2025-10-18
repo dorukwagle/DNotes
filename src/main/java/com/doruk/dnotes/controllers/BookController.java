@@ -71,9 +71,12 @@ public class BookController implements IController {
             return;
 
         // add new quick note
-        var note = this.createNewNote();
-        if (note != null)
-            this.openNote(note);
+        // run on next pulse, let the UI initialize first
+        Platform.runLater(() -> {
+            var note = this.createNewNote();
+            if (note != null)
+                this.openNote(note);
+        });
     }
 
     private void init() {
@@ -155,6 +158,10 @@ public class BookController implements IController {
 
         this.currentEditingNote = note;
         this.preference.saveString(Preference.LastOpenedNoteId, note.getId());
+
+        // when invoked internally without user clicking the item, it's still unselected, so
+        // select it
+        this.view.setSelectedSidebarItem(note);
     }
 
     private BookPageDto createNewNote() {
