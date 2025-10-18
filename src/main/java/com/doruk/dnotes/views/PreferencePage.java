@@ -34,6 +34,7 @@ public class PreferencePage implements IPreferenceView {
     private ToggleGroup appStartupToggleGroup;
     private CheckBox rememberAppStateCheckBox;
     private CheckBox rememberEditorCheckBox;
+    private CheckBox showContextAtStartup;
     private Consumer<Integer> themeOnSelect;
     private Consumer<Integer> editorColorOnSelect;
     private Consumer<Integer> appStartupOnSelect;
@@ -148,6 +149,14 @@ public class PreferencePage implements IPreferenceView {
             radioButton.setOnMouseClicked(_ -> appStartupOnSelect.accept(startup.getId()));
             appStartupSection.getChildren().add(radioButton);
         }
+
+        // also in the startup: whether to show context menu at startup
+        showContextAtStartup = new CheckBox("Show Context Menu at Startup");
+        showContextAtStartup.setStyle(
+            "-fx-font-size: 1.2em;" +
+            "-fx-text-fill: -color-fg-default;"
+        );
+        appStartupSection.getChildren().add(showContextAtStartup);
         
         contentBox.getChildren().add(centerContainer);
         scrollPane.setContent(contentBox);
@@ -278,5 +287,15 @@ public class PreferencePage implements IPreferenceView {
     @Override
     public void setPlaceholder(String txt) {
         // no placeholder neede here
+    }
+
+    @Override
+    public void setShowContextAtStartup(Boolean showContextAtStartup) {
+        this.showContextAtStartup.setSelected(showContextAtStartup);
+    }
+
+    @Override
+    public CheckBox getShowContextAtStartup() {
+        return this.showContextAtStartup;
     }
 }
