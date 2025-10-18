@@ -43,9 +43,12 @@ public class DatabaseInitializer {
         var bookPageTable = """
                 CREATE TABLE IF NOT EXISTS bookPages (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    bookId INTEGER NOT NULL,
+                    bookId INTEGER,
+                    noteType NOT NULL CHECK (noteType IN ('QUICK', 'SHARED', 'NORMAL')) DEFAULT 'NORMAL',
                     name TEXT NOT NULL,
                     content TEXT NOT NULL,
+                    isLocked BOOLEAN DEFAULT false,
+                    sharedBy TEXT,
                     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     deletedAt TIMESTAMP,
@@ -114,20 +117,54 @@ public class DatabaseInitializer {
 
         var bookPageView = """
             CREATE VIEW IF NOT EXISTS bookPageView AS
-            SELECT 
+            SELECT
                 id,
                 bookId,
                 content,
                 name,
+                isLocked,
+                sharedBy,
                 updatedAt,
                 createdAt
             FROM bookPages
-            WHERE deletedAt IS NULL;
+            WHERE deletedAt IS NULL and noteType = 'NORMAL';
+            """;
+
+        var quickNoteView = """
+            CREATE VIEW IF NOT EXISTS quickNoteView AS
+            SELECT
+                id,
+                bookId,
+                content,
+                name,
+                isLocked,
+                sharedBy,
+                updatedAt,
+                createdAt
+            FROM bookPages
+            WHERE deletedAt IS NULL and noteType = 'QUICK';
+            """;
+
+        var sharedNoteView = """
+            CREATE VIEW IF NOT EXISTS sharedNoteView AS
+            SELECT
+                id,
+                bookId,
+                content,
+                name,
+                isLocked,
+                sharedBy,
+                updatedAt,
+                createdAt
+            FROM bookPages
+            WHERE deletedAt IS NULL and noteType = 'SHARED';
             """;
 
         var statement = connection.createStatement();
         statement.execute(collectionView);
         statement.execute(bookView);
         statement.execute(bookPageView);
+        statement.execute(quickNoteView);
+        statement.execute(sharedNoteView);
     }
 }

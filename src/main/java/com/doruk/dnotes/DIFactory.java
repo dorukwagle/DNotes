@@ -1,6 +1,8 @@
 package com.doruk.dnotes;
 
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
+import com.doruk.dnotes.controllers.QuickNoteController;
+import com.doruk.dnotes.controllers.SharedNoteController;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownDecoder;
@@ -99,5 +101,13 @@ public class DIFactory {
 
     public static ContextView createContextView() {
         return new ContextView();
+    }
+
+    public static SharedNoteController createSharedNoteController(INavigationController nav) {
+        return new SharedNoteController(nav);
+    }
+
+    public static IQuickNoteController createQuickNoteController(INavigationController nav) {
+        return new QuickNoteController(nav);
     }
 }

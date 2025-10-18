@@ -4,7 +4,9 @@ public enum ViewPage {
     HOME (1),
     BOOK (2),
     EDITOR (3),
-    PREFERENCE (4);
+    PREFERENCE (4),
+    QUICK_NOTE(5),
+    SHARED_NOTE(6);
 
     private final int id;
 

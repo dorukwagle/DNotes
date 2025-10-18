@@ -16,6 +16,8 @@ import com.doruk.dnotes.enums.Themes;
 import com.doruk.dnotes.enums.ViewPage;
 import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.*;
+import com.doruk.dnotes.models.QuickBook;
+import com.doruk.dnotes.models.SharedBook;
 import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
@@ -52,12 +54,16 @@ public class App extends Application {
             ViewPage.HOME, HomePage::new,
             ViewPage.BOOK, BookPage::new,
             ViewPage.PREFERENCE, PreferencePage::new,
+            ViewPage.QUICK_NOTE, BookPage::new,
+            ViewPage.SHARED_NOTE, BookPage::new,
             ViewPage.EDITOR, () -> null
         );
 
         Map<ViewPage, BiFunction<IView, INavigationController, IController>> controllerMap = Map.of(
             ViewPage.HOME, (view, nav) -> new HomePageController((IHomeView)view, nav),
             ViewPage.BOOK, (view, nav) -> new BookController((IBookView)view, nav),
+            ViewPage.QUICK_NOTE, (view, nav) -> new BookController((IBookView)view, nav, new QuickBook()),
+            ViewPage.SHARED_NOTE, (view, nav) -> new BookController((IBookView)view, nav, new SharedBook()),
             ViewPage.EDITOR, (_, nav) -> new EditorController(new MarkdownEditor(), nav),
             ViewPage.PREFERENCE, (view, nav) -> new PreferenceController((IPreferenceView)view, nav)
         );

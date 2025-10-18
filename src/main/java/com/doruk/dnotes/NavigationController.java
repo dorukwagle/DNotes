@@ -79,6 +79,16 @@ public class NavigationController implements INavigationController {
     }
 
     @Override
+    public void goToQuickNotePage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.QUICK_NOTE, this).getView());
+    }
+
+    @Override
+    public void goToSharedNotePage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.SHARED_NOTE, this).getView());
+    }
+
+    @Override
     public Scene getScene() {
         return scene;
     }

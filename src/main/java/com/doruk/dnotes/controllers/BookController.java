@@ -50,6 +50,18 @@ public class BookController implements IController {
         this.preference = DIFactory.createGlobalPreference();
         this.noteModel = DIFactory.createNoteModel();
 
+        init();
+    }
+
+    public BookController(IBookView view, INavigationController navigationController, IModel<BookPageDto> noteModel) {
+        this.view = view;
+        this.navigationController = navigationController;
+        this.noteModel = noteModel;
+
+        init();
+    }
+
+    private void init() {
         this.setupActions();
 
         this.openBook();
@@ -58,13 +70,13 @@ public class BookController implements IController {
         // then only open the note if in preferences
         if (!isStartup)
             return;
-        
+
         var lastNoteId = preference.loadString(Preference.LastOpenedNoteId, "");
-        var exists = !lastNoteId.isEmpty() && 
-            this.notes.stream().anyMatch(n -> n.getId().equals(lastNoteId));
+        var exists = !lastNoteId.isEmpty() &&
+                this.notes.stream().anyMatch(n -> n.getId().equals(lastNoteId));
         if (exists)
             Platform.runLater(this::openLastNote);
-        
+
         isStartup = false;
     }
 

@@ -1,11 +1,12 @@
 package com.doruk.dnotes.controllers;
 
 import com.doruk.dnotes.DIFactory;
-import com.doruk.dnotes.enums.AppStartup;
 import com.doruk.dnotes.enums.Preference;
+import com.doruk.dnotes.interfaces.IEventManager;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.views.ContextView;
 import com.doruk.dnotes.views.components.GenericModal;
+import javafx.scene.input.MouseEvent;
 
 import java.util.stream.Stream;
 
@@ -20,10 +21,17 @@ public class ContextMenuController {
         this.navController = navController;
 
         // setup actions
-        this.view.getCollectionsButton().setOnAction(_ -> this.navController.goToHomePage());
-//        this.view.getSharedWithMeButton().setOnAction(_ -> this.navController.goToBooksPage());
-//        this.view.getAddQuickNoteButton().setOnAction(_ -> this.navController.goToEditorPage());
-//        this.view.getViewQuickNotesButton().setOnAction(_ -> this.navController.goToBooksPage());
+        this.view.getCollectionsButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
+                this.navController.goToHomePage());
+
+        this.view.getSharedWithMeButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
+            DIFactory.createSharedNoteController(this.navController));
+
+        this.view.getViewQuickNotesButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
+            DIFactory.createQuickNoteController(this.navController).open());
+
+        this.view.getAddQuickNoteButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
+            DIFactory.createQuickNoteController(this.navController).addNew());
 
         // close dialog while any btn clicked
         Stream.of(
@@ -31,7 +39,10 @@ public class ContextMenuController {
                 this.view.getSharedWithMeButton(),
                 this.view.getAddQuickNoteButton(),
                 this.view.getViewQuickNotesButton()
-        ).forEach(btn -> btn.setOnMouseClicked(_ -> this.modal.close()));
+        ).forEach(btn -> btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
+            DIFactory.createEventManager().publishEvent(IEventManager.InternalEvent.CONTEXT_SWITCH);
+            this.modal.close();
+        }));
     }
 
     public void showContextMenu() {
