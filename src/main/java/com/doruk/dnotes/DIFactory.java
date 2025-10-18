@@ -16,7 +16,6 @@ import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.models.BookModel;
 import com.doruk.dnotes.models.BookPagesModel;
 import com.doruk.dnotes.models.CollectionModel;
-import com.doruk.dnotes.prefs.EditorPreference;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
 import com.doruk.dnotes.utils.EventManager;
@@ -33,10 +32,6 @@ import java.io.OutputStream;
 public class DIFactory {
     public static IPreference createGlobalPreference() {
         return GlobalPreference.getInstance();
-    }
-
-    public static IPreference createEditorPreference() {
-        return EditorPreference.getInstance();
     }
 
     public static IConfirmationModal createConfirmationModal(String title, String message) {
