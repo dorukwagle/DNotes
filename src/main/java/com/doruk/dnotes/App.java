@@ -94,6 +94,12 @@ public class App extends Application {
 
             var navigationController = NavigationController.getInstance(stage);
 
+            // register global shortcuts
+            new GlobalShortcutListener(navigationController);
+
+            // open the context menu on the next pulse
+            Platform.runLater( () -> new ContextMenuController(navigationController).showContextMenuAtStartup());
+
             if (preferredPage == AppStartup.StartFresh) {
                 navigationController.goToHomePage();
                 return;
@@ -111,12 +117,6 @@ public class App extends Application {
                 case PREFERENCE -> navigationController.goToPreferencePage();
                 default -> navigationController.goToHomePage();
             }
-
-            // register global shortcuts
-            new GlobalShortcutListener(navigationController);
-
-            // finally open the context menu
-            new ContextMenuController(navigationController).showContextMenuAtStartup();
         } catch (Exception e) {
             exceptionHandler.uncaughtException(Thread.currentThread(), e);
         }
