@@ -52,7 +52,7 @@ public class EditorController implements IEditorController {
     private void setupActions() {
         this.markdownEditor.setOnClose(() -> {
             this.close();
-            this.navigationController.goToBooksPage();
+            this.navigationController.goToHomePage();
         });
         DIFactory.createEventManager().register(InternalEvent.SHUTDOWN, onShutdown);
         DIFactory.createEventManager().register(InternalEvent.CONTEXT_SWITCH, onShutdown);

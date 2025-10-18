@@ -14,4 +14,6 @@ public interface INavigationController {
     void goToSharedNotePage();
 
     Scene getScene();
+
+    void updateAppTitle(String title);
 }

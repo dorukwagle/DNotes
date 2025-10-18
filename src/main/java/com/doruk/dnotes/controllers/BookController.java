@@ -45,6 +45,9 @@ public class BookController implements IController {
 
         this.noteType = NoteType.NORMAL;
 
+        // update app title
+        navigationController.updateAppTitle("Notes");
+
         init();
     }
 
@@ -86,8 +89,10 @@ public class BookController implements IController {
 
         // check if last opened note belongs to this book, and also isn't deleted
         // then only open the note if in preferences
-        if (!isStartup || this.noteType != NoteType.NORMAL)
+        if (!isStartup || this.noteType != NoteType.NORMAL) {
+            isStartup = false; // if its not NORMAL note
             return;
+        }
 
         // if its app startup, i.e. first time the book controller is opened.
         // try to resume from the last position as per preference

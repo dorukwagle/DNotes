@@ -11,6 +11,9 @@ public class QuickNoteController implements IQuickNoteController {
     public QuickNoteController(INavigationController nav) {
         this.nav = nav;
 
+        // update app title
+        nav.updateAppTitle("Quick Notes");
+
         BookStore.setNoteType(NoteType.QUICK);
     }
 

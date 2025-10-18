@@ -22,6 +22,9 @@ public class PreferenceController implements IController {
         this.navigationController = navigationController;
         this.preference = DIFactory.createGlobalPreference();
 
+        // update app title
+        navigationController.updateAppTitle("Preferences");
+
         // load preferences view
         this.view.setSelectedTheme(
                 Themes.fromId(

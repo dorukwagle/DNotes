@@ -1,19 +1,9 @@
 package com.doruk.dnotes;
 
-import java.lang.Thread.UncaughtExceptionHandler;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-
 import com.doruk.dnotes.MarkdownEditor.MarkdownEditor;
 import com.doruk.dnotes.controllers.*;
 import com.doruk.dnotes.dto.BookDto;
-import com.doruk.dnotes.enums.AppStartup;
-import com.doruk.dnotes.enums.MarkdownEditorColor;
-import com.doruk.dnotes.enums.Preference;
-import com.doruk.dnotes.enums.Themes;
-import com.doruk.dnotes.enums.ViewPage;
+import com.doruk.dnotes.enums.*;
 import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.models.QuickBook;
@@ -22,14 +12,17 @@ import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
 import com.doruk.dnotes.views.BookPage;
-import com.doruk.dnotes.views.ContextView;
 import com.doruk.dnotes.views.HomePage;
 import com.doruk.dnotes.views.PreferencePage;
-
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
+
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 
 public class App extends Application {

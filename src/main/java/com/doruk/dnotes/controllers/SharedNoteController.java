@@ -8,6 +8,9 @@ public class SharedNoteController {
     public SharedNoteController(INavigationController nav) {
         BookStore.setNoteType(NoteType.SHARED);
 
+        // update app title
+        nav.updateAppTitle("Shared With Me");
+
         // navigate to books page
         nav.goToSharedNotePage();
     }

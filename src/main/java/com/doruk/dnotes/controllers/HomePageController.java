@@ -55,6 +55,9 @@ public class HomePageController implements IController {
         renderCollections();
         setupActions();
 
+        // update app title
+        navigationController.updateAppTitle("Home");
+
         // open last collection if remember state is enabled
         var rememberState = this.preference.loadBoolean(Preference.RememberAppState, false);
         if (!rememberState)
