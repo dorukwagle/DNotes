@@ -148,7 +148,7 @@ public class BookController implements IController {
         if (note == null)
             return;
         
-        // gracefully close the existing editor
+        // gracefully cleanup the existing editor
         if (this.editorController != null) {
             this.editorController.close();
             this.editorController = null; // remove reference
@@ -265,7 +265,7 @@ public class BookController implements IController {
     private void searchNotes(SearchControlsDto controls) {
         isSearchProgress = !controls.getSearchField().getText().trim().isEmpty();
 
-        // if searching, close the editor
+        // if searching, cleanup the editor
         if (isSearchProgress && this.editorController != null){
             this.editorController.close();
             this.editorController = null;

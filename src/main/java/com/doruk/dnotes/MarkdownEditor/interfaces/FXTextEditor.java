@@ -17,4 +17,6 @@ public interface FXTextEditor {
     void removeRenderer(ToolName tool);
     int getParagraphIndexAtPos(int pos);
     SuspendableYes getSuspendableUndo();
+
+    void cleanup();
 }

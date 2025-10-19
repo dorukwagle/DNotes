@@ -1,6 +1,7 @@
 package com.doruk.dnotes.MarkdownEditor.changeHandlers;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -26,15 +27,17 @@ import javafx.application.Platform;
 import javafx.scene.control.IndexRange;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import org.reactfx.Subscription;
 import org.w3c.dom.events.MouseEvent;
 
 public class CaretSelectionHandler {
-    private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
-    private final ControlPanelView controlPanel;
-    private final FXTextEditor editor;
+    private GenericStyledArea<ParagraphStyle, String, TextStyle> area;
+    private ControlPanelView controlPanel;
+    private FXTextEditor editor;
     private final AtomicInteger caretChangeCount = new AtomicInteger(0);
     private boolean isFirstHover = true;
     private static final Duration DELAY = Duration.ofMillis(300);
+    private List<Subscription> allSubscriptions = new ArrayList<>();
 
     public CaretSelectionHandler(FXTextEditor editor, ControlPanelView controlPanel) {
         this.area = editor.getArea();
@@ -44,30 +47,30 @@ public class CaretSelectionHandler {
         var caretChange = EventStreams.changesOf(area.caretPositionProperty());
         var selectionChange = EventStreams.changesOf(area.selectionProperty());
 
+        // add all subscriptions into list, for later cleanup
+        allSubscriptions.addAll(List.of(
         // detect text changes
         area.plainTextChanges()
                 .subscribe(change -> {
                     var insertion = !change.getInserted().isEmpty() && change.getRemoved().isEmpty();
                     if (insertion)
                         caretChangeCount.getAndDecrement();
-                });
-
+                }),
         // also detect caret changes
-        caretChange.subscribe(_ -> {
-            caretChangeCount.getAndIncrement();
-        });
+        caretChange.subscribe(_ -> caretChangeCount.getAndIncrement()),
 
         // check of new caret position every delay, then update the tools
         caretChange.successionEnds(DELAY)
-                .subscribe(this::onCaretPosChange);
+                .subscribe(this::onCaretPosChange),
 
         // track what style is applied at each caret pos, and change the insertion style
         // do this every 20ms
         caretChange.successionEnds(Duration.ofMillis(20))
-                .subscribe((pos) -> this.updateInsertionStyle(pos.getNewValue()));
+                .subscribe((pos) -> this.updateInsertionStyle(pos.getNewValue())),
 
         selectionChange.successionEnds(DELAY)
-                .subscribe(this::onSelectionChange);
+                .subscribe(this::onSelectionChange)
+        )); // allSubscriptions // closing brace
 
         // also monitor the focus received
         area.setOnMouseClicked(
@@ -159,5 +162,17 @@ public class CaretSelectionHandler {
         var size = (Integer) fontStateTool.getState();
         Platform.runLater(() -> controlPanel.getFontSizeCombo()
                 .setValue(size.toString()));
+    }
+
+    public void cleanup() {
+        area.setOnMouseClicked(null);
+
+        // clear up subscriptions
+        allSubscriptions.forEach(Subscription::unsubscribe);
+
+        allSubscriptions = null;
+        area = null;
+        controlPanel = null;
+        editor = null;
     }
 }

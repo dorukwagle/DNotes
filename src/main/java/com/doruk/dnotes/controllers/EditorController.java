@@ -68,7 +68,7 @@ public class EditorController implements IEditorController {
         // save the texts and notes
         saveEditorDocument();
 
-        // close editor gracefully
+        // cleanup editor gracefully
         this.markdownEditor.close();
         this.markdownEditor = null;
 

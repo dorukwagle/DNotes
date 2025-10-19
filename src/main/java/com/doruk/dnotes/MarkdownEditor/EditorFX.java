@@ -17,14 +17,13 @@ import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.Renderer;
 
-import javafx.scene.Node;
 import javafx.scene.text.TextFlow;
 
 public class EditorFX implements FXTextEditor {
-    private final GenericStyledArea<ParagraphStyle, String, TextStyle> area;
-    private final Map<ToolName, Renderer<TextExt, TextStyle>> textRenderers = new EnumMap<>(ToolName.class);
-    private final Map<ToolName, Renderer<TextFlow, ParagraphStyle>> paragraphRenderers = new EnumMap<>(ToolName.class);
-    private final SuspendableYes suspendableUndo = new SuspendableYes();
+    private GenericStyledArea<ParagraphStyle, String, TextStyle> area;
+    private Map<ToolName, Renderer<TextExt, TextStyle>> textRenderers = new EnumMap<>(ToolName.class);
+    private Map<ToolName, Renderer<TextFlow, ParagraphStyle>> paragraphRenderers = new EnumMap<>(ToolName.class);
+    private SuspendableYes suspendableUndo = new SuspendableYes();
 
     public EditorFX() {
         area = new GenericStyledArea<>(
@@ -96,5 +95,13 @@ public class EditorFX implements FXTextEditor {
     @Override
     public SuspendableYes getSuspendableUndo() {
         return suspendableUndo;
+    }
+
+    @Override
+    public void cleanup() {
+        this.area = null;
+        this.textRenderers = null;
+        this.paragraphRenderers = null;
+        this.suspendableUndo = null;
     }
 }

@@ -33,7 +33,7 @@ public class ContextMenuController {
         this.view.getAddQuickNoteButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
             DIFactory.createQuickNoteController(this.navController).addNew());
 
-        // close dialog while any btn clicked
+        // cleanup dialog while any btn clicked
         Stream.of(
                 this.view.getCollectionsButton(),
                 this.view.getSharedWithMeButton(),

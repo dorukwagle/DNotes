@@ -109,7 +109,7 @@ public class FAB extends Button {
                     if (this.isItemsHovering || this.isFabHovering)
                         return;
 
-                    // hovering exited, close the menu
+                    // hovering exited, cleanup the menu
                     Platform.runLater(this::forceClose);
                 });
     }

@@ -10,6 +10,7 @@ import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.BulletListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.CheckListKeyHandler;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.KeyEventDispatcher;
 import com.doruk.dnotes.MarkdownEditor.keyActionHandlers.NumberListKeyHandler;
+import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 import com.doruk.dnotes.store.GlobalConstants;
@@ -19,13 +20,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 public class MarkdownEditor implements IMarkdownEditor {
 
     private StringBuilder editorText;
-    private final View editorView;
+    private View editorView;
     private final Set<KeyCode> keyActions = Set.of(
         KeyCode.ENTER, 
         KeyCode.TAB, 
@@ -35,6 +37,7 @@ public class MarkdownEditor implements IMarkdownEditor {
         KeyCode.X,
         KeyCode.V
     );
+    private CaretSelectionHandler caretSelectionHandler; // store for cleanup
 
     public MarkdownEditor() {
         editorText = new StringBuilder();
@@ -81,7 +84,7 @@ public class MarkdownEditor implements IMarkdownEditor {
                 .getStyleButtons()
                 .forEach(btn -> {
                     var tool = Factory.createTool(ToolName.fromName(btn.getId()), editorView.getEditor());
-                    btn.setOnMouseClicked(_ -> {
+                    btn.addEventHandler(MouseEvent.MOUSE_CLICKED, _ -> {
                         var area = editorView.getEditor().getArea();
                         area.requestFocus();
 
@@ -116,7 +119,7 @@ public class MarkdownEditor implements IMarkdownEditor {
         new FontSizeHandler(editorView.getEditor(), panel);
         new FontColorHandler(editorView.getEditor(), panel);
         new FontBGColorHandler(editorView.getEditor(), panel);
-        new CaretSelectionHandler(editorView.getEditor(), panel);
+        caretSelectionHandler = new CaretSelectionHandler(editorView.getEditor(), panel);
         new CheckboxClickHandler(editorView.getEditor());
     }
 
@@ -154,12 +157,12 @@ public class MarkdownEditor implements IMarkdownEditor {
         return this.editorView.getView();
     }
 
-    // set, what to do when the red close button is clicked in control panel
+    // set, what to do when the red cleanup button is clicked in control panel
     @Override
     public void setOnClose(Runnable onClose) {
         this.editorView.getCloseButton()
                 .setOnAction(_ -> {
-                    // close the editor
+                    // cleanup the editor
                     this.close();
                     onClose.run();
                 });
@@ -167,8 +170,20 @@ public class MarkdownEditor implements IMarkdownEditor {
 
     @Override
     public void close() {
-        // cleanup the resources
-        Factory.close();
+        // cleanup caret selection handler
+        caretSelectionHandler.cleanup();
+        caretSelectionHandler = null;
+
+        // clear the key handlers
+        KeyEventDispatcher.clearHandlers();
+
+        // clean up list manager
+        ListManager.getInstance().cleanup();
+
+        // cleanup the factory
+        Factory.cleanup();
+
+        this.editorView = null;
     }
 
     @Override
