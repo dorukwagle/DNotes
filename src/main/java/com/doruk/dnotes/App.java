@@ -11,9 +11,7 @@ import com.doruk.dnotes.models.SharedBook;
 import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.DatabaseInitializer;
 import com.doruk.dnotes.utils.ThemeManager;
-import com.doruk.dnotes.views.BookPage;
-import com.doruk.dnotes.views.HomePage;
-import com.doruk.dnotes.views.PreferencePage;
+import com.doruk.dnotes.views.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -49,6 +47,8 @@ public class App extends Application {
             ViewPage.PREFERENCE, PreferencePage::new,
             ViewPage.QUICK_NOTE, BookPage::new,
             ViewPage.SHARED_NOTE, BookPage::new,
+            ViewPage.TRASH, TrashView::new,
+            ViewPage.MANAGEMENT, ManagementView::new,
             ViewPage.EDITOR, () -> null
         );
 
@@ -58,7 +58,9 @@ public class App extends Application {
             ViewPage.QUICK_NOTE, (view, nav) -> new BookController((IBookView)view, nav, new QuickBook()),
             ViewPage.SHARED_NOTE, (view, nav) -> new BookController((IBookView)view, nav, new SharedBook()),
             ViewPage.EDITOR, (_, nav) -> new EditorController(new MarkdownEditor(), nav),
-            ViewPage.PREFERENCE, (view, nav) -> new PreferenceController((IPreferenceView)view, nav)
+            ViewPage.PREFERENCE, (view, nav) -> new PreferenceController((IPreferenceView)view, nav),
+            ViewPage.TRASH, (view, nav) -> new TrashController(nav, view),
+            ViewPage.MANAGEMENT, (view, nav) -> new ManagementController(nav, view)
         );
         
         ControllerFactory.init(viewMap, controllerMap);
@@ -110,6 +112,8 @@ public class App extends Application {
                     navigationController.goToBooksPage();
                 }
                 case PREFERENCE -> navigationController.goToPreferencePage();
+                case TRASH -> navigationController.goToTrashPage();
+                case MANAGEMENT -> navigationController.goToManagementPage();
                 default -> navigationController.goToHomePage();
             }
         } catch (Exception e) {

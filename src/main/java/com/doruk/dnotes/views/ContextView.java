@@ -13,9 +13,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignN;
+import org.kordamp.ikonli.materialdesign2.*;
 
 import java.util.function.Consumer;
 
@@ -26,6 +24,8 @@ public class ContextView {
     private Button sharedWithMeButton;
     private Button addQuickNoteButton;
     private Button viewQuickNotesButton;
+    private Button openNoteButton;
+    private Button openNotesManagementButton;
 
     public ContextView() {
         this.parent = new VBox(20);
@@ -49,7 +49,13 @@ public class ContextView {
                 createActionButton(btn -> this.viewQuickNotesButton = btn, "View quick notes", MaterialDesignN.NOTEBOOK_CHECK, "View all your quick notes")
         );
 
-        this.parent.getChildren().addAll(firstRow, secondRow);
+        // Third row of buttons
+        HBox thirdRow = createButtonRow(
+                createActionButton(btn -> this.openNoteButton = btn, "Open Note", MaterialDesignF.FILE_ACCOUNT, "Open a shared Note File"),
+                createActionButton(btn -> this.openNotesManagementButton = btn, "Management", MaterialDesignT.TOOLS, "Open notes management")
+        );
+
+        this.parent.getChildren().addAll(thirdRow, secondRow, firstRow);
     }
 
     private HBox createButtonRow(VBox... buttonContainers) {
@@ -159,6 +165,14 @@ public class ContextView {
 
     public Button getViewQuickNotesButton() {
         return viewQuickNotesButton;
+    }
+
+    public Button getOpenNoteButton() {
+        return openNoteButton;
+    }
+
+    public Button getOpenNotesManagementButton() {
+        return openNotesManagementButton;
     }
 
     public Parent getView() {

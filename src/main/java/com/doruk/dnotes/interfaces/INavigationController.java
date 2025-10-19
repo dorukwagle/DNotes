@@ -9,6 +9,10 @@ public interface INavigationController {
     INavigationController reCreateScene(double w, double h);
     INavigationController reCreateScene();
 
+    void goToTrashPage();
+
+    void goToManagementPage();
+
     void goToQuickNotePage();
 
     void goToSharedNotePage();

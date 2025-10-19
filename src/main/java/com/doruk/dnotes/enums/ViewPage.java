@@ -6,7 +6,9 @@ public enum ViewPage {
     EDITOR (3),
     PREFERENCE (4),
     QUICK_NOTE(5),
-    SHARED_NOTE(6);
+    SHARED_NOTE(6),
+    TRASH(7),
+    MANAGEMENT(8);
 
     private final int id;
 

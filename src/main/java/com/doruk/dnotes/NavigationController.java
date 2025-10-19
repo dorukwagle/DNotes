@@ -81,6 +81,18 @@ public class NavigationController implements INavigationController {
     }
 
     @Override
+    public void goToTrashPage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.TRASH.getId());
+        scene.setRoot(ControllerFactory.create(ViewPage.TRASH, this).getView());
+    }
+
+    @Override
+    public void goToManagementPage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.MANAGEMENT.getId());
+        scene.setRoot(ControllerFactory.create(ViewPage.MANAGEMENT, this).getView());
+    }
+
+    @Override
     public void goToQuickNotePage() {
         scene.setRoot(ControllerFactory.create(ViewPage.QUICK_NOTE, this).getView());
     }

@@ -304,7 +304,7 @@ public class HomePageController implements IController {
             switch (menuItem) {
                 case MenuItems.Backup -> System.out.println("navigating to backup page");
                 case MenuItems.Restore -> System.out.println("navigating to restore page");
-                case MenuItems.Trash -> System.out.println("navigating to trash page");
+                case MenuItems.Trash -> this.navigationController.goToTrashPage();
                 case MenuItems.Preferences -> this.navigationController.goToPreferencePage();
             }
         });

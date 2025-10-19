@@ -33,12 +33,17 @@ public class ContextMenuController {
         this.view.getAddQuickNoteButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
             DIFactory.createQuickNoteController(this.navController).addNew());
 
+        this.view.getOpenNotesManagementButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
+            this.navController.goToManagementPage());
+
         // cleanup dialog while any btn clicked
         Stream.of(
                 this.view.getCollectionsButton(),
                 this.view.getSharedWithMeButton(),
                 this.view.getAddQuickNoteButton(),
-                this.view.getViewQuickNotesButton()
+                this.view.getViewQuickNotesButton(),
+                this.view.getOpenNoteButton(),
+                this.view.getOpenNotesManagementButton()
         ).forEach(btn -> btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
             DIFactory.createEventManager().publishEvent(IEventManager.InternalEvent.CONTEXT_SWITCH);
             this.modal.close();
