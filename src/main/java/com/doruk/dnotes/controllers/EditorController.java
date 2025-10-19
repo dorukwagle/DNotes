@@ -21,11 +21,11 @@ import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 
 public class EditorController implements IEditorController {
 
-    private final IMarkdownEditor markdownEditor;
+    private IMarkdownEditor markdownEditor;
     private final INavigationController navigationController;
     private final IPreference preference;
     private String currentFileId;
-    private final ScheduledExecutorService scheduler;
+    private ScheduledExecutorService scheduler;
 
     private static Runnable onShutdown;
 
@@ -40,7 +40,7 @@ public class EditorController implements IEditorController {
         markdownEditor.setEditorBackground(color);
 
         if (onShutdown == null)
-            onShutdown = this::saveEditorDocument;
+            onShutdown = this::close;
 
         setupActions();
 
@@ -70,6 +70,7 @@ public class EditorController implements IEditorController {
 
         // close editor gracefully
         this.markdownEditor.close();
+        this.markdownEditor = null;
 
         // remove the shutdown listener
         DIFactory.createEventManager().unregister(InternalEvent.SHUTDOWN, onShutdown);

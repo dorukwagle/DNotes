@@ -76,7 +76,9 @@ public class App extends Application {
         }
 
         // execute listeners for cleanup before shut down
-        stage.setOnCloseRequest(_ -> DIFactory.createEventManager().publishEvent(IEventManager.InternalEvent.SHUTDOWN));
+        stage.setOnCloseRequest(_ -> {
+            DIFactory.createEventManager().publishEvent(IEventManager.InternalEvent.SHUTDOWN);
+        });
 
         // finally start the home page
         // make sure to catch even the startup exceptions

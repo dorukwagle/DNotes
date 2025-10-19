@@ -10,6 +10,7 @@ public class BookPageDto implements ISidebarItem {
     private String updatedAt;
     private String sharedBy;
     private boolean isLocked;
+    private String password;
 
     public BookPageDto() {
     }
@@ -59,5 +60,13 @@ public class BookPageDto implements ISidebarItem {
 
     public void setIsLocked(boolean isLocked) {
         this.isLocked = isLocked;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

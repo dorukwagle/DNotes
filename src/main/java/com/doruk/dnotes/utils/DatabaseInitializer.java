@@ -48,6 +48,7 @@ public class DatabaseInitializer {
                     name TEXT NOT NULL,
                     content TEXT NOT NULL,
                     isLocked BOOLEAN DEFAULT false,
+                    password TEXT,
                     sharedBy TEXT,
                     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -123,6 +124,7 @@ public class DatabaseInitializer {
                 content,
                 name,
                 isLocked,
+                password,
                 sharedBy,
                 updatedAt,
                 createdAt
@@ -138,6 +140,7 @@ public class DatabaseInitializer {
                 content,
                 name,
                 isLocked,
+                password,
                 sharedBy,
                 updatedAt,
                 createdAt
@@ -153,6 +156,7 @@ public class DatabaseInitializer {
                 content,
                 name,
                 isLocked,
+                password,
                 sharedBy,
                 updatedAt,
                 createdAt
