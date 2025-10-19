@@ -14,6 +14,7 @@ import com.doruk.dnotes.MarkdownEditor.lists.ListManager;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 import com.doruk.dnotes.store.GlobalConstants;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -205,6 +206,6 @@ public class MarkdownEditor implements IMarkdownEditor {
 
         // since, cursor goes to the end, remove the focus, let user click and replace the cursor
         // take away the focus
-        this.editorView.getView().requestFocus();
+        Platform.runLater(() -> this.editorView.getCloseButton().requestFocus());
     }
 }
