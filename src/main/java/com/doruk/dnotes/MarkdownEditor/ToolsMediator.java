@@ -17,8 +17,10 @@ public class ToolsMediator {
     }
 
     public static void publish(ToolsEvent event, Object... args) {
-        // CompletableFuture.runAsync(() -> 
-        //     handlers.get(event).forEach(handler -> handler.run()));
         handlers.get(event).forEach(handler -> handler.accept(args));
+    }
+
+    public static void cleanup() {
+        handlers.clear();
     }
 }

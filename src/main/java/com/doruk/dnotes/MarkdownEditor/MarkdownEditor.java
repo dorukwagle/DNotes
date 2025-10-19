@@ -162,11 +162,7 @@ public class MarkdownEditor implements IMarkdownEditor {
     @Override
     public void setOnClose(Runnable onClose) {
         this.editorView.getCloseButton()
-                .setOnAction(_ -> {
-                    // cleanup the editor
-                    this.close();
-                    onClose.run();
-                });
+                .setOnAction(_ -> onClose.run());
     }
 
     @Override
@@ -180,6 +176,9 @@ public class MarkdownEditor implements IMarkdownEditor {
 
         // clean up list manager
         ListManager.getInstance().cleanup();
+
+        // also cleanup tools mediator
+        ToolsMediator.cleanup();
 
         // cleanup the factory
         Factory.cleanup();
