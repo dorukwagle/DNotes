@@ -3,6 +3,7 @@ package com.doruk.dnotes.views;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.doruk.dnotes.views.components.BackButton;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.dto.BookPageDto;
@@ -82,22 +83,13 @@ public class BookPage implements IBookView {
         VBox.setVgrow(editorContainer, Priority.ALWAYS);
 
         // Create and style back button
-        backButton = new Button();
-        FontIcon backIcon = new FontIcon(MaterialDesignB.BACKSPACE);
-        backIcon.setIconSize(20);
-        backIcon.setScaleX(1.3);
-        backIcon.setScaleY(1.3);
-        backButton.setGraphic(backIcon);
+        backButton = new BackButton();
         backButton.setMinWidth(50);
-        backButton.setStyle(backButton.getStyle() + "-fx-cursor: hand;");
-        backButton.getStyleClass().addAll(Styles.DANGER, Styles.BUTTON_ICON);
-        backButton.setTooltip(new Tooltip("Go back"));
         
         // Add button to top right
         topBar.setRight(backButton);
         BorderPane.setAlignment(backButton, Pos.CENTER_RIGHT);
         BorderPane.setMargin(backButton, new Insets(0, 0, 0, 10));
-
     }
 
     @Override
