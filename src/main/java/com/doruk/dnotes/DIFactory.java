@@ -16,6 +16,7 @@ import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.models.BookModel;
 import com.doruk.dnotes.models.BookPagesModel;
 import com.doruk.dnotes.models.CollectionModel;
+import com.doruk.dnotes.models.ManagementModel;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
 import com.doruk.dnotes.utils.EventManager;
@@ -104,5 +105,9 @@ public class DIFactory {
 
     public static IQuickNoteController createQuickNoteController(INavigationController nav) {
         return new QuickNoteController(nav);
+    }
+
+    public static IManagementModel createManagementModel() {
+        return new ManagementModel();
     }
 }
