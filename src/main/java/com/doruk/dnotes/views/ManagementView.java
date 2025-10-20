@@ -1,6 +1,7 @@
 package com.doruk.dnotes.views;
 
 import atlantafx.base.theme.Styles;
+import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.interfaces.IView;
 import com.doruk.dnotes.views.components.BackButton;
 import com.doruk.dnotes.views.components.BrowserTable;
@@ -18,7 +19,6 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 public class ManagementView implements IView {
     private VBox view;
     private Button closeButton;
-    private CheckBox selectionModeToggle;
     private BrowserTable source;
     private BrowserTable destination;
     private Button moveButton;
@@ -65,12 +65,12 @@ public class ManagementView implements IView {
         BorderPane.setMargin(closeButton, new Insets(0, 0, 0, 10));
 
         // selection mode toggle checkbox
-        selectionModeToggle = new CheckBox("Enable Selection Mode");
-        selectionModeToggle.setSelected(false);
-        selectionModeToggle.setMinWidth(250);
-        selectionModeToggle.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
-        selectionModeToggle.setPadding(new Insets(0, 0, 0, 50));
-        this.view.getChildren().add(selectionModeToggle);
+        var selectionInfo = new Label("Double Click an item to open it!");
+        selectionInfo.setWrapText(true);
+        selectionInfo.setStyle("-fx-font-size: 22px;");
+        selectionInfo.getStyleClass().addAll(Styles.TEXT_SUBTLE);
+        selectionInfo.setPadding(new Insets(10, 0, 0, 30));
+        this.view.getChildren().add(selectionInfo);
 
         // main container
         var mainContainer = new BorderPane();
@@ -81,7 +81,7 @@ public class ManagementView implements IView {
         var sourceContainer = new VBox(10);
         mainContainer.setLeft(sourceContainer);
 
-        source = new BrowserTable();
+        source = new BrowserTable(true);
         source.setMinWidth(400);
 
         sourceBack = new Button();
@@ -141,8 +141,7 @@ public class ManagementView implements IView {
         moveInfo.setStyle("-fx-font-size: 16px;");
         infoContainer.getChildren().add(moveInfo);
 
-        Label moveInfo2 = new Label("Note: Collections cant be moved. Can only move Notes to Books, Books to Collections.");
-        moveInfo2.getStyleClass().add("info-label");
+        Label moveInfo2 = new Label("Allowed Move: Books to Collection. OR, Notes to Book.");
         // set word wrap
         moveInfo2.setWrapText(true);
         moveInfo2.setStyle("-fx-font-size: 16px;");
@@ -166,7 +165,7 @@ public class ManagementView implements IView {
         var destinationContainer = new VBox(10);
         mainContainer.setRight(destinationContainer);
 
-        destination = new BrowserTable();
+        destination = new BrowserTable(false);
         destination.setMinWidth(400);
 
         destinationBack = new Button();
@@ -202,10 +201,6 @@ public class ManagementView implements IView {
         return closeButton;
     }
 
-    public CheckBox getSelectionModeToggle() {
-        return selectionModeToggle;
-    }
-
     public Button getSourceBackButton() {
         return sourceBack;
     }
@@ -216,6 +211,11 @@ public class ManagementView implements IView {
 
     public ComboBox<String> getFilterComboBox() {
         return filterComboBox;
+    }
+
+    public void displayError(String msg) {
+        var model = DIFactory.createConfirmationModal("Invalid Action", msg);
+        model.showAndWait();
     }
 
     @Override

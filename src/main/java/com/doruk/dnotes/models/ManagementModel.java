@@ -7,7 +7,6 @@ import com.doruk.dnotes.exceptions.DataAccessException;
 import com.doruk.dnotes.interfaces.IManagementModel;
 import com.doruk.dnotes.utils.DatabaseConnector;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -43,7 +42,7 @@ public class ManagementModel implements IManagementModel {
     @Override
     public List<BrowserDto> getBooks(BrowserDto collection) throws DataAccessException {
         var books = new LinkedList<BrowserDto>();
-        try (var stmt = connection.prepareStatement("select id, title from books where deleted is null and collectionId = ?;")) {
+        try (var stmt = connection.prepareStatement("select id, title from books where deletedAt is null and collectionId = ?;")) {
             stmt.setString(1, collection.getId());
             try (var rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -106,11 +105,9 @@ public class ManagementModel implements IManagementModel {
 
     @Override
     public void moveNotesToBook(List<BrowserDto> notes, BrowserDto book) throws DataAccessException {
-        var noteIds = notes.stream().map(BrowserDto::getId).toArray();
-        try (var stmt = connection.prepareStatement("update bookPage set bookId = ? where id in ?;")) {
-            var sqlArray = connection.createArrayOf("INTEGER", noteIds);
+        var noteIds = notes.stream().map(BrowserDto::getId).collect(Collectors.joining(","));
+        try (var stmt = connection.prepareStatement("update bookPages set bookId = ?, noteType = 'NORMAL' where id in (" + noteIds + ");")) {
             stmt.setString(1, book.getId());
-            stmt.setArray(2, sqlArray);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to move notes to the given book", e);
@@ -119,11 +116,9 @@ public class ManagementModel implements IManagementModel {
 
     @Override
     public void moveBooksToCollection(List<BrowserDto> books, BrowserDto collection) throws DataAccessException {
-        var bookIds = books.stream().map(BrowserDto::getId).toArray();
-        try (var stmt = connection.prepareStatement("update books set collectionId = ? where id in ?;")) {
-            var sqlArray = connection.createArrayOf("INTEGER", bookIds);
+        var bookIds = books.stream().map(BrowserDto::getId).collect(Collectors.joining(","));
+        try (var stmt = connection.prepareStatement("update books set collectionId = ? where id in (" + bookIds + ");")) {
             stmt.setString(1, collection.getId());
-            stmt.setArray(2, sqlArray);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to move books to the given collection", e);

@@ -14,11 +14,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class BrowserTable extends TableView<BrowserDto> {
-    private Consumer<BrowserDto> onDtoClick;
+    private Consumer<BrowserDto> onItemDoubleClick;
+    private ObservableList<BrowserDto> items = FXCollections.observableArrayList();
 
-    public BrowserTable() {
+    public BrowserTable(boolean multiSelections) {
         this.setEditable(false);
-        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // Allow multiple selections
+        this.getSelectionModel().setSelectionMode(multiSelections ? SelectionMode.MULTIPLE : SelectionMode.SINGLE); // Allow multiple selections
 
         // Column for 'name'
         TableColumn<BrowserDto, String> nameColumn = new TableColumn<>("Name");
@@ -42,12 +43,13 @@ public class BrowserTable extends TableView<BrowserDto> {
         // Optional: Make columns resizeable
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
+        this.setItems(this.items);
 
         this.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
                 BrowserDto selectedDto = this.getSelectionModel().getSelectedItem();
-                if (selectedDto != null && onDtoClick != null) {
-                    onDtoClick.accept(selectedDto);
+                if (selectedDto != null && onItemDoubleClick != null) {
+                    onItemDoubleClick.accept(selectedDto);
                 }
             }
         });
@@ -58,24 +60,23 @@ public class BrowserTable extends TableView<BrowserDto> {
      * @param dtoList The list of DTOs to display.
      */
     public void updateContents(List<BrowserDto> dtoList) {
-        ObservableList<BrowserDto> observableList = FXCollections.observableArrayList(dtoList);
-        this.setItems(observableList);
-    }
-
-    /**
-     * Returns the currently selected BrowserDto.
-     * @return The selected BrowserDto, or null if nothing is selected.
-     */
-    public BrowserDto getSelectedBrowserDto() {
-        return this.getSelectionModel().getSelectedItem();
+        if (dtoList.isEmpty()) {
+            this.items.clear();
+            return;
+        }
+        this.items.setAll(dtoList);
     }
 
     /**
      * Returns a list of all currently selected BrowserDto items.
      * @return An ObservableList of selected BrowserDto items.
      */
-    public ObservableList<BrowserDto> getSelectedBrowserDtos() {
+    public ObservableList<BrowserDto> getSelectedItems() {
         return this.getSelectionModel().getSelectedItems();
+    }
+
+    public BrowserDto getSelectedItem() {
+        return this.getSelectionModel().getSelectedItem();
     }
 
     /**
@@ -83,7 +84,7 @@ public class BrowserTable extends TableView<BrowserDto> {
      * This is intended for navigating into folders.
      * @param handler A Consumer that accepts the double-clicked BrowserDto.
      */
-    public void setOnDtoClick(Consumer<BrowserDto> handler) {
-        this.onDtoClick = handler;
+    public void setOnItemDoubleClick(Consumer<BrowserDto> handler) {
+        this.onItemDoubleClick = handler;
     }
 }
