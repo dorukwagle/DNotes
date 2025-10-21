@@ -66,7 +66,9 @@ public class TrashModel implements ITrashModel {
     private void deleteContentFile(String fileId) throws DataAccessException {
         var fullPath = PathUtils.getNoteFilename(fileId);
         try {
-            Files.delete(Path.of(fullPath));
+            var path = Path.of(fullPath);
+            if (Files.exists(path))
+                Files.delete(path);
         } catch (IOException e) {
             throw new DataAccessException("Failed to delete content file", e);
         }
