@@ -34,14 +34,11 @@ public abstract class NoteModel implements IModel<BookPageDto> {
 
     @Override
     public BookPageDto add(BookPageDto bookPage) {
-        // generate random content reference
-        var content = UUID.randomUUID().toString();
-
         var query = "INSERT INTO bookPages (name, bookId, content, noteType, sharedBy) VALUES (?, ?, ?, ?, ?) RETURNING id, updatedAt";
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, bookPage.getName());
             stmt.setString(2, bookPage.getBookId());
-            stmt.setString(3, content);
+            stmt.setString(3, bookPage.getContentId());
             stmt.setString(4, this.getNoteType().name());
             stmt.setString(5, bookPage.getSharedBy()); // can be null
 
@@ -54,7 +51,7 @@ public abstract class NoteModel implements IModel<BookPageDto> {
                         String.valueOf(rs.getInt("id")),
                         bookPage.getBookId(),
                         bookPage.getName(),
-                        content,
+                        bookPage.getContentId(),
                         rs.getDate("updatedAt").toString()
                 );
             }
