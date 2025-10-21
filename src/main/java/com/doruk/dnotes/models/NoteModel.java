@@ -85,19 +85,6 @@ public abstract class NoteModel implements IModel<BookPageDto> {
     }
 
     @Override
-    public void delete(String id) {
-        try {
-            var stmt = connection.prepareStatement("DELETE FROM bookPages WHERE id = ?");
-            stmt.setString(1, id);
-            stmt.executeUpdate();
-
-            stmt.close();
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to delete note", e);
-        }
-    }
-
-    @Override
     public void softDelete(String id) {
         try {
             var stmt = connection.prepareStatement("UPDATE bookPages SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
@@ -160,72 +147,6 @@ public abstract class NoteModel implements IModel<BookPageDto> {
             return bookPages;
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get all book pages from database", e);
-        }
-    }
-
-    @Override
-    public List<BookPageDto> getAllDeleted(PaginationParams paginationParams) {
-        try {
-            var stmt = new PaginateQuery("bookPages", paginationParams)
-                    .where("deletedAt IS NOT NULL")
-                    .select("id, bookId, name, content, updatedAt")
-                    .searchBy("name")
-                    .sortBy("name")
-                    .prepareStatement();
-
-            var rs = stmt.executeQuery();
-
-            // add to list
-            List<BookPageDto> bookPages = new ArrayList<>();
-            while (rs.next()) {
-                bookPages.add(new BookPageDto(
-                        String.valueOf(rs.getInt("id")),
-                        rs.getString("bookId"),
-                        rs.getString("name"),
-                        rs.getString("content"),
-                        rs.getDate("updatedAt").toString()
-                ));
-            }
-
-            stmt.close();
-            return bookPages;
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to get all deleted book pages from database", e);
-        }
-    }
-
-    @Override
-    public BookPageDto restore(String id) {
-        try {
-            var stmt = connection.prepareStatement("UPDATE bookPages SET deletedAt = NULL WHERE id = ? RETURNING name, bookId, content, updatedAt");
-            stmt.setString(1, id);
-            try (var rs = stmt.executeQuery()) {
-                // since only one row returned
-                rs.next();
-
-                // also restore parent book and collection
-                var bookStmt = connection.prepareStatement("UPDATE books SET deletedAt = NULL WHERE id = ? RETURNING collectionId");
-                bookStmt.setString(1, rs.getString("bookId"));
-                try (var bookStmtResult = bookStmt.executeQuery()) {
-                    // since only one row returned
-                    bookStmtResult.next();
-
-                    var collectionStmt = connection.prepareStatement("UPDATE collections SET deletedAt = NULL WHERE id = ?");
-                    collectionStmt.setString(1, bookStmtResult.getString("collectionId"));
-                    collectionStmt.executeUpdate();
-
-                    collectionStmt.close();
-                }
-
-                return new BookPageDto(
-                        id,
-                        rs.getString("name"),
-                        rs.getString("bookId"),
-                        rs.getString("content"),
-                        rs.getDate("updatedAt").toString());
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to restore note", e);
         }
     }
 }

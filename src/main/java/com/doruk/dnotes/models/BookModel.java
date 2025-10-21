@@ -67,31 +67,18 @@ public class BookModel implements IModel<BookDto> {
     }
 
     @Override
-    public void delete(String id) {
-        try {
-            // also delete the child tables data i.e. bookPages
-            var bookPages = connection.prepareStatement("DELETE FROM bookPages WHERE bookId = ?");
-            bookPages.setString(1, id);
-            bookPages.executeUpdate();
-
-            var stmt = connection.prepareStatement("DELETE FROM books WHERE id = ?");
-            stmt.setString(1, id);
-            stmt.executeUpdate();
-
-            bookPages.close();
-            stmt.close();
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to delete book", e);
-        }
-    }
-
-    @Override
     public void softDelete(String id) {
         try {
             var stmt = connection.prepareStatement("UPDATE books SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
             stmt.setString(1, id);
             stmt.executeUpdate();
 
+            // also delete the child tables data i.e. bookPages
+            var bookPages = connection.prepareStatement("update bookPages set deletedAt = CURRENT_TIMESTAMP WHERE bookId = ?");
+            bookPages.setString(1, id);
+            bookPages.executeUpdate();
+
+            bookPages.close();
             stmt.close();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to delete book", e);
@@ -129,64 +116,6 @@ public class BookModel implements IModel<BookDto> {
             throw new DataAccessException("Failed to get all books from database", e);
         }
     }
-
-    @Override
-    public List<BookDto> getAllDeleted(PaginationParams paginationParams) {
-        try {
-            var stmt = new PaginateQuery("books", paginationParams)
-                .where("deletedAt IS NOT NULL")
-                .select("id, collectionId, title, updatedAt")
-                .searchBy("title")
-                .sortBy("title")
-                .prepareStatement();
-
-            var rs = stmt.executeQuery();
-
-            // add to list
-            List<BookDto> books = new ArrayList<>();
-            while (rs.next()) {
-                books.add(new BookDto(
-                    String.valueOf(rs.getInt("id")),
-                    rs.getString("collectionId"),
-                    rs.getString("title"),
-                    rs.getDate("updatedAt").toString()
-                ));
-            }
-
-            stmt.close();
-            return books;
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to get all deleted books from database", e);
-        }
-    }
-
-    @Override
-    public BookDto restore(String id) {
-        try {
-            var stmt = connection.prepareStatement("UPDATE books SET deletedAt = NULL WHERE id = ? RETURNING collectionId, title, updatedAt");
-            stmt.setString(1, id);
-
-            
-            try (var rs = stmt.executeQuery()) {
-                // since only one row returned
-                rs.next();
-                
-                // also restore parent collection
-                var collectionStmt = connection.prepareStatement("UPDATE collections SET deletedAt = NULL WHERE id = ?");
-                collectionStmt.setString(1, rs.getString("collectionId"));
-                collectionStmt.executeUpdate();
-                
-                return new BookDto(
-                    id,
-                    rs.getString("collectionId"),
-                    rs.getString("title"),
-                    rs.getDate("updatedAt").toString()
-                );
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to restore book", e);
-        }
-    } 
 
     @Override
     public IModel<BookDto> ofParentId(String parentId) {
