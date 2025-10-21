@@ -13,10 +13,7 @@ import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.interfaces.*;
-import com.doruk.dnotes.models.BookModel;
-import com.doruk.dnotes.models.BookPagesModel;
-import com.doruk.dnotes.models.CollectionModel;
-import com.doruk.dnotes.models.ManagementModel;
+import com.doruk.dnotes.models.*;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
 import com.doruk.dnotes.utils.EventManager;
@@ -109,5 +106,9 @@ public class DIFactory {
 
     public static IManagementModel createManagementModel() {
         return new ManagementModel();
+    }
+
+    public static ITrashModel createTrashModel() {
+        return new TrashModel();
     }
 }

@@ -82,6 +82,7 @@ public class ManagementView implements IView {
         mainContainer.setLeft(sourceContainer);
 
         source = new BrowserTable(true);
+        source.setMinHeight(550);
         source.setMinWidth(400);
 
         sourceBack = new Button();
@@ -166,6 +167,7 @@ public class ManagementView implements IView {
         mainContainer.setRight(destinationContainer);
 
         destination = new BrowserTable(false);
+        destination.setMinHeight(550);
         destination.setMinWidth(400);
 
         destinationBack = new Button();
