@@ -230,7 +230,7 @@ public class HomePageController implements IController {
 
     private void openCollection(CollectionDto collectionDto) {
         // if collection is empty, just return
-        if (this.collections.isEmpty())
+        if (this.collections.isEmpty() || collectionDto == null)
             return;
 
         var col = this.collections.stream()
