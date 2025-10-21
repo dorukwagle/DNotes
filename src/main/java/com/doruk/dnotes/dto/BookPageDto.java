@@ -69,4 +69,9 @@ public class BookPageDto implements ISidebarItem {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public Type getType() {
+        return this.isLocked ? Type.LOCKED_NOTE : Type.NOTE;
+    }
 }

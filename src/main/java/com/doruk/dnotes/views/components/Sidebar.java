@@ -2,6 +2,7 @@ package com.doruk.dnotes.views.components;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,10 +21,7 @@ import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.ISidebarItem;
 
 import atlantafx.base.theme.Styles;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
+import org.kordamp.ikonli.materialdesign2.*;
 
 public class Sidebar <T extends ISidebarItem> {
     private final VBox root;
@@ -121,6 +119,16 @@ public class Sidebar <T extends ISidebarItem> {
         return container;
     }
 
+    private FontIcon createGraphic(ISidebarItem.Type type) {
+        return switch (type) {
+            case COLLECTION -> new FontIcon(MaterialDesignB.BOOKSHELF);
+
+            case NOTE -> new FontIcon(MaterialDesignB.BOOK_OPEN_PAGE_VARIANT);
+
+            case LOCKED_NOTE -> new FontIcon(MaterialDesignL.LOCK);
+        };
+    }
+
     private ListView<T> createListView() {
         listView = new ListView<>();
 
@@ -133,7 +141,7 @@ public class Sidebar <T extends ISidebarItem> {
         listView.setItems(items);
         listView.setCellFactory(_ -> new ListCell<>() {
             {
-                addEventFilter(MouseEvent.ANY, e -> e.consume());
+                addEventFilter(MouseEvent.ANY, Event::consume);
                 addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
                     event.consume();
 
@@ -170,6 +178,11 @@ public class Sidebar <T extends ISidebarItem> {
                     return;
                 }
                 setText(item.getName());
+
+                setGraphic(createGraphic(item.getType()));
+                setGraphicTextGap(15);
+                setContentDisplay(ContentDisplay.LEFT);
+
                 setPadding(new Insets(10));
                 setStyle("-fx-background-radius: 4; -fx-font-size: 16px; -fx-cursor: hand;");
                 setOnMouseEntered(_ -> {
