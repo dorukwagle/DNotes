@@ -100,6 +100,14 @@ public class DIFactory {
         return new NoteWriter(editor);
     }
 
+    public static IReader createNoteReader(IMarkdownEditor editor, String password) {
+        return new NoteReader(editor, password);
+    }
+
+    public static IWriter createNoteWriter(IMarkdownEditor editor, String password) {
+        return new NoteWriter(editor, password);
+    }
+
     public static GenericModal createGenericModal(Parent scene, boolean autoClose, int width, int height) {
         return new GenericModal(scene, autoClose, width, height);
     }

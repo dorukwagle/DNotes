@@ -13,6 +13,8 @@ import com.doruk.dnotes.store.GlobalConstants;
 import javafx.scene.Parent;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,7 @@ public class EditorController implements IEditorController {
     private final IPreference preference;
     private String currentFileId;
     private ScheduledExecutorService scheduler;
+    private boolean isNotesLoaded;
 
     private static Runnable onShutdown;
 
@@ -83,6 +86,10 @@ public class EditorController implements IEditorController {
     }
 
     private void saveEditorDocument() {
+        // loading new note takes some time, don't save before document is fully loaded.
+        if (!isNotesLoaded)
+            return;
+
         try {
             DIFactory.createNoteWriter(markdownEditor)
                     .write(this.currentFileId);
@@ -100,7 +107,9 @@ public class EditorController implements IEditorController {
         try {
             DIFactory.createNoteReader(markdownEditor)
                     .read(fileId);
+            this.isNotesLoaded = true; // notes loaded completely
         } catch (IOException | ProcessingStageException e) {
+            this.isNotesLoaded = false;
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to load input file" : e.getMessage(), e);
         }
