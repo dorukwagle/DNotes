@@ -17,9 +17,18 @@ import java.util.zip.GZIPOutputStream;
 
 public class NoteWriter implements IWriter {
     private final IMarkdownEditor editor;
+    private final String password;
+    private boolean encrypt = false;
 
     public NoteWriter(IMarkdownEditor editor) {
         this.editor = editor;
+        this.password = null;
+    }
+
+    public NoteWriter(IMarkdownEditor editor, String password) {
+        this.editor = editor;
+        this.password = password;
+        this.encrypt = true;
     }
 
     @Override
@@ -40,10 +49,13 @@ public class NoteWriter implements IWriter {
         // create meta writer
         var metaWriter = new MetaWriter(fileOut);
         // write default metadata
-        metaWriter.writeDefaultsMeta(new Date(), seed);
+        metaWriter.writeDefaultsMeta(new Date(), seed, encrypt);
         metaWriter.commit();
 
         // create a pipeline of streams for processing the data
+        if (encrypt) // apply the encryption
+            fileOut = DIFactory.createCryptoOutputStream(fileOut, password);
+
         var stream = new BufferedOutputStream(
                 new GZIPOutputStream(
                         new ObfuscatorOutputStream(

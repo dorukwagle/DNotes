@@ -29,8 +29,9 @@ module com.doruk.dnotes {
     exports com.doruk.dnotes.store;
     exports com.doruk.dnotes.prefs;
     exports com.doruk.dnotes.exceptions;
+    exports com.doruk.dnotes.dataUtils;
+    exports com.doruk.dnotes.dataUtils.crypto;
 
-    
     exports com.doruk.dnotes.MarkdownEditor.interfaces;
     exports com.doruk.dnotes.MarkdownEditor.enums;
     exports com.doruk.dnotes.MarkdownEditor.docstyle;

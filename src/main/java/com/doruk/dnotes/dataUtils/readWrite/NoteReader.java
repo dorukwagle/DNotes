@@ -18,18 +18,30 @@ import java.util.zip.GZIPInputStream;
 
 public class NoteReader implements IReader {
     private final IMarkdownEditor editor;
+    private final String password;
+    private boolean encrypted = false;
 
     public NoteReader(IMarkdownEditor editor) {
         this.editor = editor;
+        this.password = null;
+    }
+
+    public NoteReader(IMarkdownEditor editor, String password) {
+        this.editor = editor;
+        this.password = password;
+        this.encrypted = true;
     }
 
     private void validateMeta(MetaReader metaReader) throws ProcessingStageException {
         if (metaReader.getFileType() != Markers.FileType.NORMAL)
             throw new ProcessingStageException("Invalid file type");
 
-        if (metaReader.isDocEncrypted() &&
-                metaReader.getObfuscationSeed().length != GlobalConstants.OBFUSCATION_SEED_LENGTH)
+        if (metaReader.getObfuscationSeed().length != GlobalConstants.OBFUSCATION_SEED_LENGTH)
             throw new ProcessingStageException("Invalid File transformation or obfuscation seed");
+
+        // when file is encrypted, but no encryption password is given
+        if (metaReader.isDocEncrypted() && !encrypted)
+            throw new ProcessingStageException("File is encrypted, but no encryption password is given");
     }
 
     @Override
@@ -57,7 +69,10 @@ public class NoteReader implements IReader {
         // get the obfuscation seed
         var seed = metaReader.getObfuscationSeed();
 
-        // create file input stream
+        // create file input stream pipeline
+        if (metaReader.isDocEncrypted()) // if file is encrypted, apply decryptor
+            fileIn = DIFactory.createCryptoInputStream(fileIn, password);
+
         var stream = new BufferedInputStream(
                 new GZIPInputStream(new ObfuscatorInputStream(
                         fileIn, seed)));

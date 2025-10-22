@@ -58,8 +58,8 @@ public class MetaWriter {
     }
 
     // default metadata, while saving a note
-    public void writeDefaultsMeta(Date createdAt, byte[] obfuscationSeed) {
-        this.writeMeta(Markers.FileType.NORMAL, createdAt, Markers.Transforms.OBFUSCATED, obfuscationSeed);
+    public void writeDefaultsMeta(Date createdAt, byte[] obfuscationSeed, boolean isEncrypted) {
+        this.writeMeta(Markers.FileType.NORMAL, createdAt, isEncrypted ? Markers.Transforms.ENCRYPTED : Markers.Transforms.OBFUSCATED, obfuscationSeed);
     }
 
     // metadata for backup files

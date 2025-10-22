@@ -14,7 +14,7 @@ public class ObfuscatorInputStream extends FilterInputStream {
     private final RandomGenerator prng;
     private final byte[] ksBuf;
 
-    private static final int DEFAULT_BUF = 4 * 1024; // chunk 8 kb
+    private static final int DEFAULT_BUF = 4 * 1024; // chunk 4 kb
     private int cursor = 0;
 
     public ObfuscatorInputStream(InputStream in, byte[] seed) {

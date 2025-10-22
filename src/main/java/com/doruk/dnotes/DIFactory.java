@@ -3,6 +3,8 @@ package com.doruk.dnotes;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.controllers.QuickNoteController;
 import com.doruk.dnotes.controllers.SharedNoteController;
+import com.doruk.dnotes.dataUtils.crypto.CryptoInputStream;
+import com.doruk.dnotes.dataUtils.crypto.CryptoOutputStream;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownDecoder;
@@ -24,8 +26,10 @@ import com.doruk.dnotes.views.components.OptionsModal;
 import com.doruk.dnotes.views.components.PromptModal;
 import javafx.scene.Parent;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class DIFactory {
     public static IPreference createGlobalPreference() {
@@ -78,6 +82,14 @@ public class DIFactory {
 
     public static OutputStream createObfuscator(OutputStream out, byte[] seed) {
         return new ObfuscatorOutputStream(out, seed);
+    }
+
+    public static CryptoInputStream createCryptoInputStream(InputStream in, String password) throws IOException {
+        return new CryptoInputStream(in, password);
+    }
+
+    public static CryptoOutputStream createCryptoOutputStream(OutputStream out, String password) throws IOException {
+        return new CryptoOutputStream(out, password);
     }
 
     public static IReader createNoteReader(IMarkdownEditor editor) {
