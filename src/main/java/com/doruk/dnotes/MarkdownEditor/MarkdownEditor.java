@@ -21,7 +21,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -206,5 +205,10 @@ public class MarkdownEditor implements IMarkdownEditor {
         // since, cursor goes to the end, remove the focus, let user click and replace the cursor
         // take away the focus
         Platform.runLater(() -> this.editorView.getCloseButton().requestFocus());
+    }
+
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.editorView.getEditor().getArea().setDisable(disabled);
     }
 }

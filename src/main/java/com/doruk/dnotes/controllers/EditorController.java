@@ -3,32 +3,33 @@ package com.doruk.dnotes.controllers;
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.enums.EditorColor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
+import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.IEditorController;
+import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.GlobalConstants;
+import com.doruk.dnotes.utils.HashUtil;
+import com.doruk.dnotes.utils.PasswordStore;
 import javafx.scene.Parent;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 
 public class EditorController implements IEditorController {
 
     private IMarkdownEditor markdownEditor;
     private final INavigationController navigationController;
     private final IPreference preference;
-    private String currentFileId;
-    private ScheduledExecutorService scheduler;
+    private BookPageDto currentNote;
+    private final ScheduledExecutorService scheduler;
     private boolean isNotesLoaded;
+    private String password;
 
     private static Runnable onShutdown;
 
@@ -91,8 +92,11 @@ public class EditorController implements IEditorController {
             return;
 
         try {
-            DIFactory.createNoteWriter(markdownEditor)
-                    .write(this.currentFileId);
+            var writer = this.currentNote.getIsLocked() ?
+                    DIFactory.createNoteWriter(markdownEditor, this.password) :
+                    DIFactory.createNoteWriter(markdownEditor);
+
+            writer.write(this.currentNote.getContentId());
         } catch (IOException | ProcessingStageException e) {
             throw new ProcessingStageException(
                     e instanceof IOException ? "Failed to create output file" : e.getMessage(), e);
@@ -100,18 +104,63 @@ public class EditorController implements IEditorController {
     }
 
     @Override
-    public void loadEditorDocument(String fileId) {
-        if (fileId == null)
+    public void loadEditorDocument(BookPageDto note) {
+        if (note == null || note.getContentId() == null)
             throw new IllegalArgumentException("Expected fileId: null received...");
-        this.currentFileId = fileId;
+
+        this.currentNote = note;
+        // if note is encrypted
+        if (note.getIsLocked()) {
+            this.password = this.promptPassword();
+            if (this.password == null) {
+                this.disableEditing();
+                return;
+            }
+        }
+
         try {
-            DIFactory.createNoteReader(markdownEditor)
-                    .read(fileId);
+            var reader = note.getIsLocked() ?
+                    DIFactory.createNoteReader(markdownEditor, this.password) :
+                    DIFactory.createNoteReader(markdownEditor);
+
+           reader.read(note.getContentId());
             this.isNotesLoaded = true; // notes loaded completely
         } catch (IOException | ProcessingStageException e) {
-            this.isNotesLoaded = false;
-            throw new ProcessingStageException(
-                    e instanceof IOException ? "Failed to load input file" : e.getMessage(), e);
+            this.disableEditing();
+            throw new ProcessingStageException(e.getMessage(), e);
         }
+    }
+
+    private void disableEditing() {
+        this.markdownEditor.setDisabled(true);
+        this.isNotesLoaded = false;
+    }
+
+    private String promptPassword() {
+        var fileId = this.currentNote.getContentId();
+        final String[] userInput = {null};
+        // check the store, if not found, then prompt,
+        if (PasswordStore.contains(fileId))
+            return PasswordStore.getPassword(fileId);
+
+        // if prompt: then match the entered password with that of the note password hash
+        var model = DIFactory.createPasswordPrompt("Password Protected!");
+        model.setOnSubmitAction(() -> {
+            var password = model.getPassword();
+            var remember = model.isRememberPassword();
+            if (password == null || password.isEmpty())
+                return;
+            // verify password
+            if (!HashUtil.compareHash(password, this.currentNote.getPassword()))
+                return;
+
+            // password is correct
+            userInput[0] = password;
+            if (remember)
+                PasswordStore.addPassword(fileId, password);
+        });
+        model.showAndWait();
+
+        return userInput[0];
     }
 }

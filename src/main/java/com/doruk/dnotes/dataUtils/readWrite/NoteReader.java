@@ -75,7 +75,8 @@ public class NoteReader implements IReader {
 
         var stream = new BufferedInputStream(
                 new GZIPInputStream(new ObfuscatorInputStream(
-                        fileIn, seed)));
+                        fileIn, seed))
+        );
 
         // pass the stream to the decoder to decode and load the data
         decoder.decode(stream, editor::decodeAndLoad);

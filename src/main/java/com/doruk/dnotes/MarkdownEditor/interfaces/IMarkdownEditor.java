@@ -18,4 +18,5 @@ public interface IMarkdownEditor {
     void close();
 
     void decodeAndLoad(ParagraphNode node);
+    void setDisabled(boolean disabled);
 }

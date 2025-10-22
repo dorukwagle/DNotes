@@ -14,7 +14,6 @@ public class PromptModal implements IPromptModal {
         dialog.setTitle(title);
         dialog.setHeaderText(message);
         dialog.setContentText(field);
-
     }
 
     @Override

@@ -20,10 +20,7 @@ import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
 import com.doruk.dnotes.utils.EventManager;
 import com.doruk.dnotes.views.ContextView;
-import com.doruk.dnotes.views.components.ConfirmationModal;
-import com.doruk.dnotes.views.components.GenericModal;
-import com.doruk.dnotes.views.components.OptionsModal;
-import com.doruk.dnotes.views.components.PromptModal;
+import com.doruk.dnotes.views.components.*;
 import javafx.scene.Parent;
 
 import java.io.IOException;
@@ -130,5 +127,9 @@ public class DIFactory {
 
     public static ITrashModel createTrashModel() {
         return new TrashModel();
+    }
+
+    public static PasswordPrompt createPasswordPrompt(String title) {
+        return new PasswordPrompt(title);
     }
 }

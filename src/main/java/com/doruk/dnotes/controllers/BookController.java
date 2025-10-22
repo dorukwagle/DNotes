@@ -29,6 +29,7 @@ public class BookController implements IController {
     private static boolean isSearchProgress = false;
     private final NoteType noteType;
 
+
     private enum StateAction {
         Create,
         Delete,
@@ -157,7 +158,7 @@ public class BookController implements IController {
         this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR,
                 this.navigationController);
         // load the note into markdown editor
-        this.editorController.loadEditorDocument(note.getContentId());
+        this.editorController.loadEditorDocument(note);
 
         this.view.displayEditor(this.editorController.getView());
 
