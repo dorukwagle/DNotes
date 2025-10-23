@@ -151,9 +151,12 @@ public class EditorController implements IEditorController {
             if (password == null || password.isEmpty())
                 return;
             // verify password
-            if (!HashUtil.compareHash(password, this.currentNote.getPassword()))
+            if (!HashUtil.compareHash(password, this.currentNote.getPassword())) {
+                DIFactory.createConfirmationModal("Incorrect Password",
+                        "Please enter the correct password!")
+                        .showAndWait();
                 return;
-
+            }
             // password is correct
             userInput[0] = password;
             if (remember)

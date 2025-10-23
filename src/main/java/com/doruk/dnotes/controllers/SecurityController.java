@@ -28,8 +28,6 @@ public class SecurityController {
         if (!note.getIsLocked())
             model.enablePasswordConfirmation();
 
-        model.showAndWait();
-
         model.setOnSubmitAction(() -> {
             var password = model.getPassword();
             if (password == null || password.isBlank()) {
@@ -48,6 +46,7 @@ public class SecurityController {
             // if not locked, protect it
             else this.passwordProtectNote(note, password);
         });
+        model.showAndWait();
     }
 
     private void displayWarning(String title, String body) {

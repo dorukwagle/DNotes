@@ -8,6 +8,7 @@ import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.*;
 import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.store.BookStore;
+import com.doruk.dnotes.utils.EventManager;
 import com.doruk.dnotes.utils.PathUtils;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -302,7 +303,15 @@ public class BookController implements IController {
     private void sidebarItemOnRightClick(MouseEvent event, BookPageDto note) {
 
         update.setOnAction(_ -> this.updateOrDelete(note));
-        security.setOnAction(_ -> new SecurityController(note));
+        security.setOnAction(_ -> {
+            // make sure to publish context switch event, to let editor perform cleanup.
+            EventManager.getInstance().publishEvent(IEventManager.InternalEvent.CONTEXT_SWITCH);
+
+            new SecurityController(note);
+
+            // now to remove the editor from scree, refresh the view
+            navigationController.goToBooksPage();
+        });
 //        share.setOnAction(_ -> new ShareController(note));
 
         contextMenu.show(event.getPickResult().getIntersectedNode(), event.getScreenX(), event.getScreenY());

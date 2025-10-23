@@ -171,7 +171,7 @@ public class PasswordPrompt {
         confirmPasswordField.setManaged(true);
         submitButton.setDisable(true);
 
-        confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
+        confirmPasswordField.textProperty().addListener((_, _, newVal) -> {
             var isTextEqual = newVal.equals(passwordField.getText());
             submitButton.setDisable(!isTextEqual);
         });

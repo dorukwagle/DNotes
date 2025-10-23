@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class NoteModel implements IModel<BookPageDto> {
     private String parentId;
@@ -34,7 +33,7 @@ public abstract class NoteModel implements IModel<BookPageDto> {
 
     @Override
     public BookPageDto add(BookPageDto bookPage) {
-        var query = "INSERT INTO bookPages (name, bookId, content, noteType, sharedBy) VALUES (?, ?, ?, ?, ?) RETURNING id, updatedAt";
+        var query = "INSERT INTO bookPages (name, bookId, content, noteType, sharedBy, isLocked, password) VALUES (?, ?, ?, ?, ?) RETURNING id, updatedAt";
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, bookPage.getName());
             stmt.setString(2, bookPage.getBookId());
@@ -47,13 +46,16 @@ public abstract class NoteModel implements IModel<BookPageDto> {
                 // since only one row returned
                 rs.next();
 
-                return new BookPageDto(
+                var note = new BookPageDto(
                         String.valueOf(rs.getInt("id")),
                         bookPage.getBookId(),
                         bookPage.getName(),
                         bookPage.getContentId(),
                         rs.getDate("updatedAt").toString()
                 );
+                note.setIsLocked(rs.getBoolean("isLocked"));
+                note.setPassword(rs.getString("password"));
+                return note;
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create new note", e);
@@ -62,7 +64,7 @@ public abstract class NoteModel implements IModel<BookPageDto> {
 
     @Override
     public BookPageDto update(BookPageDto bookPage) {
-        var query = "UPDATE bookPages SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt";
+        var query = "UPDATE bookPages SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? RETURNING updatedAt, isLocked, password";
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, bookPage.getName());
             stmt.setString(2, bookPage.getId());
@@ -71,13 +73,16 @@ public abstract class NoteModel implements IModel<BookPageDto> {
                 // since only one row returned
                 rs.next();
 
-                return new BookPageDto(
+                var note = new BookPageDto(
                         bookPage.getId(),
                         bookPage.getBookId(),
                         bookPage.getName(),
                         bookPage.getContentId(),
                         rs.getDate("updatedAt").toString()
                 );
+                note.setIsLocked(rs.getBoolean("isLocked"));
+                note.setPassword(rs.getString("password"));
+                return note;
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to update note", e);
@@ -106,13 +111,16 @@ public abstract class NoteModel implements IModel<BookPageDto> {
                 // since only one row returned
                 rs.next();
 
-                return new BookPageDto(
+                var note = new BookPageDto(
                         String.valueOf(rs.getInt("id")),
                         rs.getString("bookId"),
                         rs.getString("name"),
                         rs.getString("content"),
                         rs.getDate("updatedAt").toString()
                 );
+                note.setIsLocked(rs.getBoolean("isLocked"));
+                note.setPassword(rs.getString("password"));
+                return note;
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get note", e);
@@ -124,7 +132,7 @@ public abstract class NoteModel implements IModel<BookPageDto> {
         try {
             var stmt = new PaginateQuery(this.getViewName(), paginationParams)
                     .where(this.parentId != null ? "bookId = " + this.parentId : "")
-                    .select("id, bookId, name, content, updatedAt")
+                    .select("id, bookId, name, content, updatedAt, isLocked, password")
                     .searchBy("name")
                     .sortBy("name")
                     .prepareStatement();
@@ -134,13 +142,16 @@ public abstract class NoteModel implements IModel<BookPageDto> {
             // add to list
             List<BookPageDto> bookPages = new ArrayList<>();
             while (rs.next()) {
-                bookPages.add(new BookPageDto(
+                var note = new BookPageDto(
                         String.valueOf(rs.getInt("id")),
                         rs.getString("bookId"),
                         rs.getString("name"),
                         rs.getString("content"),
                         rs.getDate("updatedAt").toString()
-                ));
+                );
+                note.setIsLocked(rs.getBoolean("isLocked"));
+                note.setPassword(rs.getString("password"));
+                bookPages.add(note);
             }
 
             stmt.close();
