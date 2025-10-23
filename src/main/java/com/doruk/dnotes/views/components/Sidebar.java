@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -30,7 +31,7 @@ public class Sidebar <T extends ISidebarItem> {
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
     private Consumer<T> onSelect;
-    private Consumer<T> onRightClick;
+    private BiConsumer<MouseEvent, T> onRightClick;
     private ListView<T> listView;
 
     public Sidebar() {
@@ -150,7 +151,7 @@ public class Sidebar <T extends ISidebarItem> {
                     switch (btn) {
                         case MouseButton.SECONDARY -> {
                             if (onRightClick != null)
-                                onRightClick.accept(getItem());
+                                onRightClick.accept(event, getItem());
                         }
                         case MouseButton.PRIMARY -> {
                             listView.getSelectionModel().select(this.getIndex());
@@ -209,7 +210,7 @@ public class Sidebar <T extends ISidebarItem> {
         this.onSelect = onSelect;
     }
 
-    public void setOnRightClick(Consumer<T> onRightClick) {
+    public void setOnRightClick(BiConsumer<MouseEvent, T> onRightClick) {
         this.onRightClick = onRightClick;
     }
 

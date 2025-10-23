@@ -124,4 +124,27 @@ public class ManagementModel implements IManagementModel {
             throw new DataAccessException("Failed to move books to the given collection", e);
         }
     }
+
+    @Override
+    public void passwordProtectNote(String noteId, String password) throws DataAccessException {
+        var query = "update bookPages set isLocked = true, password = ? where id = ?;";
+        try (var stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, password);
+            stmt.setString(2, noteId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to password protect note", e);
+        }
+    }
+
+    @Override
+    public void removePasswordProtection(String noteId) throws DataAccessException {
+        var query = "update bookPages set isLocked = false, password = null where id = ?;";
+        try (var stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, noteId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to remove password protection from note", e);
+        }
+    }
 }

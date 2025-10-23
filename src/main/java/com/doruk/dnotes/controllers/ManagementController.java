@@ -1,17 +1,23 @@
 package com.doruk.dnotes.controllers;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.dataUtils.SecurityWriter;
+import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.BrowserDto;
 import com.doruk.dnotes.enums.BrowserElement;
 import com.doruk.dnotes.enums.NoteType;
+import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.IManagementModel;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IView;
+import com.doruk.dnotes.utils.HashUtil;
 import com.doruk.dnotes.views.ManagementView;
 import com.doruk.dnotes.views.components.BrowserTable;
 import javafx.scene.Parent;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignL;
 
+import java.io.IOException;
 import java.util.Stack;
 
 public class ManagementController implements IController {

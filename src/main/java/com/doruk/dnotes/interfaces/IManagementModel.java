@@ -18,4 +18,8 @@ public interface IManagementModel {
     void moveNotesToBook(List<BrowserDto> notes, BrowserDto book) throws DataAccessException;
 
     void moveBooksToCollection(List<BrowserDto> books, BrowserDto collection) throws DataAccessException;
+
+    void passwordProtectNote(String noteId, String password) throws DataAccessException;
+
+    void removePasswordProtection(String noteId) throws DataAccessException;
 }

@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 public class BrowserTable extends TableView<BrowserDto> {
     private Consumer<BrowserDto> onItemDoubleClick;
+    private Consumer<BrowserDto> onItemRightClick;
     private ObservableList<BrowserDto> items = FXCollections.observableArrayList();
 
     public BrowserTable(boolean multiSelections) {
@@ -52,6 +53,13 @@ public class BrowserTable extends TableView<BrowserDto> {
                     onItemDoubleClick.accept(selectedDto);
                 }
             }
+
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                BrowserDto selectedDto = this.getSelectionModel().getSelectedItem();
+                if (selectedDto != null && onItemRightClick != null) {
+                    onItemRightClick.accept(selectedDto);
+                }
+            }
         });
     }
 
@@ -86,5 +94,9 @@ public class BrowserTable extends TableView<BrowserDto> {
      */
     public void setOnItemDoubleClick(Consumer<BrowserDto> handler) {
         this.onItemDoubleClick = handler;
+    }
+
+    public void setOnItemRightClick(Consumer<BrowserDto> handler) {
+        this.onItemRightClick = handler;
     }
 }

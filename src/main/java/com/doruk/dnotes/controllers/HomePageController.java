@@ -21,6 +21,7 @@ import com.doruk.dnotes.interfaces.IModel;
 
 import javafx.application.Platform;
 import javafx.scene.Parent;
+import javafx.scene.input.MouseEvent;
 
 public class HomePageController implements IController {
 
@@ -179,7 +180,7 @@ public class HomePageController implements IController {
         this.addToBookState(book);
     }
 
-    private void handleCollectionRightClick(CollectionDto collectionDto) {
+    private void handleCollectionRightClick(MouseEvent e, CollectionDto collectionDto) {
         var modal = DIFactory.createOptionsModal();
         modal.setInputText(collectionDto.getName());
 

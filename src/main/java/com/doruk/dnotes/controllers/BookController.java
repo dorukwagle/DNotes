@@ -11,6 +11,12 @@ import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.utils.PathUtils;
 import javafx.application.Platform;
 import javafx.scene.Parent;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +35,10 @@ public class BookController implements IController {
     private static boolean isSearchProgress = false;
     private final NoteType noteType;
 
+    private ContextMenu contextMenu;
+    private MenuItem update;
+    private MenuItem security;
+    private MenuItem share;
 
     private enum StateAction {
         Create,
@@ -86,6 +96,9 @@ public class BookController implements IController {
     private void init() {
         this.setupActions();
 
+        // initialize context menu
+        this.initContextMenu();
+
         this.openBook();
 
         // check if last opened note belongs to this book, and also isn't deleted
@@ -105,6 +118,34 @@ public class BookController implements IController {
             Platform.runLater(this::openLastNote);
 
         isStartup = false;
+    }
+
+    private void initContextMenu() {
+        FontIcon icon;
+        contextMenu = new ContextMenu();
+
+        update = new MenuItem("Manage");
+        icon = new FontIcon(MaterialDesignF.FILE_EDIT);
+        icon.setScaleX(1.5);
+        icon.setScaleY(1.5);
+        update.setGraphic(icon);
+
+        security = new MenuItem("Security");
+        icon = new FontIcon(MaterialDesignS.SECURITY);
+        icon.setScaleX(1.5);
+        icon.setScaleY(1.5);
+        security.setGraphic(icon);
+
+        share = new MenuItem("Share");
+        icon = new FontIcon(MaterialDesignS.SHARE_VARIANT);
+        icon.setScaleX(1.5);
+        icon.setScaleY(1.5);
+        share.setGraphic(icon);
+
+        contextMenu.getItems().addAll(update, security, share);
+
+        contextMenu.setHideOnEscape(true);
+        contextMenu.setAutoHide(true); // hide when clicked outside
     }
 
     private void openLastNote() {
@@ -240,7 +281,7 @@ public class BookController implements IController {
         this.updateSidebarState(updatedNote, StateAction.Update);
     }
 
-    private void sidebarItemOnRightClick(BookPageDto note) {        
+    private void updateOrDelete(BookPageDto note) {
         var modal = DIFactory.createOptionsModal();
         modal.setInputText(note.getName());
 
@@ -252,10 +293,19 @@ public class BookController implements IController {
         });
 
         modal.setOnUpdateAction(() ->
-            this.updateNote(note, modal.getInputText())
+                this.updateNote(note, modal.getInputText())
         );
 
         modal.showAndWait();
+    }
+
+    private void sidebarItemOnRightClick(MouseEvent event, BookPageDto note) {
+
+        update.setOnAction(_ -> this.updateOrDelete(note));
+        security.setOnAction(_ -> new SecurityController(note));
+//        share.setOnAction(_ -> new ShareController(note));
+
+        contextMenu.show(event.getPickResult().getIntersectedNode(), event.getScreenX(), event.getScreenY());
     }
 
     @Override
