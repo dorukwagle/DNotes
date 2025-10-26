@@ -70,6 +70,8 @@ public class BookPageDto implements ISidebarItem {
         this.password = password;
     }
 
+
+
     @Override
     public Type getType() {
         return this.isLocked ? Type.LOCKED_NOTE : Type.NOTE;

@@ -21,11 +21,12 @@ public final class Markers {
         public static final byte SHARED_BY_KEY = 35;
         public static final byte CREATED_AT_KEY = 36;
         public static final byte OBFUSCATION_SEED_KEY = 38;
+        public static final byte DOC_INTERNAL_PASSWORD = 39;
     }
 
     public static final byte META_START = 2;
 
-    public static final byte MARKDOWN_START = 3;
+    public static final byte DOC_START = 3;
 
     public static final byte DATABASE_START = 4;
 

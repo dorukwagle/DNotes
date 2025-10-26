@@ -2,14 +2,11 @@ package com.doruk.dnotes.dataUtils.readWrite;
 
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
-import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.dataUtils.MetaWriter;
-import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.interfaces.IWriter;
 import com.doruk.dnotes.utils.KeyUtil;
 import com.doruk.dnotes.utils.PathUtils;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -60,7 +57,7 @@ public class NoteWriter implements IWriter {
 
         var stream = new BufferedOutputStream(
                 new GZIPOutputStream(
-                        new ObfuscatorOutputStream(
+                        DIFactory.createObfuscator(
                                 fileOut,
                                 seed
                         )

@@ -4,7 +4,6 @@ import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaReader;
-import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.IReader;
 import com.doruk.dnotes.store.GlobalConstants;
@@ -74,7 +73,7 @@ public class NoteReader implements IReader {
             fileIn = DIFactory.createCryptoInputStream(fileIn, password);
 
         var stream = new BufferedInputStream(
-                new GZIPInputStream(new ObfuscatorInputStream(
+                new GZIPInputStream(DIFactory.createObfuscator(
                         fileIn, seed))
         );
 
