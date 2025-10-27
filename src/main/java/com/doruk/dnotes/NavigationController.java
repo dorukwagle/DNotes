@@ -108,6 +108,11 @@ public class NavigationController implements INavigationController {
     }
 
     @Override
+    public Stage getStage() {
+        return stage;
+    }
+
+    @Override
     public void updateAppTitle(String title) {
         title = title.isBlank() ? GlobalConstants.APP_NAME : GlobalConstants.APP_NAME + " - " + title;
         this.stage.setTitle(title);

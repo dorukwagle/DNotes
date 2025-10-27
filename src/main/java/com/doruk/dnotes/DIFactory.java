@@ -65,6 +65,10 @@ public class DIFactory {
         return new BookPagesModel();
     }
 
+    public static IModel<BookPageDto> createSharedNoteModel() {
+        return new SharedBook();
+    }
+
     public static MarkdownEncoder createMarkdownEncoder(Enum<?>[] codecsName) {
         return new BinaryMarkdownEncoder(codecsName);
     }
@@ -115,6 +119,14 @@ public class DIFactory {
 
     public static SharedNoteController createSharedNoteController(INavigationController nav) {
         return new SharedNoteController(nav);
+    }
+
+    public static SharedNoteController createSharedNoteExporter(BookPageDto note) {
+        return new SharedNoteController(note);
+    }
+
+    public static SharedNoteController createSharedNoteImporter(INavigationController nav, boolean importNote) {
+        return new SharedNoteController(nav, true);
     }
 
     public static IQuickNoteController createQuickNoteController(INavigationController nav) {

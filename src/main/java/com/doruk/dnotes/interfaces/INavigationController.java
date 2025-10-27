@@ -1,6 +1,7 @@
 package com.doruk.dnotes.interfaces;
 
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public interface INavigationController {
     void goToHomePage();
@@ -18,6 +19,8 @@ public interface INavigationController {
     void goToSharedNotePage();
 
     Scene getScene();
+
+    Stage getStage();
 
     void updateAppTitle(String title);
 }

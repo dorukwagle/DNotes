@@ -27,6 +27,9 @@ public class ContextMenuController {
         this.view.getSharedWithMeButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
             DIFactory.createSharedNoteController(this.navController));
 
+        this.view.getOpenNoteButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
+            DIFactory.createSharedNoteImporter(this.navController, true));
+
         this.view.getViewQuickNotesButton().addEventHandler(MouseEvent.MOUSE_CLICKED, _ ->
             DIFactory.createQuickNoteController(this.navController).open());
 

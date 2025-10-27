@@ -33,13 +33,15 @@ public abstract class NoteModel implements IModel<BookPageDto> {
 
     @Override
     public BookPageDto add(BookPageDto bookPage) {
-        var query = "INSERT INTO bookPages (name, bookId, content, noteType, sharedBy, isLocked, password) VALUES (?, ?, ?, ?, ?) RETURNING id, updatedAt";
+        var query = "INSERT INTO bookPages (name, bookId, content, noteType, sharedBy, isLocked, password) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, updatedAt, isLocked, password;";
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, bookPage.getName());
             stmt.setString(2, bookPage.getBookId());
             stmt.setString(3, bookPage.getContentId());
             stmt.setString(4, this.getNoteType().name());
             stmt.setString(5, bookPage.getSharedBy()); // can be null
+            stmt.setBoolean(6, bookPage.getIsLocked());
+            stmt.setString(7, bookPage.getPassword());
 
 
             try (var rs = stmt.executeQuery()) {

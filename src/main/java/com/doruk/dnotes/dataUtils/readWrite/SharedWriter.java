@@ -52,11 +52,6 @@ public class SharedWriter {
             // write note start byte
             obfuscator.write(Markers.DOC_DATA_START);
 
-            // write note length
-            var noteLengthBytes = NumberUtils.toContinuationBytes(Files.size(inPath));
-            for (byte b : noteLengthBytes)
-                obfuscator.write(b);
-
             // write note content
             byte[] chunk = new byte[1024]; // 1kb
             int bytesRead;

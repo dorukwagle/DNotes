@@ -312,7 +312,7 @@ public class BookController implements IController {
             // now to remove the editor from scree, refresh the view
             navigationController.goToBooksPage();
         });
-//        share.setOnAction(_ -> new ShareController(note));
+        share.setOnAction(_ -> DIFactory.createSharedNoteExporter(note));
 
         contextMenu.show(event.getPickResult().getIntersectedNode(), event.getScreenX(), event.getScreenY());
     }

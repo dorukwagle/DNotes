@@ -14,12 +14,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class SharedReader {
-    public static BookPageDto read(String path) throws ProcessingStageException {
-        var inPath = Path.of(path);
+    public static BookPageDto read(File file) throws ProcessingStageException {
         var contentId = PathUtils.generateFileId();
         var outPath = Path.of(PathUtils.getNoteFilename(contentId));
         try (
-                var inFile = new BufferedInputStream(Files.newInputStream(inPath));
+                var inFile = new BufferedInputStream(new FileInputStream(file));
             var outFile = new BufferedOutputStream(Files.newOutputStream(outPath))
                 ) {
             var metaReader = new MetaReader(inFile);

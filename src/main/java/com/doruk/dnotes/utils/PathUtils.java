@@ -45,7 +45,7 @@ public class PathUtils {
         return createDirRecursive(System.getProperty("user.home") + File.separator + GlobalConstants.APP_NAME + File.separator + "backups");
     }
 
-    private static String getShareDir() {
+    public static String getShareDir() {
         return createDirRecursive(System.getProperty("user.home") + File.separator + GlobalConstants.APP_NAME + File.separator + "shared");
     }
 
@@ -67,7 +67,7 @@ public class PathUtils {
     }
 
     public static String generateSharedNoteFile(String name) {
-        return join(getShareDir(), name + "_", String.valueOf(new Date().getTime()));
+        return join(getShareDir(), name + "_" + new Date().getTime() + GlobalConstants.APP_FORMAT);
     }
 
     public static String name(String path) {
