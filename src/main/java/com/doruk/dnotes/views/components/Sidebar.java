@@ -100,19 +100,17 @@ public class Sidebar <T extends ISidebarItem> {
         sortByToggle.setGraphic(new FontIcon(MaterialDesignC.CALENDAR_MONTH_OUTLINE));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
-        sortByToggle.selectedProperty().addListener((_, _, newVal) -> {
+        sortByToggle.selectedProperty().addListener((_, _, newVal) ->
             sortByToggle
-                    .setGraphic(new FontIcon(newVal ? MaterialDesignA.ALPHABETICAL_VARIANT : MaterialDesignC.CALENDAR_MONTH_OUTLINE));
-        });
+                    .setGraphic(new FontIcon(newVal ? MaterialDesignA.ALPHABETICAL_VARIANT : MaterialDesignC.CALENDAR_MONTH_OUTLINE)));
 
         // Sort order toggle (Ascending/Descending)
         sortOrderToggle = new ToggleButton("");
         sortOrderToggle.setGraphic(new FontIcon(MaterialDesignS.SORT_DESCENDING));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
-        sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
-            sortOrderToggle.setGraphic(new FontIcon(newVal ? MaterialDesignS.SORT_ASCENDING : MaterialDesignS.SORT_DESCENDING));
-        });
+        sortOrderToggle.selectedProperty().addListener((_, _, newVal) ->
+            sortOrderToggle.setGraphic(new FontIcon(newVal ? MaterialDesignS.SORT_ASCENDING : MaterialDesignS.SORT_DESCENDING)));
 
         sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);
         searchContainer.getChildren().add(sortControls);
@@ -159,9 +157,7 @@ public class Sidebar <T extends ISidebarItem> {
                             if (onSelect != null)
                                 onSelect.accept(getItem());
                         }
-                        default -> {
-                            return;
-                        }
+                        default -> {}
                     }
                 });
 
@@ -172,6 +168,7 @@ public class Sidebar <T extends ISidebarItem> {
                 if (empty || item == null) {
                     setText(null);
                     setStyle(""); // Reset all styles
+                    setGraphic(null);
                     setPadding(Insets.EMPTY); // Reset padding
                     setOnMouseEntered(null);
                     setOnMouseExited(null);
