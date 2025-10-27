@@ -81,7 +81,7 @@ public class SharedReader {
                 note.setIsLocked(true);
 
                 // also consume the next marker ( i.e. DOC_DATA_START )
-                if (verifyMarker(in, Markers.DOC_DATA_START))
+                if (!verifyMarker(in, Markers.DOC_DATA_START))
                     throw new ProcessingStageException("Invalid byte found while reading document start");
             }
 
