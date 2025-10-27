@@ -11,6 +11,8 @@ import com.doruk.dnotes.store.GlobalConstants;
 import com.doruk.dnotes.utils.PathUtils;
 import javafx.stage.FileChooser;
 
+import java.io.File;
+
 public class SharedNoteController {
     public SharedNoteController(INavigationController nav) {
         BookStore.setNoteType(NoteType.SHARED);
@@ -44,12 +46,14 @@ public class SharedNoteController {
         chooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter( GlobalConstants.APP_NAME + " Shared Note", "*" + GlobalConstants.APP_FORMAT));
 
-        var file = chooser.showOpenDialog(nav.getStage());
-        if (file == null)
+        var files = chooser.showOpenMultipleDialog(nav.getStage());
+        if (files == null || files.isEmpty())
             return;
 
-        var note = SharedReader.read(file);
-        DIFactory.createSharedNoteModel().add(note);
+        for (File file : files) {
+            var note = SharedReader.read(file);
+            DIFactory.createSharedNoteModel().add(note);
+        }
 
         new SharedNoteController(nav);
     }
