@@ -36,7 +36,6 @@ public class SharedReader {
 
     private static boolean verifyMarker(InputStream stream, byte rhs) throws IOException {
         byte[] marker = new byte[1];
-
         return stream.read(marker) != -1 && marker[0] == rhs;
     }
 

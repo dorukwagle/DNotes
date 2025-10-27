@@ -37,7 +37,7 @@ public class HomePageController implements IController {
     private boolean collectionLock = false;
     private boolean bookLock = false;
 
-    private IPreference preference;
+    private final IPreference preference;
 
     private enum UpdateStateAction {
         Update,
@@ -151,7 +151,7 @@ public class HomePageController implements IController {
         var model = DIFactory.createPromptModal("Create Collection", "Enter collection name", "Name: ");
         var res = model.showAndWait();
 
-        if (!res.isPresent() || res.get().trim().isEmpty())
+        if (res.isEmpty() || res.get().trim().isEmpty())
             return;
 
         var collection = this.collectionModel.add(new CollectionDto("", res.get(), ""));
@@ -168,7 +168,7 @@ public class HomePageController implements IController {
         var model = DIFactory.createPromptModal("Create Book", "Enter book name", "My Book");
         var res = model.showAndWait();
 
-        if (!res.isPresent() || res.get().trim().isEmpty())
+        if (res.isEmpty() || res.get().trim().isEmpty())
             return;
 
         var book = this.bookModel.add(new BookDto(
@@ -333,6 +333,14 @@ public class HomePageController implements IController {
             this.homePageView.setSelectedSidebarItem(collectionDto);
             this.openCollection(collectionDto);
         });
+    }
+
+    private void handleBackupMenuClick() {
+
+    }
+
+    private void handleRestoreMenuClick() {
+
     }
 
     @Override

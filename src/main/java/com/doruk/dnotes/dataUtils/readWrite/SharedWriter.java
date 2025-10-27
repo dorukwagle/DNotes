@@ -10,6 +10,7 @@ import com.doruk.dnotes.utils.NumberUtils;
 import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +23,8 @@ public class SharedWriter {
         var inPath = Path.of(PathUtils.getNoteFilename(note.getContentId()));
 
         try (var inFile = new BufferedInputStream(Files.newInputStream(inPath));
-             var outFile = Files.newOutputStream(Path.of(
-                     PathUtils.generateSharedNoteFile(note.getName())
+             var outFile = new BufferedOutputStream(Files.newOutputStream(Path.of(
+                     PathUtils.generateSharedNoteFile(note.getName()))
              ))
         ) {
             var obfuscationSeed = KeyUtil.generateSeed();

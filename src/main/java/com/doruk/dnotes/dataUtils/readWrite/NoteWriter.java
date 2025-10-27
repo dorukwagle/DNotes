@@ -9,6 +9,7 @@ import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
@@ -43,7 +44,7 @@ public class NoteWriter implements IWriter {
         var seed = KeyUtil.generateSeed();
 
         // create file output stream
-        var fileOut = Files.newOutputStream(filePath);
+        OutputStream fileOut = new BufferedOutputStream(Files.newOutputStream(filePath));
 
         // create meta writer
         var metaWriter = new MetaWriter(fileOut);
@@ -55,12 +56,10 @@ public class NoteWriter implements IWriter {
         if (encrypt) // apply the encryption
             fileOut = DIFactory.createCryptoOutputStream(fileOut, password);
 
-        var stream = new BufferedOutputStream(
-                new GZIPOutputStream(
-                        DIFactory.createObfuscator(
-                                fileOut,
-                                seed
-                        )
+        var stream = new GZIPOutputStream(
+                DIFactory.createObfuscator(
+                        fileOut,
+                        seed
                 )
         );
 

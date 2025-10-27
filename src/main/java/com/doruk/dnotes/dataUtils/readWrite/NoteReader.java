@@ -11,6 +11,7 @@ import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
@@ -56,7 +57,7 @@ public class NoteReader implements IReader {
         var decoder = DIFactory.createMarkdownDecoder(editor.getCodecsValues());
 
         // create a file input stream
-        var fileIn = Files.newInputStream(filePath);
+        InputStream fileIn = new BufferedInputStream(Files.newInputStream(filePath));
 
         // read the file metadata
         var metaReader = new MetaReader(fileIn);
@@ -72,10 +73,8 @@ public class NoteReader implements IReader {
         if (metaReader.isDocEncrypted()) // if file is encrypted, apply decryptor
             fileIn = DIFactory.createCryptoInputStream(fileIn, password);
 
-        var stream = new BufferedInputStream(
-                new GZIPInputStream(DIFactory.createObfuscator(
-                        fileIn, seed))
-        );
+        var stream = new GZIPInputStream(DIFactory.createObfuscator(
+                fileIn, seed));
 
         // pass the stream to the decoder to decode and load the data
         decoder.decode(stream, editor::decodeAndLoad);
