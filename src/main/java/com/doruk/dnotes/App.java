@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -133,6 +134,7 @@ public class App extends Application {
         prefs.saveLong(Preference.LastVisitedPage, ViewPage.HOME.getId());
         prefs.saveLong(Preference.AppStartup, AppStartup.StartFresh.getId());
         prefs.saveBoolean(Preference.ShowContextMenuAtStartup, true);
+        prefs.saveLong(Preference.LastUpdateChecked, new Date().getTime());
     }
 
     public static void run(String[] args) {

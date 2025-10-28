@@ -12,5 +12,6 @@ public enum Preference {
     LastOpenedCollectionId,
     LastOpenedBookId,
     LastOpenedNoteId,
-    ShowContextMenuAtStartup
+    ShowContextMenuAtStartup,
+    LastUpdateChecked
 }
