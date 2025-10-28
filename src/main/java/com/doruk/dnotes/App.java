@@ -149,7 +149,7 @@ public class App extends Application {
             if (UpdatesTracker.isUpdateAvailable())
                 return;
             Platform.runLater(() -> {
-                var model = DIFactory.createConfirmationModal("Update Available", "A new update is available. Do you want to update?");
+                var model = DIFactory.createConfirmationModal("Update Available", "A new update is available. Do you want to Download it ?");
                 model.setOnOk(() -> {
                     var desktop = Desktop.getDesktop();
                     if (!desktop.isSupported(Desktop.Action.BROWSE))
