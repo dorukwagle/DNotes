@@ -18,11 +18,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
@@ -150,20 +146,31 @@ public class App extends Application {
                 return;
             Platform.runLater(() -> {
                 var model = DIFactory.createConfirmationModal("Update Available", "A new update is available. Do you want to Download it ?");
-                model.setOnOk(() -> {
-                    var desktop = Desktop.getDesktop();
-                    if (!desktop.isSupported(Desktop.Action.BROWSE))
-                        return;
-                    try {
-                        desktop.browse(new URI(GlobalConstants.UPDATE_CHECK_URL));
-                    } catch (URISyntaxException | IOException e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                });
+                model.setOnOk(this::openInBrowser);
                 model.setOnCancel(null);
                 model.showAndWait();
             });
         });
+    }
+
+    private void openInBrowser() {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            Runtime rt = Runtime.getRuntime();
+
+            if (os.contains("win")) {
+                rt.exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", GlobalConstants.UPDATE_CHECK_URL});
+            } else if (os.contains("mac")) {
+                rt.exec(new String[]{"open", GlobalConstants.UPDATE_CHECK_URL});
+            } else if (os.contains("nix") || os.contains("nux")) {
+                // Linux / BSD
+                rt.exec(new String[]{"xdg-open", GlobalConstants.UPDATE_CHECK_URL});
+            } else {
+                throw new UnsupportedOperationException("Cannot open browser on this OS");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void run(String[] args) {

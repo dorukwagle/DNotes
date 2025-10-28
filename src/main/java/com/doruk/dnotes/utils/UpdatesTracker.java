@@ -28,6 +28,7 @@ public class UpdatesTracker {
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
                 System.err.println("Failed to fetch release info, code: " + responseCode);
+                System.out.println(new String(conn.getErrorStream().readAllBytes()));
                 return null;
             }
 
