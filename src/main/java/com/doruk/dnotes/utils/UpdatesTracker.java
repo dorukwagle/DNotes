@@ -13,19 +13,13 @@ import com.doruk.dnotes.store.GlobalConstants;
 
 public class UpdatesTracker {
 
-    private static final String REPO_OWNER = "dorukwgl";
-    private static final String REPO_NAME = "dNotes";
-    private static final String GITHUB_RELEASES_API =
-            "https://api.github.com/repos/%s/%s/releases/latest";
-
     /**
      * Fetches latest release tag from GitHub.
      * @return latest release tag (like v1.2.6)
      */
     private static String fetchLatestReleaseTag() {
-        String apiUrl = String.format(GITHUB_RELEASES_API, REPO_OWNER, REPO_NAME);
         try {
-            URI uri = new URI(apiUrl);
+            URI uri = new URI(GlobalConstants.UPDATE_CHECK_URL);
             URL url = uri.toURL();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("Accept", "application/vnd.github+json");
@@ -49,7 +43,8 @@ public class UpdatesTracker {
             System.out.println("tag: " + parseAndGetTag(response.toString()));
             return parseAndGetTag(response.toString());
         } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            DIFactory.createLogger().error(Thread.currentThread(), e);
+            return null;
         }
     }
 
@@ -84,7 +79,8 @@ public class UpdatesTracker {
 
     private static boolean isOneDayPassed() {
         var dt = DIFactory.createGlobalPreference().loadLong(Preference.LastUpdateChecked, new Date().getTime());
-        return (new Date().getTime() - dt) > (24 * 60 * 60 * 1000);
+        return true; // for testing
+//        return (new Date().getTime() - dt) > (6 * 60 * 60 * 1000); // 6 hours
     }
 
     /**

@@ -18,6 +18,7 @@ module com.doruk.dnotes {
     requires transitive reactfx;
     requires java.xml.crypto;
     requires jbcrypt;
+    requires java.desktop;
 
     exports com.doruk.dnotes;
     exports com.doruk.dnotes.views;
