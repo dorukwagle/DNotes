@@ -38,7 +38,9 @@ public class BackupReader {
 
     private static boolean invalidMarker(InputStream stream, byte marker) throws IOException {
         byte[] markerBytes = new byte[1];
-        return stream.read(markerBytes) == -1 || markerBytes[0] != marker;
+        var read = stream.read(markerBytes);
+        return read == -1 || markerBytes[0] != marker;
+//        return stream.read(markerBytes) == -1 || markerBytes[0] != marker;
     }
 
     public static void readAndRestore(File backup, String password, boolean encrypted) throws IOException {
@@ -55,7 +57,7 @@ public class BackupReader {
             if (encrypted) {
                 var passwordHash = readPasswordHash(DIFactory.createObfuscator(streamIn, metaReader.getObfuscationSeed()));
                 if (!HashUtil.compareHash(password, passwordHash))
-                    throw new ProcessingStageException("The password you entered is incorrect!");
+                    throw new IllegalArgumentException("The password you entered is incorrect!");
 
                 // create decryption stream
                 streamIn = DIFactory.createCryptoInputStream(streamIn, password);
@@ -72,6 +74,8 @@ public class BackupReader {
 
             // restore files
             restoreFiles(streamIn);
+
+            streamIn.close();
         }
     }
 
@@ -89,7 +93,7 @@ public class BackupReader {
     private static void restoreFiles(InputStream stream) throws IOException {
         byte[] marker = new byte[1];
         while (stream.read(marker) != -1) {
-            if (marker[0] == Markers.DOC_START)
+            if (marker[0] != Markers.DOC_START)
                 throw new ProcessingStageException("Invalid byte found while reading files");
 
             if (invalidMarker(stream, Markers.Keys.DOC_NAME_KEY))

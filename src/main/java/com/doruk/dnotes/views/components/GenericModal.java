@@ -61,6 +61,10 @@ public class GenericModal {
         this.dialog.centerOnScreen();
     }
 
+    public void show() {
+        this.dialog.show();
+    }
+
     public void close() {
         this.dialog.close();
     }

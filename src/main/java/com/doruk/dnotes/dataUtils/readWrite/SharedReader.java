@@ -25,7 +25,7 @@ public class SharedReader {
             metaReader.parse();
 
             if (metaReader.getFileType() != Markers.FileType.SHARED)
-                throw new ProcessingStageException("Invalid file type. Please select a shared file.");
+                throw new IllegalArgumentException("Invalid file type. Please select a shared file.");
 
             var decipher = DIFactory.createObfuscator(inFile, metaReader.getObfuscationSeed());
             return loadDocument(decipher, outFile, metaReader, contentId);

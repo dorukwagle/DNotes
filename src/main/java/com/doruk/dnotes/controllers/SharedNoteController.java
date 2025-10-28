@@ -51,8 +51,16 @@ public class SharedNoteController {
             return;
 
         for (File file : files) {
-            var note = SharedReader.read(file);
-            DIFactory.createSharedNoteModel().add(note);
+            try {
+                var note = SharedReader.read(file);
+                DIFactory.createSharedNoteModel().add(note);
+            } catch (Exception e) {
+                if (e instanceof IllegalArgumentException iae) {
+                    DIFactory.createConfirmationModal("Invalid Shared Note", iae.getMessage()).showAndWait();
+                    return;
+                }
+                throw e;
+            }
         }
 
         new SharedNoteController(nav);

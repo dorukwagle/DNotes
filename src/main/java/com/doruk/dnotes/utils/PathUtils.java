@@ -70,6 +70,10 @@ public class PathUtils {
         return join(getShareDir(), name + "_" + new Date().getTime() + GlobalConstants.APP_FORMAT);
     }
 
+    public static String generateBackupFile() {
+        return join(getBackupDir(), "Backup_" + new Date().getTime() + GlobalConstants.APP_FORMAT);
+    }
+
     public static String name(String path) {
         return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
     }

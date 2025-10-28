@@ -21,7 +21,7 @@ public class BackupWriter {
 
         var dbFilePath = Path.of(DatabaseConnector.getDbPath());
         var notesDir = Path.of(PathUtils.getNotesDir());
-        var backupFile = Path.of(PathUtils.join(PathUtils.getBackupDir(), PathUtils.generateSharedNoteFile("backup")));
+        var backupFile = Path.of(PathUtils.generateBackupFile());
 
         try (
                 var dbIn = new BufferedInputStream(Files.newInputStream(dbFilePath));
@@ -57,6 +57,8 @@ public class BackupWriter {
 
             // write notes
             writeNotes(dirStream, stream);
+
+            stream.close();
         }
     }
 
