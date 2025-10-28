@@ -193,6 +193,8 @@ public class BookController implements IController {
         
         // gracefully cleanup the existing editor
         if (this.editorController != null) {
+            // also freeze the editor from being interacted with, as the editor view still remains in the scene
+            this.editorController.freeze(true);
             this.editorController.close();
             this.editorController = null; // remove reference
         }

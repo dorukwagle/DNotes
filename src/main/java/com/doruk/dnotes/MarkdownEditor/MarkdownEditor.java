@@ -210,5 +210,15 @@ public class MarkdownEditor implements IMarkdownEditor {
     @Override
     public void setDisabled(boolean disabled) {
         this.editorView.getEditor().getArea().setDisable(disabled);
+        // also disable all the editor button panels, except the close button
+        this.editorView.getControlPanel().getStyleButtons().forEach(btn -> btn.setDisable(disabled));
+
+        // also disable color pickers, and combo boxes
+        this.editorView.getControlPanel().getTextColorPicker().setDisable(disabled);
+        this.editorView.getControlPanel().getHighColorPicker().setDisable(disabled);
+        this.editorView.getControlPanel().getFontSizeCombo().setDisable(disabled);
+
+        // enable the close button
+        this.editorView.getControlPanel().getBackButton().setDisable(false);
     }
 }

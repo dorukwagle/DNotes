@@ -28,8 +28,14 @@ public class EventManager implements IEventManager {
 
     @Override
     public void publishEvent(InternalEvent event) {
-        Set<Runnable> sets;
-        if ((sets = listeners.get(event)) != null)
-            sets.forEach(Runnable::run);
+        var originalSet = listeners.get(event);
+        if (originalSet == null) return;
+
+        Set<Runnable> sets = Set.copyOf(originalSet);
+
+        for (var runnable : sets) {
+            if (originalSet.contains(runnable))
+                runnable.run();
+        }
     }
 }

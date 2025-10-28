@@ -69,6 +69,9 @@ public class EditorController implements IEditorController {
 
     @Override
     public void close() {
+        if (this.markdownEditor == null)
+            return;
+
         // save the texts and notes
         saveEditorDocument();
 
@@ -87,6 +90,9 @@ public class EditorController implements IEditorController {
     }
 
     private void saveEditorDocument() {
+        if (this.markdownEditor == null)
+            return;
+
         // loading new note takes some time, don't save before document is fully loaded.
         if (!isNotesLoaded)
             return;
@@ -165,5 +171,10 @@ public class EditorController implements IEditorController {
         model.showAndWait();
 
         return userInput[0];
+    }
+
+    @Override
+    public void freeze(boolean freeze) {
+        this.markdownEditor.setDisabled(freeze);
     }
 }
