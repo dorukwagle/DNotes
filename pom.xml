@@ -101,7 +101,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.doruk.dnotes.App</mainClass>
+                            <mainClass>com.doruk.dnotes.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
