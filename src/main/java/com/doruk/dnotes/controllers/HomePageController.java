@@ -362,6 +362,7 @@ public class HomePageController implements IController {
                 loader.hide();
             }
         });
+        confirm.setOnCancel(null);
         confirm.showAndWait();
         DIFactory.createConfirmationModal("Backup Successful", "Backup saved to: " + PathUtils.getBackupDir()).showAndWait();
     }
