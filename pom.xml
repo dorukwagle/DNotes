@@ -153,7 +153,7 @@
                     -->
                     <runtimeImage>/usr/lib/jvm/graalvm-25</runtimeImage>
                     <!-- On Linux/macOS, it would be like: <runtimeImage>/usr/lib/jvm/java-21-openjdk-amd64</runtimeImage> -->
-                    <type>APP_IMAGE</type>
+                    <type>MSI</type>
                     <input>${project.build.directory}</input>
                     <!--
                     Input for jpackage: Point to the fat JAR created by the shade plugin.
