@@ -142,7 +142,7 @@ public class App extends Application {
 
     private void checkAndManageUpdate() {
         CompletableFuture.runAsync(() -> {
-            if (UpdatesTracker.isUpdateAvailable())
+            if (!UpdatesTracker.isUpdateAvailable())
                 return;
             Platform.runLater(() -> {
                 var model = DIFactory.createConfirmationModal("Update Available", "A new update is available. Do you want to Download it ?");
