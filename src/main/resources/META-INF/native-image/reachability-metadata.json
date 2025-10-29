@@ -1488,6 +1488,15 @@
     },
     {
       "type": "sun.util.resources.cldr.CalendarData"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en_US"
     }
   ],
   "resources": [
@@ -1504,6 +1513,9 @@
       "glob": "META-INF/services/java.sql.Driver"
     },
     {
+      "glob": "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
       "glob": "META-INF/services/java.util.prefs.PreferencesFactory"
     },
     {
@@ -1511,6 +1523,9 @@
     },
     {
       "glob": "META-INF/services/javax.xml.transform.TransformerFactory"
+    },
+    {
+      "glob": "atlantafx/base/theme/cupertino-dark.bss"
     },
     {
       "glob": "atlantafx/base/theme/cupertino-light.bss"
@@ -1529,6 +1544,10 @@
     },
     {
       "glob": "org/sqlite/native/Linux/x86_64/libsqlitejdbc.so"
+    },
+    {
+      "module": "atlantafx.base",
+      "glob": "atlantafx/base/theme/cupertino-dark.bss"
     },
     {
       "module": "atlantafx.base",
@@ -1637,6 +1656,10 @@
     {
       "module": "javafx.graphics",
       "glob": "com/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_20.frag"
+    },
+    {
+      "module": "javafx.graphics",
+      "glob": "com/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_24.frag"
     },
     {
       "module": "javafx.graphics",
