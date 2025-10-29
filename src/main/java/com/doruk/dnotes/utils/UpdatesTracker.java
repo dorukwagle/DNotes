@@ -38,10 +38,6 @@ public class UpdatesTracker {
             while ((line = in.readLine()) != null) response.append(line);
             in.close();
 
-//            JSONObject json = new JSONObject(response.toString());
-//            return json.getString("tag_name");
-            System.out.println(response);
-            System.out.println("tag: " + parseAndGetTag(response.toString()));
             return parseAndGetTag(response.toString());
         } catch (IOException | URISyntaxException e) {
             DIFactory.createLogger().error(Thread.currentThread(), e);
@@ -50,17 +46,17 @@ public class UpdatesTracker {
     }
 
     private static String parseAndGetTag(String json) {
-        try (Scanner scanner = new Scanner(json)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (line.startsWith("\"tag_name\":")) {
-                    int firstQuote = line.indexOf("\"", 10);
-                    int secondQuote = line.indexOf("\"", firstQuote + 1);
-                    return line.substring(firstQuote + 1, secondQuote);
-                }
-            }
-        }
-        return null;
+        json = json.trim();
+
+        if (json.isBlank())
+            return null;
+
+        var tag = "\"latest\"";
+        var refI = json.indexOf(tag) + tag.length();
+        var startI = json.indexOf("\"", refI) + 1; // ignore the quote "
+        var endI = json.indexOf("\"", startI);
+
+        return json.substring(startI, endI);
     }
 
     /**
@@ -80,8 +76,7 @@ public class UpdatesTracker {
 
     private static boolean isOneDayPassed() {
         var dt = DIFactory.createGlobalPreference().loadLong(Preference.LastUpdateChecked, new Date().getTime());
-        return true; // for testing
-//        return (new Date().getTime() - dt) > (6 * 60 * 60 * 1000); // 6 hours
+        return (new Date().getTime() - dt) > (6 * 60 * 60 * 1000); // 6 hours
     }
 
     /**

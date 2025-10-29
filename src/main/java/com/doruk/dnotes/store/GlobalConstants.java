@@ -19,5 +19,6 @@ public class GlobalConstants {
     public static final String APP_FORMAT = ".dnt";
     public static final String PACKAGE_NAME = "com.doruk.dNotes";
     public static final int AUTO_SAVE_INTERVAL_SEC = 10;
-    public static final String UPDATE_CHECK_URL = "https://api.github.com/repos/doruk/dNotes/releases/latest";
+    public static final String UPDATE_CHECK_URL = "https://raw.githubusercontent.com/dorukwgl/DNotes/production/update.json";
+    public static final String UPDATE_DOWNLOAD_URL = "https://github.com/dorukwgl/DNotes/releases";
 }

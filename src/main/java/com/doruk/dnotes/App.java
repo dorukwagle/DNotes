@@ -159,12 +159,12 @@ public class App extends Application {
             Runtime rt = Runtime.getRuntime();
 
             if (os.contains("win")) {
-                rt.exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", GlobalConstants.UPDATE_CHECK_URL});
+                rt.exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", GlobalConstants.UPDATE_DOWNLOAD_URL});
             } else if (os.contains("mac")) {
-                rt.exec(new String[]{"open", GlobalConstants.UPDATE_CHECK_URL});
+                rt.exec(new String[]{"open", GlobalConstants.UPDATE_DOWNLOAD_URL});
             } else if (os.contains("nix") || os.contains("nux")) {
                 // Linux / BSD
-                rt.exec(new String[]{"xdg-open", GlobalConstants.UPDATE_CHECK_URL});
+                rt.exec(new String[]{"xdg-open", GlobalConstants.UPDATE_DOWNLOAD_URL});
             } else {
                 throw new UnsupportedOperationException("Cannot open browser on this OS");
             }
