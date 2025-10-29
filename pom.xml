@@ -71,6 +71,13 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.50.2.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -94,7 +101,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.doruk.dnotes.App</mainClass>
+                            <mainClass>com.doruk.dnotes.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,8 +1,11 @@
 package com.doruk.dnotes.views;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.doruk.dnotes.views.components.BackButton;
+import javafx.scene.input.MouseEvent;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.doruk.dnotes.dto.BookPageDto;
@@ -20,7 +23,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignB;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 public class BookPage implements IBookView {
@@ -31,7 +33,7 @@ public class BookPage implements IBookView {
     private BorderPane topBar;
     private PlaceholderView placeholderView;
     private Button fabButton;
-    private Consumer<BookPageDto> sidebarItemOnRightClick;
+    private BiConsumer<MouseEvent, BookPageDto> sidebarItemOnRightClick;
 
     public BookPage() {
         root = new BorderPane();
@@ -40,9 +42,9 @@ public class BookPage implements IBookView {
         // add sidebar to the left
         sidebar = new Sidebar<>();
         root.setLeft(sidebar.getView());
-        sidebar.setOnRightClick(dto -> {
+        sidebar.setOnRightClick((e,dto) -> {
             if (this.sidebarItemOnRightClick != null)
-                this.sidebarItemOnRightClick.accept(dto);
+                this.sidebarItemOnRightClick.accept(e, dto);
         });
 
         // Create top bar
@@ -82,22 +84,13 @@ public class BookPage implements IBookView {
         VBox.setVgrow(editorContainer, Priority.ALWAYS);
 
         // Create and style back button
-        backButton = new Button();
-        FontIcon backIcon = new FontIcon(MaterialDesignB.BACKSPACE);
-        backIcon.setIconSize(20);
-        backIcon.setScaleX(1.3);
-        backIcon.setScaleY(1.3);
-        backButton.setGraphic(backIcon);
+        backButton = new BackButton();
         backButton.setMinWidth(50);
-        backButton.setStyle(backButton.getStyle() + "-fx-cursor: hand;");
-        backButton.getStyleClass().addAll(Styles.DANGER, Styles.BUTTON_ICON);
-        backButton.setTooltip(new Tooltip("Go back"));
         
         // Add button to top right
         topBar.setRight(backButton);
         BorderPane.setAlignment(backButton, Pos.CENTER_RIGHT);
         BorderPane.setMargin(backButton, new Insets(0, 0, 0, 10));
-
     }
 
     @Override
@@ -143,7 +136,7 @@ public class BookPage implements IBookView {
     }
 
     @Override
-    public void setSidebarItemOnRightClick(Consumer<BookPageDto> onRightClick) {
+    public void setSidebarItemOnRightClick(BiConsumer<MouseEvent, BookPageDto> onRightClick) {
         this.sidebarItemOnRightClick = onRightClick;
     }
 

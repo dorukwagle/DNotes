@@ -26,4 +26,9 @@ public class CollectionDto implements ISidebarItem {
     public String getUpdatedAt() {
         return updatedAt;
     }
+
+    @Override
+    public Type getType() {
+        return Type.COLLECTION;
+    }
 }

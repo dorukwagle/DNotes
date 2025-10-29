@@ -106,7 +106,6 @@ public class Factory {
     public static FXTextEditor getFXTextEditor() {
         if (editor == null)
             editor = new EditorFX();
-        
         return editor;
     }
 
@@ -168,7 +167,8 @@ public class Factory {
         return new Coder();
     }
 
-    public static void close() {
+    public static void cleanup() {
+        editor.cleanup();
         editor = null;
         tools = null;
         codecs = null;

@@ -8,6 +8,9 @@ public class BookPageDto implements ISidebarItem {
     private String name;
     private String contentId;
     private String updatedAt;
+    private String sharedBy;
+    private boolean isLocked;
+    private String password;
 
     public BookPageDto() {
     }
@@ -45,5 +48,32 @@ public class BookPageDto implements ISidebarItem {
     public BookPageDto setId(String id) {
         this.id = id;
         return this;
+    }
+
+    public String getSharedBy() {
+        return sharedBy;
+    }
+
+    public boolean getIsLocked() {
+        return isLocked;
+    }
+
+    public void setIsLocked(boolean isLocked) {
+        this.isLocked = isLocked;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+
+    @Override
+    public Type getType() {
+        return this.isLocked ? Type.LOCKED_NOTE : Type.NOTE;
     }
 }

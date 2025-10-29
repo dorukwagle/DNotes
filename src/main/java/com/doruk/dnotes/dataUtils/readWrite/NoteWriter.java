@@ -3,13 +3,13 @@ package com.doruk.dnotes.dataUtils.readWrite;
 import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.dataUtils.MetaWriter;
-import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.interfaces.IWriter;
 import com.doruk.dnotes.utils.KeyUtil;
 import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
@@ -17,9 +17,18 @@ import java.util.zip.GZIPOutputStream;
 
 public class NoteWriter implements IWriter {
     private final IMarkdownEditor editor;
+    private final String password;
+    private boolean encrypt = false;
 
     public NoteWriter(IMarkdownEditor editor) {
         this.editor = editor;
+        this.password = null;
+    }
+
+    public NoteWriter(IMarkdownEditor editor, String password) {
+        this.editor = editor;
+        this.password = password;
+        this.encrypt = true;
     }
 
     @Override
@@ -35,21 +44,22 @@ public class NoteWriter implements IWriter {
         var seed = KeyUtil.generateSeed();
 
         // create file output stream
-        var fileOut = Files.newOutputStream(filePath);
+        OutputStream fileOut = new BufferedOutputStream(Files.newOutputStream(filePath));
 
         // create meta writer
         var metaWriter = new MetaWriter(fileOut);
         // write default metadata
-        metaWriter.writeDefaultsMeta(new Date(), seed);
+        metaWriter.writeDefaultsMeta(new Date(), seed, encrypt);
         metaWriter.commit();
 
         // create a pipeline of streams for processing the data
-        var stream = new BufferedOutputStream(
-                new GZIPOutputStream(
-                        new ObfuscatorOutputStream(
-                                fileOut,
-                                seed
-                        )
+        if (encrypt) // apply the encryption
+            fileOut = DIFactory.createCryptoOutputStream(fileOut, password);
+
+        var stream = new GZIPOutputStream(
+                DIFactory.createObfuscator(
+                        fileOut,
+                        seed
                 )
         );
 

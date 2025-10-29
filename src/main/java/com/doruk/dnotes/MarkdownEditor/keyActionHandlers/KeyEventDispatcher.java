@@ -19,4 +19,9 @@ public class KeyEventDispatcher {
     public static void dispatch(FXTextEditor editor, KeyCode action, KeyEvent e) {
         handlers.forEach(handler -> handler.handle(editor, action, e));
     }
+
+    public static void clearHandlers() {
+        handlers.clear();
+        handlers = new ArrayList<>();
+    }
 }

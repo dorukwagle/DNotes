@@ -22,6 +22,9 @@ public class PreferenceController implements IController {
         this.navigationController = navigationController;
         this.preference = DIFactory.createGlobalPreference();
 
+        // update app title
+        navigationController.updateAppTitle("Preferences");
+
         // load preferences view
         this.view.setSelectedTheme(
                 Themes.fromId(
@@ -36,6 +39,9 @@ public class PreferenceController implements IController {
                 this.preference.loadBoolean(Preference.RememberAppState, false));
         this.view.setRememberEditor(
                 this.preference.loadBoolean(Preference.RememberEditor, false));
+
+        this.view.setShowContextAtStartup(
+                this.preference.loadBoolean(Preference.ShowContextMenuAtStartup, true));
 
         // add listeners
         setupActions();
@@ -72,5 +78,11 @@ public class PreferenceController implements IController {
         this.view.setRememberEditorOnSelect(isEnabled -> {
             this.preference.saveBoolean(Preference.RememberEditor, isEnabled);
         });
+
+        this.view.getShowContextAtStartup().setOnMouseClicked(_ ->
+            this.preference.saveBoolean(
+                    Preference.ShowContextMenuAtStartup,
+                    this.view.getShowContextAtStartup().isSelected())
+        );
     }
 }

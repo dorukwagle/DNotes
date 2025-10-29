@@ -2,6 +2,7 @@ package com.doruk.dnotes.views.components;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -20,10 +22,7 @@ import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.interfaces.ISidebarItem;
 
 import atlantafx.base.theme.Styles;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
+import org.kordamp.ikonli.materialdesign2.*;
 
 public class Sidebar <T extends ISidebarItem> {
     private final VBox root;
@@ -32,7 +31,7 @@ public class Sidebar <T extends ISidebarItem> {
     private ToggleButton sortByToggle;
     private ToggleButton sortOrderToggle;
     private Consumer<T> onSelect;
-    private Consumer<T> onRightClick;
+    private BiConsumer<MouseEvent, T> onRightClick;
     private ListView<T> listView;
 
     public Sidebar() {
@@ -101,24 +100,32 @@ public class Sidebar <T extends ISidebarItem> {
         sortByToggle.setGraphic(new FontIcon(MaterialDesignC.CALENDAR_MONTH_OUTLINE));
         sortByToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortByToggle.setTooltip(new Tooltip("Toggle sort by date & alphabetical"));
-        sortByToggle.selectedProperty().addListener((_, _, newVal) -> {
+        sortByToggle.selectedProperty().addListener((_, _, newVal) ->
             sortByToggle
-                    .setGraphic(new FontIcon(newVal ? MaterialDesignA.ALPHABETICAL_VARIANT : MaterialDesignC.CALENDAR_MONTH_OUTLINE));
-        });
+                    .setGraphic(new FontIcon(newVal ? MaterialDesignA.ALPHABETICAL_VARIANT : MaterialDesignC.CALENDAR_MONTH_OUTLINE)));
 
         // Sort order toggle (Ascending/Descending)
         sortOrderToggle = new ToggleButton("");
         sortOrderToggle.setGraphic(new FontIcon(MaterialDesignS.SORT_DESCENDING));
         sortOrderToggle.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.BUTTON_OUTLINED, Styles.MEDIUM);
         sortOrderToggle.setTooltip(new Tooltip("Toggle sort order"));
-        sortOrderToggle.selectedProperty().addListener((_, _, newVal) -> {
-            sortOrderToggle.setGraphic(new FontIcon(newVal ? MaterialDesignS.SORT_ASCENDING : MaterialDesignS.SORT_DESCENDING));
-        });
+        sortOrderToggle.selectedProperty().addListener((_, _, newVal) ->
+            sortOrderToggle.setGraphic(new FontIcon(newVal ? MaterialDesignS.SORT_ASCENDING : MaterialDesignS.SORT_DESCENDING)));
 
         sortControls.getChildren().addAll(sortByToggle, sortOrderToggle);
         searchContainer.getChildren().add(sortControls);
         container.getChildren().addAll(searchContainer);
         return container;
+    }
+
+    private FontIcon createGraphic(ISidebarItem.Type type) {
+        return switch (type) {
+            case COLLECTION -> new FontIcon(MaterialDesignB.BOOKSHELF);
+
+            case NOTE -> new FontIcon(MaterialDesignB.BOOK_OPEN_PAGE_VARIANT);
+
+            case LOCKED_NOTE -> new FontIcon(MaterialDesignL.LOCK);
+        };
     }
 
     private ListView<T> createListView() {
@@ -133,7 +140,7 @@ public class Sidebar <T extends ISidebarItem> {
         listView.setItems(items);
         listView.setCellFactory(_ -> new ListCell<>() {
             {
-                addEventFilter(MouseEvent.ANY, e -> e.consume());
+                addEventFilter(MouseEvent.ANY, Event::consume);
                 addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
                     event.consume();
 
@@ -142,7 +149,7 @@ public class Sidebar <T extends ISidebarItem> {
                     switch (btn) {
                         case MouseButton.SECONDARY -> {
                             if (onRightClick != null)
-                                onRightClick.accept(getItem());
+                                onRightClick.accept(event, getItem());
                         }
                         case MouseButton.PRIMARY -> {
                             listView.getSelectionModel().select(this.getIndex());
@@ -150,9 +157,7 @@ public class Sidebar <T extends ISidebarItem> {
                             if (onSelect != null)
                                 onSelect.accept(getItem());
                         }
-                        default -> {
-                            return;
-                        }
+                        default -> {}
                     }
                 });
 
@@ -163,6 +168,7 @@ public class Sidebar <T extends ISidebarItem> {
                 if (empty || item == null) {
                     setText(null);
                     setStyle(""); // Reset all styles
+                    setGraphic(null);
                     setPadding(Insets.EMPTY); // Reset padding
                     setOnMouseEntered(null);
                     setOnMouseExited(null);
@@ -170,6 +176,11 @@ public class Sidebar <T extends ISidebarItem> {
                     return;
                 }
                 setText(item.getName());
+
+                setGraphic(createGraphic(item.getType()));
+                setGraphicTextGap(15);
+                setContentDisplay(ContentDisplay.LEFT);
+
                 setPadding(new Insets(10));
                 setStyle("-fx-background-radius: 4; -fx-font-size: 16px; -fx-cursor: hand;");
                 setOnMouseEntered(_ -> {
@@ -196,7 +207,7 @@ public class Sidebar <T extends ISidebarItem> {
         this.onSelect = onSelect;
     }
 
-    public void setOnRightClick(Consumer<T> onRightClick) {
+    public void setOnRightClick(BiConsumer<MouseEvent, T> onRightClick) {
         this.onRightClick = onRightClick;
     }
 

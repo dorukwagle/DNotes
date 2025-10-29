@@ -3,8 +3,10 @@ package com.doruk.dnotes.views;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import javafx.scene.input.MouseEvent;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
@@ -374,7 +376,7 @@ public class HomePage implements IHomeView {
     }
 
     @Override
-    public void setSidebarItemOnRightClick(Consumer<CollectionDto> onRightClick) {
+    public void setSidebarItemOnRightClick(BiConsumer<MouseEvent, CollectionDto> onRightClick) {
         this.sidebar.setOnRightClick(onRightClick);
     }
 

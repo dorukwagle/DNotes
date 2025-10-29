@@ -1,5 +1,7 @@
 package com.doruk.dnotes.utils;
 
+import com.doruk.dnotes.store.GlobalConstants;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +10,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnector {
     private static DatabaseConnector instance;
+    private static String dbPath;
     private Connection connection;
 
     private DatabaseConnector() {
@@ -15,7 +18,7 @@ public class DatabaseConnector {
             Class.forName("org.sqlite.JDBC");
 
             String dbDir = PathUtils.getDatabaseDir();
-            String dbPath = dbDir + File.separator + "dnotes.db";
+            dbPath = dbDir + File.separator + GlobalConstants.DATABASE_NAME;
             String dbUrl = "jdbc:sqlite:" + dbPath;
 
             connection = DriverManager.getConnection(dbUrl);
@@ -36,5 +39,9 @@ public class DatabaseConnector {
 
     public static Connection getConnection() throws RuntimeException {
         return getInstance().connection;
+    }
+
+    public static String getDbPath() {
+        return dbPath;
     }
 }

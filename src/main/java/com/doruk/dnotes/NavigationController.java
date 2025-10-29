@@ -19,9 +19,11 @@ public class NavigationController implements INavigationController {
     private final double defaultW;
     private final double defaultH;
     private final IPreference preference;
+    private final Stage stage;
 
     private NavigationController(Stage stage) {
         this.preference = DIFactory.createGlobalPreference();
+        this.stage = stage;
 
         // calculate screen size
         double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
@@ -37,7 +39,7 @@ public class NavigationController implements INavigationController {
         stage.show();
         
         // center the screen once the stage is fully initialized
-        Platform.runLater(() -> stage.centerOnScreen());
+        Platform.runLater(stage::centerOnScreen);
     }
 
     public static NavigationController getInstance(Stage stage) {
@@ -76,5 +78,43 @@ public class NavigationController implements INavigationController {
     public void goToPreferencePage() {
         this.preference.saveLong(Preference.LastVisitedPage, ViewPage.PREFERENCE.getId());
         scene.setRoot(ControllerFactory.create(ViewPage.PREFERENCE, this).getView());
+    }
+
+    @Override
+    public void goToTrashPage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.TRASH.getId());
+        scene.setRoot(ControllerFactory.create(ViewPage.TRASH, this).getView());
+    }
+
+    @Override
+    public void goToManagementPage() {
+        this.preference.saveLong(Preference.LastVisitedPage, ViewPage.MANAGEMENT.getId());
+        scene.setRoot(ControllerFactory.create(ViewPage.MANAGEMENT, this).getView());
+    }
+
+    @Override
+    public void goToQuickNotePage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.QUICK_NOTE, this).getView());
+    }
+
+    @Override
+    public void goToSharedNotePage() {
+        scene.setRoot(ControllerFactory.create(ViewPage.SHARED_NOTE, this).getView());
+    }
+
+    @Override
+    public Scene getScene() {
+        return scene;
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
+    }
+
+    @Override
+    public void updateAppTitle(String title) {
+        title = title.isBlank() ? GlobalConstants.APP_NAME : GlobalConstants.APP_NAME + " - " + title;
+        this.stage.setTitle(title);
     }
 }

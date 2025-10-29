@@ -1,6 +1,7 @@
 package com.doruk.dnotes.interfaces;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.doruk.dnotes.dto.BookDto;
@@ -9,11 +10,12 @@ import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.MenuItems;
 
 import javafx.collections.ObservableList;
+import javafx.scene.input.MouseEvent;
 
 public interface IHomeView extends IView {
     void setSidebarItems(List<CollectionDto> items);
     void setSidebarItemOnSelect(Consumer<CollectionDto> onSelect);
-    void setSidebarItemOnRightClick(Consumer<CollectionDto> onRightClick);
+    void setSidebarItemOnRightClick(BiConsumer<MouseEvent, CollectionDto> onRightClick);
     SearchControlsDto getSidebarSearchControls();
     SearchControlsDto getSearchControls();
     void setBooks(List<BookDto> books);

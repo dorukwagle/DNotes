@@ -140,6 +140,10 @@ public abstract class ListKeyHandler implements KeyEventHandler {
         var curParIndex = editor.getParagraphIndexAtPos(pos);
         var style = area.getParagraph(curParIndex).getParagraphStyle();
         boolean firstListItem = style.lineCount == 1 && style.level == 1;
+
+        // if its the first item of list, and last paragraph in the document, return
+        if (firstListItem && curParIndex == area.getParagraphs().size() - 1)
+            return;
             
         // if it's first list item, need to handle the backspace manually, as it puts cursor
         // outside of the list.

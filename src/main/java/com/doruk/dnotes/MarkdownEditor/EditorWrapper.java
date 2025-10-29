@@ -38,15 +38,6 @@ public class EditorWrapper implements View {
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         root.getChildren().add(scrollPane);
-
-        // var emojiTextArea = new TextArea( "Test: ⚾, \u2028Testing 1 2 3 😷 Chess:♕♔ Faces:😀😃😄" ); // "😀😃😄" "😷" "♕♔"
-        // emojiTextArea.setPrefHeight(10);
-        // root.getChildren().add(emojiTextArea);
-
-        // var emojiTextLabel = new Label("Test: ⚾, gap\u2028Testing 1 2 3 😷 Chess:♕♔ Faces:😀😃😄");
-        // emojiTextLabel.setPrefHeight(10);
-        // root.getChildren().add(emojiTextLabel);
-        // emojiTextArea.setFont(Font.font("Magnolia Script", 16));
         
         // just a color reference for area
         reference = new HBox();

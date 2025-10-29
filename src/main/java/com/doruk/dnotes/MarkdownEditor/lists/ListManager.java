@@ -12,12 +12,12 @@ import com.doruk.dnotes.MarkdownEditor.utils.ParagraphStyleHelper;
 
 public class ListManager {
     private static ListManager instance;
-    private static FXTextEditor editor;
+    private FXTextEditor editor;
     Map<String, NumberListNode> listMap;
 
 
     private ListManager() {
-        ListManager.editor = Factory.getFXTextEditor();
+        this.editor = Factory.getFXTextEditor();
         this.listMap = new HashMap<>();
     }
 
@@ -95,7 +95,7 @@ public class ListManager {
             holder.put(i, curStyle.level);
         }
 
-        // if list items if false, it means some items have stale list levels. 
+        // if list items false, it means some items have stale list levels.
         // so ignore leveling, put -1 as key to the holder map, 
         // rest will be handled by the NumberListNode
         if (!areListItems)
@@ -271,5 +271,11 @@ public class ListManager {
             currentTimeMillis
                 .substring(currentTimeMillis.length() - 8)
         );
+    }
+
+    public void cleanup() {
+        this.editor = null;
+        this.listMap = null;
+        instance = null;
     }
 }

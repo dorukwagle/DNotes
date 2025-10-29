@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 import com.doruk.dnotes.interfaces.ILogger;
 
 public class FileLogger implements ILogger {
@@ -21,7 +22,7 @@ public class FileLogger implements ILogger {
             this.console = new PrintWriter(System.out, true);
 
              // also add cleanup code here
-            DIFactory.createShutdownManager().register(() -> {
+            DIFactory.createEventManager().register(InternalEvent.SHUTDOWN, () -> {
                 flw.flush();
                 console.flush();
                 flw.close();

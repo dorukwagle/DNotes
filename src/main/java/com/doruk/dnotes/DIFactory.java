@@ -1,7 +1,10 @@
 package com.doruk.dnotes;
 
-import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
+import com.doruk.dnotes.controllers.QuickNoteController;
+import com.doruk.dnotes.controllers.SharedNoteController;
+import com.doruk.dnotes.dataUtils.crypto.CryptoInputStream;
+import com.doruk.dnotes.dataUtils.crypto.CryptoOutputStream;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorInputStream;
 import com.doruk.dnotes.dataUtils.obfuscator.ObfuscatorOutputStream;
 import com.doruk.dnotes.dataUtils.parser.BinaryMarkdownDecoder;
@@ -12,28 +15,22 @@ import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.interfaces.*;
-import com.doruk.dnotes.models.BookModel;
-import com.doruk.dnotes.models.BookPagesModel;
-import com.doruk.dnotes.models.CollectionModel;
-import com.doruk.dnotes.prefs.EditorPreference;
+import com.doruk.dnotes.models.*;
 import com.doruk.dnotes.prefs.GlobalPreference;
 import com.doruk.dnotes.utils.FileLogger;
-import com.doruk.dnotes.utils.ShutdownManager;
-import com.doruk.dnotes.views.components.ConfirmationModal;
-import com.doruk.dnotes.views.components.OptionsModal;
-import com.doruk.dnotes.views.components.PromptModal;
+import com.doruk.dnotes.utils.EventManager;
+import com.doruk.dnotes.views.ContextView;
+import com.doruk.dnotes.views.components.*;
+import javafx.scene.Parent;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.stream.Stream;
+import java.util.zip.GZIPOutputStream;
 
 public class DIFactory {
     public static IPreference createGlobalPreference() {
         return GlobalPreference.getInstance();
-    }
-
-    public static IPreference createEditorPreference() {
-        return EditorPreference.getInstance();
     }
 
     public static IConfirmationModal createConfirmationModal(String title, String message) {
@@ -48,8 +45,8 @@ public class DIFactory {
         return FileLogger.getInstance();
     }
 
-    public static IShutdownManager createShutdownManager() {
-        return ShutdownManager.getInstance();
+    public static IEventManager createEventManager() {
+        return EventManager.getInstance();
     }
 
     public static IOptionsModal createOptionsModal() {
@@ -68,6 +65,10 @@ public class DIFactory {
         return new BookPagesModel();
     }
 
+    public static IModel<BookPageDto> createSharedNoteModel() {
+        return new SharedBook();
+    }
+
     public static MarkdownEncoder createMarkdownEncoder(Enum<?>[] codecsName) {
         return new BinaryMarkdownEncoder(codecsName);
     }
@@ -84,11 +85,63 @@ public class DIFactory {
         return new ObfuscatorOutputStream(out, seed);
     }
 
+    public static CryptoInputStream createCryptoInputStream(InputStream in, String password) throws IOException {
+        return new CryptoInputStream(in, password);
+    }
+
+    public static CryptoOutputStream createCryptoOutputStream(OutputStream out, String password) throws IOException {
+        return new CryptoOutputStream(out, password);
+    }
+
     public static IReader createNoteReader(IMarkdownEditor editor) {
         return new NoteReader(editor);
     }
 
     public static IWriter createNoteWriter(IMarkdownEditor editor) {
         return new NoteWriter(editor);
+    }
+
+    public static IReader createNoteReader(IMarkdownEditor editor, String password) {
+        return new NoteReader(editor, password);
+    }
+
+    public static IWriter createNoteWriter(IMarkdownEditor editor, String password) {
+        return new NoteWriter(editor, password);
+    }
+
+    public static GenericModal createGenericModal(Parent scene, boolean autoClose, int width, int height) {
+        return new GenericModal(scene, autoClose, width, height);
+    }
+
+    public static ContextView createContextView() {
+        return new ContextView();
+    }
+
+    public static SharedNoteController createSharedNoteController(INavigationController nav) {
+        return new SharedNoteController(nav);
+    }
+
+    public static SharedNoteController createSharedNoteExporter(BookPageDto note) {
+        return new SharedNoteController(note);
+    }
+
+    public static SharedNoteController createSharedNoteImporter(INavigationController nav, boolean importNote) {
+        return new SharedNoteController(nav, true);
+    }
+
+    public static IQuickNoteController createQuickNoteController(INavigationController nav) {
+        return new QuickNoteController(nav);
+    }
+
+    public static IManagementModel createManagementModel() {
+        return new ManagementModel();
+    }
+
+    public static ITrashModel createTrashModel() {
+        return new TrashModel();
+    }
+
+    public static PasswordPrompt createPasswordPrompt(String title) {
+        return new PasswordPrompt(title);
     }
 }

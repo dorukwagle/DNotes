@@ -6,7 +6,7 @@ public class GlobalPreference extends APreference {
     private static GlobalPreference instance = new GlobalPreference();
 
     private GlobalPreference() {
-        prefs = Preferences.userRoot().node("com/doruk/dnotes/prefs/global");
+        prefs = Preferences.userRoot().node("com-doruk-dNotes/prefs/global");
     }
 
     public static GlobalPreference getInstance() {

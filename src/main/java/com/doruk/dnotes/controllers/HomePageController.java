@@ -1,9 +1,14 @@
 package com.doruk.dnotes.controllers;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.dataUtils.Markers;
+import com.doruk.dnotes.dataUtils.readWrite.BackupReader;
+import com.doruk.dnotes.dataUtils.readWrite.BackupWriter;
 import com.doruk.dnotes.dto.BookDto;
 import com.doruk.dnotes.dto.CollectionDto;
 import com.doruk.dnotes.dto.PaginationParams;
@@ -12,6 +17,7 @@ import com.doruk.dnotes.enums.MenuItems;
 import com.doruk.dnotes.enums.Preference;
 import com.doruk.dnotes.enums.SortBy;
 import com.doruk.dnotes.enums.SortOrder;
+import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.IController;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
@@ -19,8 +25,13 @@ import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.interfaces.IHomeView;
 import com.doruk.dnotes.interfaces.IModel;
 
+import com.doruk.dnotes.store.GlobalConstants;
+import com.doruk.dnotes.utils.PathUtils;
+import com.doruk.dnotes.views.components.LoadingSpinner;
 import javafx.application.Platform;
 import javafx.scene.Parent;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 
 public class HomePageController implements IController {
 
@@ -36,7 +47,7 @@ public class HomePageController implements IController {
     private boolean collectionLock = false;
     private boolean bookLock = false;
 
-    private IPreference preference;
+    private final IPreference preference;
 
     private enum UpdateStateAction {
         Update,
@@ -54,6 +65,9 @@ public class HomePageController implements IController {
 
         renderCollections();
         setupActions();
+
+        // update app title
+        navigationController.updateAppTitle("Home");
 
         // open last collection if remember state is enabled
         var rememberState = this.preference.loadBoolean(Preference.RememberAppState, false);
@@ -147,7 +161,7 @@ public class HomePageController implements IController {
         var model = DIFactory.createPromptModal("Create Collection", "Enter collection name", "Name: ");
         var res = model.showAndWait();
 
-        if (!res.isPresent() || res.get().trim().isEmpty())
+        if (res.isEmpty() || res.get().trim().isEmpty())
             return;
 
         var collection = this.collectionModel.add(new CollectionDto("", res.get(), ""));
@@ -164,7 +178,7 @@ public class HomePageController implements IController {
         var model = DIFactory.createPromptModal("Create Book", "Enter book name", "My Book");
         var res = model.showAndWait();
 
-        if (!res.isPresent() || res.get().trim().isEmpty())
+        if (res.isEmpty() || res.get().trim().isEmpty())
             return;
 
         var book = this.bookModel.add(new BookDto(
@@ -176,7 +190,7 @@ public class HomePageController implements IController {
         this.addToBookState(book);
     }
 
-    private void handleCollectionRightClick(CollectionDto collectionDto) {
+    private void handleCollectionRightClick(MouseEvent e, CollectionDto collectionDto) {
         var modal = DIFactory.createOptionsModal();
         modal.setInputText(collectionDto.getName());
 
@@ -227,7 +241,7 @@ public class HomePageController implements IController {
 
     private void openCollection(CollectionDto collectionDto) {
         // if collection is empty, just return
-        if (this.collections.isEmpty())
+        if (this.collections.isEmpty() || collectionDto == null)
             return;
 
         var col = this.collections.stream()
@@ -299,9 +313,9 @@ public class HomePageController implements IController {
 
         homePageView.setMenuItemsOnClick(menuItem -> {
             switch (menuItem) {
-                case MenuItems.Backup -> System.out.println("navigating to backup page");
-                case MenuItems.Restore -> System.out.println("navigating to restore page");
-                case MenuItems.Trash -> System.out.println("navigating to trash page");
+                case MenuItems.Backup -> this.handleBackupMenuClick();
+                case MenuItems.Restore -> this.handleRestoreMenuClick();
+                case MenuItems.Trash -> this.navigationController.goToTrashPage();
                 case MenuItems.Preferences -> this.navigationController.goToPreferencePage();
             }
         });
@@ -329,6 +343,75 @@ public class HomePageController implements IController {
             this.homePageView.setSelectedSidebarItem(collectionDto);
             this.openCollection(collectionDto);
         });
+    }
+
+    private void handleBackupMenuClick() {
+        var confirm = DIFactory.createConfirmationModal("Backup Operation", "Are you sure you want to backup your data?");
+        confirm.setOnOk(() -> {
+            var modal = DIFactory.createPromptModal("Password Protection", "Enter a password to protect your backup. Leave it empty if you don't want.", "Password:");
+            var res = modal.showAndWait();
+
+            var loader = new LoadingSpinner();
+            loader.show();
+
+            try {
+                BackupWriter.write(res.orElse(null), res.isPresent() && !res.get().isBlank());
+            } catch (IOException e) {
+                throw new ProcessingStageException("Failed to create backup...");
+            } finally {
+                loader.hide();
+            }
+        });
+        confirm.showAndWait();
+        DIFactory.createConfirmationModal("Backup Successful", "Backup saved to: " + PathUtils.getBackupDir()).showAndWait();
+    }
+
+    private void handleRestoreMenuClick() {
+        var confirm = DIFactory.createPromptModal("Restore from backup!", "Restoring a backup will delete all your current data\n" +
+                "Are you sure ? Write 'CONFIRM' in the field below to proceed.", "Confirm ? ");
+        var res = confirm.showAndWait();
+
+        if (res.isEmpty() || !res.get().equals("CONFIRM"))
+            return;
+
+        // now choose a file
+        var fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Backup File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("dNotes Backup Files", "*" + GlobalConstants.APP_FORMAT));
+        var file = fileChooser.showOpenDialog(navigationController.getStage());
+
+        if (file == null)
+            return;
+
+        var loader = new LoadingSpinner();
+
+        try {
+            var meta = BackupReader.readMetadata(file);
+            if (meta.getFileType() != Markers.FileType.BACKUP) {
+                DIFactory.createConfirmationModal("Invalid Backup File", "The file you selected isn't a dNotes backup file." +
+                        "Please select a correct backup file.").showAndWait();
+                return;
+            }
+
+            var password = "";
+            if (meta.isDocEncrypted()) {
+                var modal = DIFactory.createPromptModal("Password Protection", "Enter a password to restore your backup.", "Password:");
+                password = modal.showAndWait().orElse(null);
+            }
+
+            BackupReader.readAndRestore(file, password, meta.isDocEncrypted());
+            DIFactory.createConfirmationModal("Backup Restored", "Restart the app. Backup restored successfully.").showAndWait();
+
+            Platform.exit();
+        } catch (Exception e) {
+            if (e instanceof IllegalArgumentException iae) {
+                DIFactory.createConfirmationModal("Failed to restore backup", iae.getMessage()).showAndWait();
+                return;
+            }
+            throw new ProcessingStageException(e.getMessage(), e);
+        } finally {
+            loader.hide();
+        }
     }
 
     @Override

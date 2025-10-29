@@ -92,9 +92,8 @@ public class CheckboxRenderer implements Renderer<TextFlow, ParagraphStyle> {
         });
 
         // also add event listeners
-        bulletNode.setOnMouseClicked(_ -> {
-            ToolsMediator.publish(ToolsEvent.CHECKBOX_CLICKED, index);
-        });
+        bulletNode.setOnMouseClicked(_ ->
+                ToolsMediator.publish(ToolsEvent.CHECKBOX_CLICKED, index));
         
         return bulletNode;
     }

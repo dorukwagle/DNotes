@@ -7,6 +7,7 @@ import com.doruk.dnotes.enums.MarkdownEditorColor;
 import com.doruk.dnotes.enums.Themes;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 
 public interface IPreferenceView extends IView {
     Button getBackButton();
@@ -20,4 +21,8 @@ public interface IPreferenceView extends IView {
     void setSelectedAppStartup(AppStartup appStartup);
     void setRememberAppState(Boolean rememberAppState);
     void setRememberEditor(Boolean rememberEditor);
+
+    void setShowContextAtStartup(Boolean showContextAtStartup);
+
+    CheckBox getShowContextAtStartup();
 }
