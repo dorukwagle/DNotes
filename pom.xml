@@ -95,7 +95,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.doruk.dnotes.Main</mainClass>
+                    <mainClass>dnotes/com.doruk.dnotes.Main</mainClass>
                 </configuration>
             </plugin>
             <!--
@@ -157,22 +157,6 @@
         <id>native</id>
         <build>
             <plugins>
-                <!-- This plugin provides necessary GraalVM configuration for JavaFX itself. -->
-                <plugin>
-                    <groupId>com.gluonhq</groupId>
-                    <artifactId>gluonfx-maven-plugin</artifactId>
-                    <version>1.0.28</version>
-                    <executions>
-                        <execution>
-                            <id>attach-graalvm-configuration</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>attach-graalvm-configuration</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <!-- This is the main GraalVM Native Build Tools plugin. -->
                 <plugin>
                     <groupId>org.graalvm.buildtools</groupId>
@@ -183,7 +167,7 @@
                         <execution>
                             <id>build-native</id>
                             <goals>
-                                <goal>build</goal>
+                                <goal>compile-no-fork</goal>
                             </goals>
                             <phase>package</phase>
                         </execution>
@@ -191,6 +175,9 @@
                     <configuration>
                         <imageName>DNotes</imageName>
                         <mainClass>com.doruk.dnotes.Main</mainClass>
+                        <metadataRepository>
+                            <enabled>true</enabled>
+                        </metadataRepository>
                         <buildArgs>
                             <buildArg>--no-fallback</buildArg>
                             <buildArg>--enable-all-security-services</buildArg>
