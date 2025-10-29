@@ -135,30 +135,86 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-                <groupId>com.gluonhq</groupId>
-                <artifactId>gluonfx-maven-plugin</artifactId>
-                <version>1.0.27</version>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.7.1</version>
                 <configuration>
-                    <mainClass>com.doruk.dnotes.App</mainClass>
-                    <target>host</target>
-                    <verbose>true</verbose>
-                    <bundlesList>
-                        <list>com/sun/javafx/tk/quantum/QuantumMessagesBundle</list>
-                    </bundlesList>
-                    <resourcesList>
-                        <list>.*\.css$</list>
-                        <list>.*\.png$</list>
-                        <!-- Add other resource patterns if needed, e.g., FXML -->
-                        <!-- <list>.*\.fxml$</list> -->
-                    </resourcesList>
-                    <reflectionList>
-                        <!-- Add classes requiring reflection, e.g., for RichTextFX -->
-                    </reflectionList>
-                    <enableSWRendering>false</enableSWRendering>
+                    <!-- Basic application metadata -->
+                    <name>dNotes</name>
+                    <appVersion>${project.version}</appVersion>
+                    <vendor>Doruk Inc.</vendor>
+                    <copyright>Copyright (c) 2025 Doruk Inc.</copyright>
+
+                    <!--
+                    CRUCIAL: Path to a full JDK to bundle with the app.
+                    This completely bypasses jlink and its modularity checks.
+                    You MUST change this path to point to a JDK 21 installation on your build machine.
+                    -->
+                    <runtimeImage>/usr/lib/jvm/graalvm-25</runtimeImage>
+                    <!-- On Linux/macOS, it would be like: <runtimeImage>/usr/lib/jvm/java-21-openjdk-amd64</runtimeImage> -->
+                    <type>APP_IMAGE</type>
+                    <input>${project.build.directory}</input>
+                    <!--
+                    Input for jpackage: Point to the fat JAR created by the shade plugin.
+                    This is the simplest way to provide your application and all its dependencies.
+                    -->
+                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <mainClass>com.doruk.dnotes.Main</mainClass>
+
+                    <!-- Destination for the installer -->
+                    <destination>${project.build.directory}/dist</destination>
+
+                    <!-- Platform-specific icon configuration -->
+                    <icon>src/main/resources/icon.png</icon> <!-- For Windows (.ico) -->
+<!--                    <macIcon>src/main/resources/icon.png</macIcon> &lt;!&ndash; For macOS (.icns) &ndash;&gt;-->
+<!--                    <linuxIcon>src/main/resources/icon.png</linuxIcon> &lt;!&ndash; For Linux (.png) &ndash;&gt;-->
+
+                    <!--
+                    File association for .dnt files.
+                    This tells the OS that your app can open these files.
+                    -->
+                    <fileAssociations>src/main/resources/dnt-associations.properties</fileAssociations>
+
+                    <!-- Optional: JVM options for your application -->
+<!--                    <vmArgs>-->
+<!--                        <vmArg>-Xmx128m</vmArg>-->
+<!--                    </vmArgs>-->
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>jpackage</id>
+                        <!-- Bind to the 'verify' phase, which runs after 'package' -->
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.gluonhq</groupId>-->
+<!--                <artifactId>gluonfx-maven-plugin</artifactId>-->
+<!--                <version>1.0.27</version>-->
+<!--                <configuration>-->
+<!--                    <mainClass>com.doruk.dnotes.App</mainClass>-->
+<!--                    <target>host</target>-->
+<!--                    <verbose>true</verbose>-->
+<!--                    <bundlesList>-->
+<!--                        <list>com/sun/javafx/tk/quantum/QuantumMessagesBundle</list>-->
+<!--                    </bundlesList>-->
+<!--                    <resourcesList>-->
+<!--                        <list>.*\.css$</list>-->
+<!--                        <list>.*\.png$</list>-->
+<!--                        &lt;!&ndash; Add other resource patterns if needed, e.g., FXML &ndash;&gt;-->
+<!--                        &lt;!&ndash; <list>.*\.fxml$</list> &ndash;&gt;-->
+<!--                    </resourcesList>-->
+<!--                    <reflectionList>-->
+<!--                        &lt;!&ndash; Add classes requiring reflection, e.g., for RichTextFX &ndash;&gt;-->
+<!--                    </reflectionList>-->
+<!--                    <enableSWRendering>false</enableSWRendering>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>
