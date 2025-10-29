@@ -167,19 +167,8 @@
 
                     <!-- Platform-specific icon configuration -->
                     <icon>src/main/resources/icon.png</icon> <!-- For Windows (.ico) -->
-<!--                    <macIcon>src/main/resources/icon.png</macIcon> &lt;!&ndash; For macOS (.icns) &ndash;&gt;-->
-<!--                    <linuxIcon>src/main/resources/icon.png</linuxIcon> &lt;!&ndash; For Linux (.png) &ndash;&gt;-->
-
-                    <!--
-                    File association for .dnt files.
-                    This tells the OS that your app can open these files.
-                    -->
                     <fileAssociations>src/main/resources/dnt-associations.properties</fileAssociations>
 
-                    <!-- Optional: JVM options for your application -->
-<!--                    <vmArgs>-->
-<!--                        <vmArg>-Xmx128m</vmArg>-->
-<!--                    </vmArgs>-->
                 </configuration>
                 <executions>
                     <execution>
