@@ -9,6 +9,7 @@ import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.store.BookStore;
 import com.doruk.dnotes.store.GlobalConstants;
 import com.doruk.dnotes.utils.PathUtils;
+import javafx.application.Platform;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -56,7 +57,7 @@ public class SharedNoteController {
                 DIFactory.createSharedNoteModel().add(note);
             } catch (Exception e) {
                 if (e instanceof IllegalArgumentException iae) {
-                    DIFactory.createConfirmationModal("Invalid Shared Note", iae.getMessage()).showAndWait();
+                    Platform.runLater(() -> DIFactory.createConfirmationModal("Invalid Shared Note", iae.getMessage()).showAndWait());
                     return;
                 }
                 throw e;
