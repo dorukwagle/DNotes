@@ -11,13 +11,14 @@ REM Clean previous JRE
 if exist "%IMAGE_DIR%" rmdir /s /q "%IMAGE_DIR%"
 
 REM Create minimal JRE
-jlink --module-path "%JAVAFX_PATH%;%JAVA_HOME%\jmods" ^
-      --add-modules java.base,java.desktop,java.logging,java.sql,java.naming,java.xml,java.scripting,javafx.controls,javafx.graphics,javafx.fxml,jdk.crypto.ec ^
+jlink --module-path "%JAVA_HOME%\jmods" ^
+      --add-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql ^
       --compress=2 ^
       --strip-debug ^
       --no-header-files ^
       --no-man-pages ^
       --bind-services ^
+      --limit-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql ^
       --output "%IMAGE_DIR%"
 
 echo Minimal JRE created at %IMAGE_DIR%

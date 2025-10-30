@@ -1,0 +1,7 @@
+#!/bin/bash
+DIR="$(cd "$(dirname "$0")" && pwd)"
+"$DIR/jre/bin/java" \
+  --enable-native-access=ALL-UNNAMED \
+  -Xms128m -Xmx256m \
+  -Dfile.encoding=UTF-8 \
+  -jar "$DIR/dNotes.jar"
