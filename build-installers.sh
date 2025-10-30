@@ -10,7 +10,7 @@ echo ""
 # Configuration
 JAVAFX_PATH="$HOME/.Programs/javafx-sdk-25/lib"
 APP_VERSION="1.0.0"
-APP_NAME="DNotes"
+APP_NAME="dNotes"
 CURRENT_OS=$(uname -s)
 
 GREEN='\033[0;32m'
@@ -40,7 +40,7 @@ echo ""
 # =============================================================================
 echo -e "${BLUE}[1/7]${NC} Building application..."
 mvn clean package -q
-if [ ! -f "target/DNotes-${APP_VERSION}-shaded.jar" ]; then
+if [ ! -f "target/dNotes-${APP_VERSION}-shaded.jar" ]; then
     echo -e "${RED}✗${NC} Build failed"
     exit 1
 fi
@@ -51,7 +51,7 @@ echo ""
 # STEP 2: Collect Dependencies
 # =============================================================================
 echo -e "${BLUE}[2/7]${NC} Collecting dependencies..."
-mvn dependency:copy-dependencies -DoutputDirectory=target/libs -q
+mvn dependency:copy-dependencies -DoutputDirectory=target/libs -DexcludeArtifactIds=javafx-base,javafx-controls,javafx-graphics,javafx-fxml,javafx-media,javafx-swing,javafx-web -q
 echo -e "${GREEN}✓${NC} Dependencies collected"
 echo ""
 
@@ -66,15 +66,15 @@ DETECTED_MODULES=$(jdeps \
     --ignore-missing-deps \
     --print-module-deps \
     --class-path 'target/libs/*' \
-    target/DNotes-${APP_VERSION}-shaded.jar 2>/dev/null || echo "")
+    target/dNotes-${APP_VERSION}-shaded.jar 2>/dev/null || echo "")
 
-JAVAFX_MODULES="javafx.controls,javafx.graphics,javafx.base,javafx.fxml"
+JAVAFX_MODULES="javafx.controls,javafx.graphics,javafx.base"
 EXTRA_MODULES="jdk.crypto.ec"
 
 if [ -n "$DETECTED_MODULES" ]; then
     ALL_MODULES="$DETECTED_MODULES,$JAVAFX_MODULES,$EXTRA_MODULES"
 else
-    ALL_MODULES="java.base,java.desktop,java.sql,java.logging,java.xml,java.naming,$JAVAFX_MODULES,$EXTRA_MODULES"
+    ALL_MODULES="java.base,java.desktop,java.sql,java.logging,java.naming,$JAVAFX_MODULES,$EXTRA_MODULES"
 fi
 
 MODULES=$(echo "$ALL_MODULES" | tr ',' '\n' | sort -u | tr '\n' ',' | sed 's/,$//')
@@ -97,7 +97,7 @@ jlink \
     --strip-debug \
     --no-header-files \
     --no-man-pages \
-    --compress=2 \
+    --compress=zip-9 \
     --bind-services
 
 JRE_LINUX_SIZE=$(du -sh target/jre-linux | cut -f1)
@@ -114,11 +114,11 @@ jpackage \
     --name "$APP_NAME" \
     --app-version "$APP_VERSION" \
     --vendor "Doruk" \
-    --description "DNotes - Modern note-taking application" \
+    --description "dNotes - Modern note-taking application" \
     --copyright "Copyright © 2025 Doruk" \
     --runtime-image target/jre-linux \
     --input target \
-    --main-jar DNotes-${APP_VERSION}-shaded.jar \
+    --main-jar dNotes-${APP_VERSION}-shaded.jar \
     --main-class com.doruk.dnotes.Main \
     --dest target/dist-linux \
     --type deb \
@@ -148,7 +148,7 @@ rm -rf target/portable-linux
 mkdir -p target/portable-linux
 
 cp -r target/jre-linux target/portable-linux/jre
-cp target/DNotes-${APP_VERSION}-shaded.jar target/portable-linux/DNotes.jar
+cp target/dNotes-${APP_VERSION}-shaded.jar target/portable-linux/dNotes.jar
 
 # Create launcher script
 cat > target/portable-linux/dnotes << 'EOF'
@@ -158,7 +158,7 @@ exec "$SCRIPT_DIR/jre/bin/java" \
     -Dfile.encoding=UTF-8 \
     -Xms64m \
     -Xmx512m \
-    -jar "$SCRIPT_DIR/DNotes.jar" \
+    -jar "$SCRIPT_DIR/dNotes.jar" \
     "$@"
 EOF
 chmod +x target/portable-linux/dnotes
@@ -200,8 +200,8 @@ EOF
 # Create tar.xz archive
 cd target
 echo "  Compressing with xz (this may take a moment)..."
-tar -cJf DNotes-${APP_VERSION}-linux-portable.tar.xz portable-linux/
-PORTABLE_SIZE=$(du -sh DNotes-${APP_VERSION}-linux-portable.tar.xz | cut -f1)
+tar -cJf dNotes-${APP_VERSION}-linux-portable.tar.xz portable-linux/
+PORTABLE_SIZE=$(du -sh dNotes-${APP_VERSION}-linux-portable.tar.xz | cut -f1)
 cd ..
 
 echo -e "${GREEN}✓${NC} Portable bundle created (${YELLOW}${PORTABLE_SIZE}${NC})"
@@ -228,12 +228,12 @@ echo ========================================
 echo.
 
 set APP_VERSION=1.0.0
-set APP_NAME=DNotes
+set APP_NAME=dNotes
 set JAVAFX_PATH=C:\javafx-sdk-25\lib
 
 echo [1/5] Building application...
 call mvn clean package -q
-if not exist "target\DNotes-%APP_VERSION%-shaded.jar" (
+if not exist "target\dNotes-%APP_VERSION%-shaded.jar" (
     echo Error: Build failed
     exit /b 1
 )
@@ -241,15 +241,15 @@ echo Done.
 echo.
 
 echo [2/5] Analyzing modules...
-for /f "delims=" %%i in ('jdeps --module-path "%JAVAFX_PATH%" --multi-release 25 --ignore-missing-deps --print-module-deps target\DNotes-%APP_VERSION%-shaded.jar 2^>nul') do set DETECTED_MODULES=%%i
+for /f "delims=" %%i in ('jdeps --module-path "%JAVAFX_PATH%" --multi-release 25 --ignore-missing-deps --print-module-deps target\dNotes-%APP_VERSION%-shaded.jar 2^>nul') do set DETECTED_MODULES=%%i
 
-set JAVAFX_MODULES=javafx.controls,javafx.graphics,javafx.base,javafx.fxml
+set JAVAFX_MODULES=javafx.controls,javafx.graphics,javafx.base
 set EXTRA_MODULES=jdk.crypto.ec
 
 if defined DETECTED_MODULES (
     set ALL_MODULES=%DETECTED_MODULES%,%JAVAFX_MODULES%,%EXTRA_MODULES%
 ) else (
-    set ALL_MODULES=java.base,java.desktop,java.sql,java.logging,java.xml,%JAVAFX_MODULES%,%EXTRA_MODULES%
+    set ALL_MODULES=java.base,java.desktop,java.sql,java.logging,%JAVAFX_MODULES%,%EXTRA_MODULES%
 )
 
 echo Done.
@@ -266,7 +266,7 @@ echo.
 echo [4/5] Creating MSI installer...
 if exist "target\dist-windows" rmdir /s /q target\dist-windows
 
-jpackage --name "%APP_NAME%" --app-version "%APP_VERSION%" --vendor "Doruk" --description "DNotes - Modern note-taking application" --copyright "Copyright 2025 Doruk" --runtime-image target\jre-windows --input target --main-jar DNotes-%APP_VERSION%-shaded.jar --main-class com.doruk.dnotes.Main --dest target\dist-windows --type msi --win-dir-chooser --win-menu --win-shortcut --win-menu-group "DNotes" --java-options "-Dfile.encoding=UTF-8" --java-options "-Xms64m" --java-options "-Xmx512m"
+jpackage --name "%APP_NAME%" --app-version "%APP_VERSION%" --vendor "Doruk" --description "dNotes - Modern note-taking application" --copyright "Copyright 2025 Doruk" --runtime-image target\jre-windows --input target --main-jar dNotes-%APP_VERSION%-shaded.jar --main-class com.doruk.dnotes.Main --dest target\dist-windows --type msi --win-dir-chooser --win-menu --win-shortcut --win-menu-group "dNotes" --java-options "-Dfile.encoding=UTF-8" --java-options "-Xms64m" --java-options "-Xmx512m"
 
 echo Done.
 echo.
@@ -276,14 +276,14 @@ if exist "target\portable-windows" rmdir /s /q target\portable-windows
 mkdir target\portable-windows
 
 xcopy /E /I /Q target\jre-windows target\portable-windows\jre
-copy target\DNotes-%APP_VERSION%-shaded.jar target\portable-windows\DNotes.jar
+copy target\dNotes-%APP_VERSION%-shaded.jar target\portable-windows\dNotes.jar
 
 echo @echo off > target\portable-windows\dnotes.bat
 echo set SCRIPT_DIR=%%~dp0 >> target\portable-windows\dnotes.bat
-echo "%%SCRIPT_DIR%%jre\bin\java.exe" -Dfile.encoding=UTF-8 -Xms64m -Xmx512m -jar "%%SCRIPT_DIR%%DNotes.jar" %%* >> target\portable-windows\dnotes.bat
+echo "%%SCRIPT_DIR%%jre\bin\java.exe" -Dfile.encoding=UTF-8 -Xms64m -Xmx512m -jar "%%SCRIPT_DIR%%dNotes.jar" %%* >> target\portable-windows\dnotes.bat
 
 cd target
-powershell Compress-Archive -Path portable-windows -DestinationPath DNotes-%APP_VERSION%-windows-portable.zip -Force
+powershell Compress-Archive -Path portable-windows -DestinationPath dNotes-%APP_VERSION%-windows-portable.zip -Force
 cd ..
 
 echo.
@@ -291,8 +291,8 @@ echo ========================================
 echo   Build Complete!
 echo ========================================
 echo.
-echo MSI Installer: target\dist-windows\DNotes-%APP_VERSION%.msi
-echo Portable ZIP:  target\DNotes-%APP_VERSION%-windows-portable.zip
+echo MSI Installer: target\dist-windows\dNotes-%APP_VERSION%.msi
+echo Portable ZIP:  target\dNotes-%APP_VERSION%-windows-portable.zip
 echo.
 pause
 EOFWIN
@@ -324,9 +324,9 @@ if [ -f "$DEB_FILE" ]; then
 fi
 
 echo -e "  ${GREEN}✓ Portable Bundle (Any Linux)${NC}"
-echo "    File: target/DNotes-${APP_VERSION}-linux-portable.tar.xz"
+echo "    File: target/dNotes-${APP_VERSION}-linux-portable.tar.xz"
 echo "    Size: $PORTABLE_SIZE"
-echo "    Usage: tar -xJf DNotes-${APP_VERSION}-linux-portable.tar.xz"
+echo "    Usage: tar -xJf dNotes-${APP_VERSION}-linux-portable.tar.xz"
 echo "           cd portable-linux && ./dnotes"
 echo ""
 
@@ -334,8 +334,8 @@ echo -e "${YELLOW}📦 Windows Distribution:${NC}"
 echo ""
 echo -e "  ${BLUE}→ Run on Windows:${NC} build-windows-msi.bat"
 echo "    Will create:"
-echo "    • target\\dist-windows\\DNotes-${APP_VERSION}.msi"
-echo "    • target\\DNotes-${APP_VERSION}-windows-portable.zip"
+echo "    • target\\dist-windows\\dNotes-${APP_VERSION}.msi"
+echo "    • target\\dNotes-${APP_VERSION}-windows-portable.zip"
 echo ""
 
 echo "╔════════════════════════════════════════════════════════╗"
