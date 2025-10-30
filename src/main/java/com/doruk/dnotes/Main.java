@@ -1,5 +1,7 @@
 package com.doruk.dnotes;
 
+import com.doruk.dnotes.store.GlobalConstants;
+
 /**
  * A separate main class is needed to launch the JavaFX application from a fat JAR.
  * This is a standard workaround for the JavaFX modularity system.
@@ -12,6 +14,7 @@ public class Main {
             System.exit(0);
         }
         Runtime.getRuntime().addShutdownHook(new Thread(SingleAppInstance::releaseLock));
+        System.setProperty("prism.title", GlobalConstants.APP_NAME);
         // This call will correctly start the JavaFX application.
         App.run(args);
     }
