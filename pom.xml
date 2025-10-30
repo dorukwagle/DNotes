@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -77,11 +78,11 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
-
     </dependencies>
+
     <build>
         <plugins>
-            <!-- Standard compiler and JavaFX plugins remain -->
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -90,6 +91,8 @@
                     <release>25</release>
                 </configuration>
             </plugin>
+
+            <!-- JavaFX for development (mvn javafx:run) -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -98,155 +101,40 @@
                     <mainClass>dnotes/com.doruk.dnotes.Main</mainClass>
                 </configuration>
             </plugin>
-            <!--
-            ============================================================================
-            REMOVED: maven-shade-plugin and jpackage-maven-plugin.
-            They are replaced by the GraalVM Native Build Tools plugin.
-            ============================================================================
-            -->
+
+            <!-- Create fat JAR with all dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.doruk.dnotes.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <finalName>DNotes-${project.version}-shaded</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    <profiles>
-        <!--
-        ============================================================================
-        OS-SPECIFIC PROFILES
-        These profiles are activated automatically based on the build environment.
-        Their only job is to set a property with the correct path to the native
-        SQLite library for the current operating system.
-        ============================================================================
-        -->
-        <profile>
-            <id>native-linux</id>
-            <activation>
-                <os>
-                    <family>linux</family>
-                </os>
-            </activation>
-            <properties>
-                <sqlite.native.library>org/sqlite/native/Linux/x86_64/libsqlitejdbc.so</sqlite.native.library>
-            </properties>
-        </profile>
-        <profile>
-            <id>native-windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <sqlite.native.library>org/sqlite/native/Windows/x86_64/sqlitejdbc.dll</sqlite.native.library>
-            </properties>
-        </profile>
-        <profile>
-            <id>native-macos</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <sqlite.native.library>org/sqlite/native/Mac/x86_64/libsqlitejdbc.dylib</sqlite.native.library>
-            </properties>
-        </profile>
 
-        <!--
-        ============================================================================
-        PROFILE 1: 'native'
-        This is the main profile you activate to trigger a GraalVM native build.
-        You will run: mvn package -Pnative
-        It uses the property set by the OS-specific profiles above.
-        ============================================================================
-        -->
-        <profile>
-            <id>native</id>
-            <build>
-                <plugins>
-                    <!-- This is the main GraalVM Native Build Tools plugin. -->
-                    <plugin>
-                        <groupId>org.graalvm.buildtools</groupId>
-                        <artifactId>native-maven-plugin</artifactId>
-                        <version>0.11.2</version>
-                        <extensions>true</extensions>
-                        <executions>
-                            <execution>
-                                <id>build-native</id>
-                                <goals>
-                                    <goal>compile-no-fork</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <imageName>DNotes</imageName>
-                            <mainClass>com.doruk.dnotes.Main</mainClass>
-                            <metadataRepository>
-                                <enabled>true</enabled>
-                            </metadataRepository>
-                            <buildArgs>
-                                <buildArg>--no-fallback</buildArg>
-                                <buildArg>--enable-all-security-services</buildArg>
-                                <buildArg>--report-unsupported-elements-at-runtime</buildArg>
-                                <buildArg>-H:+AddAllCharsets</buildArg>
-                                <buildArg>-H:EnableURLProtocols=http,https</buildArg>
-                                <!-- FIX: Added argument to enable native access for SQLite JDBC -->
-                                <buildArg>--enable-native-access=ALL-UNNAMED</buildArg>
-
-                                <buildArg>--enable-preview</buildArg>
-                                <buildArg>--initialize-at-build-time=com.sun.javafx.tk.quantum.QuantumToolkit</buildArg>
-                                <buildArg>--initialize-at-build-time=com.sun.prism.es2.ES2Pipeline</buildArg>
-                                <buildArg>--initialize-at-build-time=com.sun.javafx.font.PrismFontFactory</buildArg>
-                                <buildArg>--initialize-at-build-time=com.sun.javafx.application.PlatformImpl</buildArg>
-                                <buildArg>--initialize-at-build-time=com.sun.glass.ui.monocle.MonoclePlatformFactory
-                                </buildArg>
-                                <buildArg>--initialize-at-build-time=com.sun.glass.ui.gtk.GtkPlatformFactory</buildArg>
-
-                            </buildArgs>
-                            <resources>
-                                <includes>
-                                    <include>.*\.css</include>
-                                    <include>.*\.png</include>
-                                    <include>.*\.ttf</include>
-                                    <include>.*\.fxml</include>
-                                    <!-- FIX: This now uses the property that was set by the active OS profile -->
-                                    <include>${sqlite.native.library}</include>
-                                    <include>libprism_.*\..*</include>
-                                    <include>libglass.*\..*</include>
-                                    <include>libjavafx.*\..*</include>
-                                    <include>libdecora_sse.*\..*</include>
-                                </includes>
-                            </resources>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!--
-        ============================================================================
-        PROFILE 2: 'agent'
-        This profile configures the tracing agent to generate native-image config.
-        You will run: mvn javafx:run -Pagent
-        ============================================================================
-        -->
-        <profile>
-            <id>agent</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.openjfx</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <version>0.0.8</version>
-                        <configuration>
-                            <mainClass>com.doruk.dnotes.Main</mainClass>
-                            <options>
-                                <option>
-                                    -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image
-                                </option>
-                            </options>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
