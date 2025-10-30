@@ -16,6 +16,7 @@ import com.doruk.dnotes.utils.UpdatesTracker;
 import com.doruk.dnotes.views.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -45,6 +46,8 @@ public class App extends Application {
     public void start(Stage stage) {
         // set default javafx exception handler
         Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
         Map<ViewPage, Supplier<IView>> viewMap = Map.of(
                 ViewPage.HOME, HomePage::new,
