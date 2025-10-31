@@ -19,6 +19,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
 import java.util.Date;
@@ -47,6 +48,7 @@ public class App extends Application {
         // set default javafx exception handler
         Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
 
+        // set icon for taskbarthrow new RuntimeException(e);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
         Map<ViewPage, Supplier<IView>> viewMap = Map.of(

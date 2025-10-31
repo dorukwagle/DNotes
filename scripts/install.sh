@@ -30,6 +30,7 @@ Exec=${INSTALL_DIR}/dNotes
 Icon=dNotes
 Type=Application
 Categories=Office;Utility;
+Terminal=false
 StartupNotify=true
 StartupWMClass=App
 EOF
