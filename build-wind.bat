@@ -1,45 +1,81 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
+:: -----------------------------
+:: Config
+:: -----------------------------
 set APP_NAME=dNotes
 set APP_VERSION=1.0.0
+set MAIN_CLASS=com.doruk.dnotes.Main
+
 set JAR_FILE=target\dNotes-%APP_VERSION%-shaded.jar
-set JAVAFX_PATH=C:\javafx-sdk-25\lib
-set IMAGE_DIR=target\jre-windows
+set IMAGE_DIR=target\dNotes-win\jre
+set APP_DIR=target\dNotes-win
+set MSI_DIR=target\dist-win
+set ICON_FILE=src\main\resources\icon.png
 
-REM Clean previous JRE
-if exist "%IMAGE_DIR%" rmdir /s /q "%IMAGE_DIR%"
+:: -----------------------------
+:: Clean previous build
+:: -----------------------------
+if exist "%APP_DIR%" rmdir /s /q "%APP_DIR%"
+if exist "%MSI_DIR%" rmdir /s /q "%MSI_DIR%"
 
-REM Create minimal JRE
-jlink --module-path "%JAVA_HOME%\jmods" ^
-      --add-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql ^
-      --compress=2 ^
-      --strip-debug ^
-      --no-header-files ^
-      --no-man-pages ^
-      --bind-services ^
-      --limit-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql ^
-      --output "%IMAGE_DIR%"
+mkdir "%APP_DIR%"
 
-echo Minimal JRE created at %IMAGE_DIR%
+:: -----------------------------
+:: Build minimal JRE
+:: -----------------------------
+jlink ^
+  --module-path "%JAVA_HOME%\jmods" ^
+  --add-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql,javafx.base,javafx.controls,javafx.graphics ^
+  --compress=2 ^
+  --strip-debug ^
+  --no-header-files ^
+  --no-man-pages ^
+  --bind-services ^
+  --limit-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql,javafx.base,javafx.controls,javafx.graphics ^
+  --output "%IMAGE_DIR%"
 
-REM Build MSI
-if exist target\dist-windows rmdir /s /q target\dist-windows
-jpackage --name "%APP_NAME%" --app-version "%APP_VERSION%" --vendor "Doruk" --runtime-image "%IMAGE_DIR%" --input target --main-jar dNotes-%APP_VERSION%-shaded.jar --main-class com.doruk.dnotes.Main --dest target\dist-windows --type msi --win-shortcut --win-menu --win-menu-group "dNotes" --icon src\main\resources\icon.png
+:: Remove unused JVM folders (server/client)
+rmdir /s /q "%IMAGE_DIR%\lib\server"
+rmdir /s /q "%IMAGE_DIR%\lib\client"
+ren "%IMAGE_DIR%\lib\minimal" server
 
-echo MSI created at target\dist-windows\%APP_NAME%-%APP_VERSION%.msi
+:: -----------------------------
+:: Copy app jar, scripts, icon
+:: -----------------------------
+copy "%JAR_FILE%" "%APP_DIR%\dNotes.jar"
+xcopy /s /y scripts "%APP_DIR%\scripts"
+copy "%ICON_FILE%" "%APP_DIR%\icon.png"
 
-REM Create portable ZIP
-if exist target\portable-windows rmdir /s /q target\portable-windows
-mkdir target\portable-windows
-xcopy /E /I "%IMAGE_DIR%" target\portable-windows\jre
-copy "%JAR_FILE%" target\portable-windows\dNotes.jar
+:: -----------------------------
+:: Make launcher executable (if using .bat)
+:: -----------------------------
+:: no chmod needed for Windows
 
-echo @echo off > target\portable-windows\dnotes.bat
-echo set SCRIPT_DIR=%%~dp0 >> target\portable-windows\dnotes.bat
-echo "%%SCRIPT_DIR%%jre\bin\java.exe" -Dfile.encoding=UTF-8 -Xms64m -Xmx512m -jar "%%SCRIPT_DIR%%dNotes.jar" %%* >> target\portable-windows\dnotes.bat
+:: -----------------------------
+:: Create MSI installer using jpackage
+:: -----------------------------
+jpackage ^
+  --name "%APP_NAME%" ^
+  --app-version "%APP_VERSION%" ^
+  --vendor "Doruk" ^
+  --description "dNotes - Modern note-taking application" ^
+  --copyright "Copyright © 2025 Doruk" ^
+  --runtime-image "%IMAGE_DIR%" ^
+  --input "%APP_DIR%" ^
+  --main-jar dNotes.jar ^
+  --main-class %MAIN_CLASS% ^
+  --dest "%MSI_DIR%" ^
+  --type msi ^
+  --icon "%ICON_FILE%" ^
+  --win-shortcut ^
+  --win-menu ^
+  --win-dir-chooser ^
+  --java-options "-Dfile.encoding=UTF-8 -Xms64m -Xmx256m"
 
-powershell Compress-Archive -Path target\portable-windows -DestinationPath target\dNotes-%APP_VERSION%-windows-portable.zip -Force
+echo.
+echo ✓ MSI installer created at %MSI_DIR%
+echo Done.
 
-echo Portable ZIP created at target\dNotes-%APP_VERSION%-windows-portable.zip
-endlocal
+pause
