@@ -7,7 +7,9 @@ DESKTOP_FILE="$HOME/.local/share/applications/${APP_NAME}.desktop"
 
 echo "Installing $APP_NAME..."
 
-dNotes-uninstall >> /dev/null
+if command -v dNotes-uninstall >/dev/null 2>&1; then
+    dNotes-uninstall >> /dev/null 2>&1
+fi
 
 # Copy the folder
 mkdir -p "$INSTALL_DIR"

@@ -31,6 +31,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <finalName>dNotes-${project.version}-shaded</finalName>
               <transformers>
                 <transformer>
                   <mainClass>com.doruk.dnotes.Main</mainClass>
@@ -47,8 +48,11 @@
                   </excludes>
                 </filter>
               </filters>
-              <finalName>dNotes-${project.version}-shaded</finalName>
-              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.openjfx:*</exclude>
+                </excludes>
+              </artifactSet>
             </configuration>
           </execution>
         </executions>

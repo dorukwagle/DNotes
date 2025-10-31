@@ -23,14 +23,14 @@ mkdir -p "$APP_DIR"
 # 2️⃣ Build minimal runtime
 $HOME/.Programs/jdk-25/bin/jlink \
   --module-path "$HOME/.Programs/jdk-25/jmods" \
-  --add-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql \
+  --add-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql,javafx.base,javafx.controls,javafx.graphics \
   --compress=zip-9 \
   --strip-debug \
   --no-header-files \
   --no-man-pages \
   --bind-services \
   --output "$IMAGE_DIR" \
-  --limit-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql
+  --limit-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql,javafx.base,javafx.controls,javafx.graphics
 
 
 echo -e "${GREEN}✓ Minimal JRE created at $IMAGE_DIR${NC}"

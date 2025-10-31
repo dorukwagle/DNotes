@@ -178,9 +178,18 @@ public class App extends Application {
         }
     }
 
-    public static void run(String[] args) {
+    public static void main(String[] args) {
         // catch all uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
-        launch();
+
+        // check if another instance is running
+        if (!SingleAppInstance.lockInstance()) {
+            System.out.println("Another instance of dNotes is already running.");
+            System.exit(0);
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread(SingleAppInstance::releaseLock));
+        System.setProperty("prism.title", GlobalConstants.APP_NAME);
+
+        launch(args);
     }
 }
