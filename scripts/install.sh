@@ -32,7 +32,7 @@ Type=Application
 Categories=Office;Utility;
 Terminal=false
 StartupNotify=true
-StartupWMClass=App
+StartupWMClass=com.doruk.dnotes.App
 EOF
 
 # Create shell launch shortcut
