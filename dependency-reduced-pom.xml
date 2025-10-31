@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.doruk.dnotes</groupId>
-  <artifactId>DNotes</artifactId>
+  <artifactId>dNotes</artifactId>
   <version>1.0.0</version>
   <build>
     <plugins>
@@ -18,7 +18,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.2.0</version>
         <configuration>
-          <mainClass>com.doruk.dnotes.Main</mainClass>
+          <mainClass>com.doruk.dnotes.App</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -31,16 +31,17 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>dNotes-${project.version}-shaded</finalName>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>shaded</shadedClassifierName>
               <transformers>
                 <transformer>
-                  <mainClass>com.doruk.dnotes.Main</mainClass>
+                  <mainClass>com.doruk.dnotes.App</mainClass>
                 </transformer>
                 <transformer />
               </transformers>
               <filters>
                 <filter>
-                  <artifact>*:*</artifact>
+                  <artifact>:</artifact>
                   <excludes>
                     <exclude>META-INF/*.SF</exclude>
                     <exclude>META-INF/*.DSA</exclude>
