@@ -21,8 +21,8 @@ rm -rf "$APP_DIR" "$PORTABLE_TAR"
 mkdir -p "$APP_DIR"
 
 # 2️⃣ Build minimal runtime
-$HOME/.Programs/jdk-25-lite/bin/jlink \
-  --module-path "$HOME/.Programs/jdk-25-lite/jmods" \
+$HOME/.Programs/jdk-25/bin/jlink \
+  --module-path "$HOME/.Programs/jdk-25/jmods" \
   --add-modules java.base,java.desktop,java.logging,jdk.crypto.ec,java.sql \
   --compress=zip-9 \
   --strip-debug \
