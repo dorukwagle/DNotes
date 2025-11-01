@@ -24,9 +24,9 @@ public class BackupWriter {
         var backupFile = Path.of(PathUtils.generateBackupFile());
 
         try (
-                var dbIn = new BufferedInputStream(Files.newInputStream(dbFilePath));
+                var dbIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(dbFilePath));
                 var dirStream = Files.newDirectoryStream(notesDir);
-                var outFile = new BufferedOutputStream(Files.newOutputStream(backupFile))
+                var outFile = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(backupFile))
                 ) {
             var seed = KeyUtil.generateSeed();
             var metaWriter = new MetaWriter(outFile);
@@ -34,31 +34,32 @@ public class BackupWriter {
             metaWriter.commit();
 
             OutputStream stream = outFile;
+            try {
+                // write password hash if encrypted
+                if (encrypt) writePasswordHash(password, DIFactory.createObfuscator(stream, seed));
 
-            // write password hash if encrypted
-            if (encrypt) writePasswordHash(password, DIFactory.createObfuscator(stream, seed));
+                if (encrypt) // apply the encryption
+                    stream = DIFactory.createCryptoOutputStream(stream, password);
 
-            if (encrypt) // apply the encryption
-                stream = DIFactory.createCryptoOutputStream(stream, password);
+                stream = DIFactory.createObfuscator(
+                        stream,
+                        seed
+                );
 
-            stream = DIFactory.createObfuscator(
-                            stream,
-                            seed
-            );
+                // write database start
+                stream.write(Markers.DATABASE_START);
 
-            // write database start
-            stream.write(Markers.DATABASE_START);
+                // write length
+                writeLength(stream, Files.size(dbFilePath));
 
-            // write length
-            writeLength(stream, Files.size(dbFilePath));
+                // write database
+                writeFile(dbIn, stream, Files.size(dbFilePath));
 
-            // write database
-            writeFile(dbIn, stream, Files.size(dbFilePath));
-
-            // write notes
-            writeNotes(dirStream, stream);
-
-            stream.close();
+                // write notes
+                writeNotes(dirStream, stream);
+            } finally {
+                stream.close();
+            }
         }
     }
 
@@ -82,7 +83,7 @@ public class BackupWriter {
             writeLength(stream, Files.size(note));
 
             // write data
-            try (var noteIn = new BufferedInputStream(Files.newInputStream(note))) {
+            try (var noteIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(note))) {
                 writeFile(noteIn, stream, Files.size(note));
             }
         }

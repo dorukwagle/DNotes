@@ -12,8 +12,10 @@ import java.util.Optional;
 
 public final class FileAccessManager {
     private static final FileAccessManager INSTANCE = new FileAccessManager();
-    private Path openedFile;
-    private boolean inUse;
+    private Path openedFileRead;
+    private boolean readInUse;
+    private Path openedFileWrite;
+    private boolean writeInUse;
 
     private FileAccessManager() {}
 
@@ -21,57 +23,79 @@ public final class FileAccessManager {
         return INSTANCE;
     }
 
-    private void setOpen(Path path) {
-        inUse = true;
-        openedFile = path;
+    private void setOpenRead(Path path) {
+        readInUse = true;
+        openedFileRead = path;
     }
 
-    private void setClose() {
-        inUse = false;
-        openedFile = null;
+    private void setCloseRead() {
+        readInUse = false;
+        openedFileRead = null;
+    }
+
+    private void setOpenWrite(Path path) {
+        writeInUse = true;
+        openedFileWrite = path;
+    }
+
+    private void setCloseWrite() {
+        writeInUse = false;
+        openedFileWrite = null;
     }
 
     public synchronized OutputStream openFileForWrite(Path path) throws IOException {
-        ensureNoActiveAccess();
+        ensureNoActiveWrite();
         OutputStream stream = new FileOutputStream(path.toFile());
-        setOpen(path);
+        setOpenWrite(path);
 
         return new FilterOutputStream(stream) {
             @Override
             public void close() throws IOException {
                 super.close();
                 synchronized (FileAccessManager.this) {
-                    setClose();
+                    setCloseWrite();
                 }
             }
         };
     }
 
     public synchronized InputStream openFileForRead(Path path) throws IOException {
-        ensureNoActiveAccess();
+        ensureNoActiveRead();
         InputStream stream = new FileInputStream(path.toFile());
-        setOpen(path);
+        setOpenRead(path);
 
         return new FilterInputStream(stream) {
             @Override
             public void close() throws IOException {
                 super.close();
                 synchronized (FileAccessManager.this) {
-                    setClose();
+                    setCloseRead();
                 }
             }
         };
     }
 
-    private void ensureNoActiveAccess() {
-        if (inUse && openedFile != null) {
+    private void ensureNoActiveRead() {
+        if (readInUse && openedFileRead != null) {
             throw new IllegalStateException(
-                    "Another file is currently open: " + openedFile
+                    "Another file is currently open: " + openedFileRead
             );
         }
     }
 
-    public synchronized Optional<Path> getOpenedFile() {
-        return Optional.ofNullable(openedFile);
+    private void ensureNoActiveWrite() {
+        if (writeInUse && openedFileWrite != null) {
+            throw new IllegalStateException(
+                    "Another file is currently open: " + openedFileWrite
+            );
+        }
+    }
+
+    public synchronized Optional<Path> getOpenedFileRead() {
+        return Optional.ofNullable(openedFileRead);
+    }
+
+    public synchronized Optional<Path> getOpenedFileWrite() {
+        return Optional.ofNullable(openedFileWrite);
     }
 }

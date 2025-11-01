@@ -7,6 +7,7 @@ import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.IReader;
 import com.doruk.dnotes.store.GlobalConstants;
+import com.doruk.dnotes.utils.FileAccessManager;
 import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedInputStream;
@@ -57,27 +58,30 @@ public class NoteReader implements IReader {
         var decoder = DIFactory.createMarkdownDecoder(editor.getCodecsValues());
 
         // create a file input stream
-        InputStream fileIn = new BufferedInputStream(Files.newInputStream(filePath));
+        InputStream fileIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(filePath));
 
-        // read the file metadata
-        var metaReader = new MetaReader(fileIn);
-        metaReader.parse();
+        try {
+            // read the file metadata
+            var metaReader = new MetaReader(fileIn);
+            metaReader.parse();
 
-        // validate if the file meta is correct for processing notes.
-        this.validateMeta(metaReader);
+            // validate if the file meta is correct for processing notes.
+            this.validateMeta(metaReader);
 
-        // get the obfuscation seed
-        var seed = metaReader.getObfuscationSeed();
+            // get the obfuscation seed
+            var seed = metaReader.getObfuscationSeed();
 
-        // create file input stream pipeline
-        if (metaReader.isDocEncrypted()) // if file is encrypted, apply decryptor
-            fileIn = DIFactory.createCryptoInputStream(fileIn, password);
+            // create file input stream pipeline
+            if (metaReader.isDocEncrypted()) // if file is encrypted, apply decryptor
+                fileIn = DIFactory.createCryptoInputStream(fileIn, password);
 
-        var stream = new GZIPInputStream(DIFactory.createObfuscator(
-                fileIn, seed));
-
-        // pass the stream to the decoder to decode and load the data
-        decoder.decode(stream, editor::decodeAndLoad);
-        stream.close();
+            try (var stream = new GZIPInputStream(DIFactory.createObfuscator(
+                    fileIn, seed))) {
+                // pass the stream to the decoder to decode and load the data
+                decoder.decode(stream, editor::decodeAndLoad);
+            }
+        } finally {
+            fileIn.close();
+        }
     }
 }

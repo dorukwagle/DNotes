@@ -5,6 +5,7 @@ import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaWriter;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
+import com.doruk.dnotes.utils.FileAccessManager;
 import com.doruk.dnotes.utils.KeyUtil;
 import com.doruk.dnotes.utils.NumberUtils;
 import com.doruk.dnotes.utils.PathUtils;
@@ -14,7 +15,6 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -22,8 +22,8 @@ public class SharedWriter {
     public static void write(BookPageDto note, String sharedBy) throws ProcessingStageException {
         var inPath = Path.of(PathUtils.getNoteFilename(note.getContentId()));
 
-        try (var inFile = new BufferedInputStream(Files.newInputStream(inPath));
-             var outFile = new BufferedOutputStream(Files.newOutputStream(Path.of(
+        try (var inFile = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(inPath));
+             var outFile = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(Path.of(
                      PathUtils.generateSharedNoteFile(note.getName()))
              ))
         ) {

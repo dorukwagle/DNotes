@@ -4,6 +4,7 @@ import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.MarkdownEditor.interfaces.IMarkdownEditor;
 import com.doruk.dnotes.dataUtils.MetaWriter;
 import com.doruk.dnotes.interfaces.IWriter;
+import com.doruk.dnotes.utils.FileAccessManager;
 import com.doruk.dnotes.utils.KeyUtil;
 import com.doruk.dnotes.utils.PathUtils;
 
@@ -44,27 +45,28 @@ public class NoteWriter implements IWriter {
         var seed = KeyUtil.generateSeed();
 
         // create file output stream
-        OutputStream fileOut = new BufferedOutputStream(Files.newOutputStream(filePath));
+        OutputStream fileOut = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(filePath));
+        try {
+            // create meta writer
+            var metaWriter = new MetaWriter(fileOut);
+            // write default metadata
+            metaWriter.writeDefaultsMeta(new Date(), seed, encrypt);
+            metaWriter.commit();
 
-        // create meta writer
-        var metaWriter = new MetaWriter(fileOut);
-        // write default metadata
-        metaWriter.writeDefaultsMeta(new Date(), seed, encrypt);
-        metaWriter.commit();
+            // create a pipeline of streams for processing the data
+            if (encrypt) // apply the encryption
+                fileOut = DIFactory.createCryptoOutputStream(fileOut, password);
 
-        // create a pipeline of streams for processing the data
-        if (encrypt) // apply the encryption
-            fileOut = DIFactory.createCryptoOutputStream(fileOut, password);
-
-        var stream = new GZIPOutputStream(
-                DIFactory.createObfuscator(
-                        fileOut,
-                        seed
-                )
-        );
-
-        encoder.encode(nodes, stream);
-        stream.flush();
-        stream.close();
+            try (var stream = new GZIPOutputStream(
+                    DIFactory.createObfuscator(
+                            fileOut,
+                            seed
+                    )
+            )) {
+                encoder.encode(nodes, stream);
+            }
+        } finally {
+            fileOut.close();
+        }
     }
 }

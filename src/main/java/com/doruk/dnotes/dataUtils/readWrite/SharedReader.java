@@ -5,12 +5,12 @@ import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
+import com.doruk.dnotes.utils.FileAccessManager;
 import com.doruk.dnotes.utils.NumberUtils;
 import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class SharedReader {
@@ -18,8 +18,8 @@ public class SharedReader {
         var contentId = PathUtils.generateFileId();
         var outPath = Path.of(PathUtils.getNoteFilename(contentId));
         try (
-                var inFile = new BufferedInputStream(new FileInputStream(file));
-            var outFile = new BufferedOutputStream(Files.newOutputStream(outPath))
+                var inFile = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(file.toPath()));
+                var outFile = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(outPath))
                 ) {
             var metaReader = new MetaReader(inFile);
             metaReader.parse();

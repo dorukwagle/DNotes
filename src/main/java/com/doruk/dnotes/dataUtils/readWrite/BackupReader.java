@@ -4,10 +4,7 @@ import com.doruk.dnotes.DIFactory;
 import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
-import com.doruk.dnotes.utils.DatabaseConnector;
-import com.doruk.dnotes.utils.HashUtil;
-import com.doruk.dnotes.utils.NumberUtils;
-import com.doruk.dnotes.utils.PathUtils;
+import com.doruk.dnotes.utils.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +25,7 @@ public class BackupReader {
     }
 
     public static MetaReader readMetadata(File backup) throws IOException {
-        try (var backupIn = new BufferedInputStream(new FileInputStream(backup))) {
+        try (var backupIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(backup.toPath()))) {
             var metaReader = new MetaReader(backupIn);
             metaReader.parse();
 
@@ -47,35 +44,36 @@ public class BackupReader {
         if (encrypted && password == null)
             throw new IllegalArgumentException("Password cannot be null if encryption is applied");
 
-        try (InputStream backupIn = new BufferedInputStream(new FileInputStream(backup))) {
+        try (InputStream backupIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(backup.toPath()))) {
             // read metadata
             var metaReader = new MetaReader(backupIn);
             metaReader.parse();
 
             InputStream streamIn = backupIn;
+            try {
+                if (encrypted) {
+                    var passwordHash = readPasswordHash(DIFactory.createObfuscator(streamIn, metaReader.getObfuscationSeed()));
+                    if (!HashUtil.compareHash(password, passwordHash))
+                        throw new IllegalArgumentException("The password you entered is incorrect!");
 
-            if (encrypted) {
-                var passwordHash = readPasswordHash(DIFactory.createObfuscator(streamIn, metaReader.getObfuscationSeed()));
-                if (!HashUtil.compareHash(password, passwordHash))
-                    throw new IllegalArgumentException("The password you entered is incorrect!");
+                    // create decryption stream
+                    streamIn = DIFactory.createCryptoInputStream(streamIn, password);
+                }
 
-                // create decryption stream
-                streamIn = DIFactory.createCryptoInputStream(streamIn, password);
+                // reset current data
+                removeCurrentData();
+
+                // create obfuscator stream
+                streamIn = DIFactory.createObfuscator(streamIn, metaReader.getObfuscationSeed());
+
+                // restore database
+                restoreDatabase(streamIn);
+
+                // restore files
+                restoreFiles(streamIn);
+            } finally {
+                streamIn.close();
             }
-
-            // reset current data
-            removeCurrentData();
-
-            // create obfuscator stream
-            streamIn = DIFactory.createObfuscator(streamIn, metaReader.getObfuscationSeed());
-
-            // restore database
-            restoreDatabase(streamIn);
-
-            // restore files
-            restoreFiles(streamIn);
-
-            streamIn.close();
         }
     }
 
@@ -85,7 +83,7 @@ public class BackupReader {
 
         var dbPath = Path.of(DatabaseConnector.getDbPath());
         var dbLength = NumberUtils.continuousBytesToLong(stream);
-        try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(dbPath))) {
+        try (OutputStream out = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(dbPath))) {
             writeFile(stream, out, dbLength);
         }
     }
@@ -113,7 +111,7 @@ public class BackupReader {
                 throw new ProcessingStageException("Invalid byte found for document data");
 
             int dataLength = (int) NumberUtils.continuousBytesToLong(stream);
-            try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(docPath))) {
+            try (OutputStream out = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(docPath))) {
                 writeFile(stream, out, dataLength);
             }
         }
