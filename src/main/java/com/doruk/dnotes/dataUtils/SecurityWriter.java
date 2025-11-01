@@ -1,6 +1,7 @@
 package com.doruk.dnotes.dataUtils;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.utils.FileAccessManager;
 import com.doruk.dnotes.utils.PathUtils;
 
 import java.io.BufferedInputStream;
@@ -16,8 +17,8 @@ public class SecurityWriter {
 
         // create input/output file
         try (
-                var input = new BufferedInputStream(Files.newInputStream(path));
-                var output = new BufferedOutputStream(Files.newOutputStream(tempPath))
+                var input = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(path));
+                var output = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(tempPath))
         ) {
             var metaReader = new MetaReader(input);
             metaReader.parse();
@@ -47,8 +48,8 @@ public class SecurityWriter {
         var tempPath = Path.of(PathUtils.getNoteFilename(fileName) + ".tmp");
 
         try (
-                var input = new BufferedInputStream(Files.newInputStream(path));
-                var output = new BufferedOutputStream(Files.newOutputStream(tempPath))
+                var input = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(path));
+                var output = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(tempPath))
         ) {
             var metaReader = new MetaReader(input);
             metaReader.parse();
@@ -64,8 +65,8 @@ public class SecurityWriter {
             int bytesRead;
             while ((bytesRead = decrypted.read(buffer)) != -1)
                 output.write(buffer, 0, bytesRead);
-            output.flush();
 
+            output.flush();
 
             // now cleanup the temp files
             Files.deleteIfExists(path);

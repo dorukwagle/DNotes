@@ -3,7 +3,6 @@ package com.doruk.dnotes.dataUtils;
 import com.doruk.dnotes.store.GlobalConstants;
 import com.doruk.dnotes.utils.NumberUtils;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;

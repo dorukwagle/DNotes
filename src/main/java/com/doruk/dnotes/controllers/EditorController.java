@@ -12,6 +12,7 @@ import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.GlobalConstants;
+import com.doruk.dnotes.store.NoteStore;
 import com.doruk.dnotes.utils.HashUtil;
 import com.doruk.dnotes.utils.PasswordStore;
 import javafx.scene.Parent;
@@ -31,7 +32,7 @@ public class EditorController implements IEditorController {
     private boolean isNotesLoaded;
     private String password;
 
-    private static Runnable onShutdown;
+    private final Runnable onShutdown = this::close;
 
     public EditorController(IMarkdownEditor markdownEditor, INavigationController navigationController) {
         this.markdownEditor = markdownEditor;
@@ -42,9 +43,6 @@ public class EditorController implements IEditorController {
         var color = MarkdownEditorColor.fromId((int) selectedColor) == MarkdownEditorColor.Subtle ? EditorColor.Subtle
                 : EditorColor.Muted;
         markdownEditor.setEditorBackground(color);
-
-        if (onShutdown == null)
-            onShutdown = this::close;
 
         setupActions();
 
@@ -68,12 +66,14 @@ public class EditorController implements IEditorController {
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         if (this.markdownEditor == null)
             return;
 
         // save the texts and notes
         saveEditorDocument();
+
+        NoteStore.setOpenedNote(null);
 
         // cleanup editor gracefully
         this.markdownEditor.close();
@@ -83,18 +83,20 @@ public class EditorController implements IEditorController {
         DIFactory.createEventManager().unregister(InternalEvent.SHUTDOWN, onShutdown);
         // also the context switch listener
         DIFactory.createEventManager().unregister(InternalEvent.CONTEXT_SWITCH, onShutdown);
-        onShutdown = null;
 
         // remove the schedular
-        this.scheduler.close();
+        this.scheduler.shutdownNow();
     }
 
-    private void saveEditorDocument() {
+    private synchronized void  saveEditorDocument() {
         if (this.markdownEditor == null)
             return;
 
         // loading new note takes some time, don't save before document is fully loaded.
         if (!isNotesLoaded)
+            return;
+
+        if (NoteStore.getOpenedNote() == null || !this.currentNote.getContentId().equals(NoteStore.getOpenedNote()))
             return;
 
         try {
@@ -110,11 +112,13 @@ public class EditorController implements IEditorController {
     }
 
     @Override
-    public void loadEditorDocument(BookPageDto note) {
+    public synchronized void loadEditorDocument(BookPageDto note) {
         if (note == null || note.getContentId() == null)
             throw new IllegalArgumentException("Expected fileId: null received...");
 
         this.currentNote = note;
+        NoteStore.setOpenedNote(note.getContentId());
+
         // if note is encrypted
         if (note.getIsLocked()) {
             this.password = this.promptPassword();

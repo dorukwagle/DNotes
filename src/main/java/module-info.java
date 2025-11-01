@@ -1,7 +1,4 @@
 module com.doruk.dnotes {
-    requires transitive javafx.base;
-    requires transitive javafx.controls;
-    requires transitive javafx.graphics;
     requires transitive java.prefs;
     requires java.base;
     requires atlantafx.base;
@@ -14,8 +11,8 @@ module com.doruk.dnotes {
 
     requires org.fxmisc.flowless;
     requires org.fxmisc.undo;
-    requires transitive org.fxmisc.richtext;
-    requires transitive reactfx;
+    requires org.fxmisc.richtext;
+    requires reactfx;
     requires java.xml.crypto;
     requires jbcrypt;
     requires java.desktop;
