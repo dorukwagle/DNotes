@@ -193,7 +193,7 @@ public class BookController implements IController {
         
         // gracefully cleanup the existing editor
         if (this.editorController != null) {
-            // also freeze the editor from being interacted with, as the editor view still remains in the scene
+            // freeze the editor
             this.editorController.freeze(true);
             this.editorController.close();
             this.editorController = null; // remove reference
@@ -201,9 +201,17 @@ public class BookController implements IController {
 
         this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR,
                 this.navigationController);
-        // load the note into markdown editor
-        this.editorController.loadEditorDocument(note);
 
+        try {
+            // load the note into markdown editor
+            this.editorController.loadEditorDocument(note);
+        } catch (Exception e) {
+            Platform.runLater(() -> {
+                this.editorController.close();
+                this.editorController = null;
+            });
+            throw e;
+        }
         this.view.displayEditor(this.editorController.getView());
 
         this.currentEditingNote = note;
