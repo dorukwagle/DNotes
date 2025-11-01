@@ -12,6 +12,7 @@ import com.doruk.dnotes.interfaces.IEventManager.InternalEvent;
 import com.doruk.dnotes.interfaces.INavigationController;
 import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.GlobalConstants;
+import com.doruk.dnotes.store.NoteStore;
 import com.doruk.dnotes.utils.HashUtil;
 import com.doruk.dnotes.utils.PasswordStore;
 import javafx.scene.Parent;
@@ -75,6 +76,8 @@ public class EditorController implements IEditorController {
         // save the texts and notes
         saveEditorDocument();
 
+        NoteStore.setOpenedNote(null);
+
         // cleanup editor gracefully
         this.markdownEditor.close();
         this.markdownEditor = null;
@@ -97,6 +100,9 @@ public class EditorController implements IEditorController {
         if (!isNotesLoaded)
             return;
 
+        if (NoteStore.getOpenedNote() == null || !this.currentNote.getContentId().equals(NoteStore.getOpenedNote()))
+            return;
+
         try {
             var writer = this.currentNote.getIsLocked() ?
                     DIFactory.createNoteWriter(markdownEditor, this.password) :
@@ -115,6 +121,8 @@ public class EditorController implements IEditorController {
             throw new IllegalArgumentException("Expected fileId: null received...");
 
         this.currentNote = note;
+        NoteStore.setOpenedNote(note.getContentId());
+
         // if note is encrypted
         if (note.getIsLocked()) {
             this.password = this.promptPassword();
