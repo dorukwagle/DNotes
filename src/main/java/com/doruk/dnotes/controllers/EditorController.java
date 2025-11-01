@@ -32,7 +32,7 @@ public class EditorController implements IEditorController {
     private boolean isNotesLoaded;
     private String password;
 
-    private static Runnable onShutdown;
+    private final Runnable onShutdown = this::close;
 
     public EditorController(IMarkdownEditor markdownEditor, INavigationController navigationController) {
         this.markdownEditor = markdownEditor;
@@ -43,9 +43,6 @@ public class EditorController implements IEditorController {
         var color = MarkdownEditorColor.fromId((int) selectedColor) == MarkdownEditorColor.Subtle ? EditorColor.Subtle
                 : EditorColor.Muted;
         markdownEditor.setEditorBackground(color);
-
-        if (onShutdown == null)
-            onShutdown = this::close;
 
         setupActions();
 
@@ -69,7 +66,7 @@ public class EditorController implements IEditorController {
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         if (this.markdownEditor == null)
             return;
 
@@ -86,13 +83,12 @@ public class EditorController implements IEditorController {
         DIFactory.createEventManager().unregister(InternalEvent.SHUTDOWN, onShutdown);
         // also the context switch listener
         DIFactory.createEventManager().unregister(InternalEvent.CONTEXT_SWITCH, onShutdown);
-        onShutdown = null;
 
         // remove the schedular
-        this.scheduler.close();
+        this.scheduler.shutdownNow();
     }
 
-    private void saveEditorDocument() {
+    private synchronized void  saveEditorDocument() {
         if (this.markdownEditor == null)
             return;
 
@@ -116,7 +112,7 @@ public class EditorController implements IEditorController {
     }
 
     @Override
-    public void loadEditorDocument(BookPageDto note) {
+    public synchronized void loadEditorDocument(BookPageDto note) {
         if (note == null || note.getContentId() == null)
             throw new IllegalArgumentException("Expected fileId: null received...");
 
