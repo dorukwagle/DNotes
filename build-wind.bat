@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 :: Config
 :: -----------------------------
 set APP_NAME=dNotes
-set APP_VERSION=1.0.0
+set APP_VERSION=1.0.1
 set MAIN_CLASS=com.doruk.dnotes.App
 
 set JAR_FILE=target\dNotes-%APP_VERSION%-shaded.jar
