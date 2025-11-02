@@ -2,7 +2,7 @@
 set -e
 
 APP_NAME="dNotes"
-APP_VERSION="1.0.0"
+APP_VERSION="1.1.2"
 MAIN_CLASS="com.doruk.dnotes.Main"
 
 JAR_FILE="target/dNotes-${APP_VERSION}-shaded.jar"
