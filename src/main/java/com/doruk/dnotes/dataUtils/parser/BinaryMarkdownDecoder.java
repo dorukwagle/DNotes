@@ -1,6 +1,7 @@
 package com.doruk.dnotes.dataUtils.parser;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,11 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         super(codecsName);
     }
 
+    private void readFully(InputStream stream, byte[] bytes) throws IOException {
+        var byteStream = new DataInputStream(stream);
+        byteStream.readFully(bytes);
+    }
+
     private void readGlobalStyles(InputStream stream, ParagraphNode node) throws IOException {
         byte[] marker = new byte[1];
 
@@ -28,8 +34,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] globalBytes = new byte[length];
 
-        if (stream.read(globalBytes) == -1)
-            return;
+        readFully(stream, globalBytes);
 
         for (byte b : globalBytes) {
             var style = bytesCodecMap.get(b);
@@ -47,8 +52,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] globalBytes = new byte[length];
 
-        if (stream.read(globalBytes) == -1)
-            return;
+        readFully(stream, globalBytes);
 
         var modifierStream = new ByteArrayInputStream(globalBytes);
         byte[] modifier = new byte[1];
@@ -71,8 +75,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] segmentBytes = new byte[length];
 
-        if (stream.read(segmentBytes) == -1)
-            return;
+        readFully(stream, segmentBytes);
 
         for (byte b : segmentBytes) {
             var style = bytesCodecMap.get(b);
@@ -90,8 +93,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] segmentBytes = new byte[length];
 
-        if (stream.read(segmentBytes) == -1)
-            return;
+        readFully(stream, segmentBytes);
 
         var stateStream = new ByteArrayInputStream(segmentBytes);
         byte[] modifier = new byte[1];
@@ -114,8 +116,7 @@ public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecod
         int length = (int)NumberUtils.continuousBytesToLong(stream);
         byte[] textBytes = new byte[length];
 
-        if (stream.read(textBytes) == -1)
-            return;
+        readFully(stream, textBytes);
 
         node.setText(new String(textBytes, StandardCharsets.UTF_8));
     }
