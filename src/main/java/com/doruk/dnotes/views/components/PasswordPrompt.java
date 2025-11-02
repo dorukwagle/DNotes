@@ -1,6 +1,7 @@
 package com.doruk.dnotes.views.components;
 
 import atlantafx.base.theme.Styles;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,12 +25,14 @@ public class PasswordPrompt {
     private final Button submitButton;
     private Runnable onSubmitAction;
     private final Button cancelButton;
+    private Label notesNameLabel;
 
     public PasswordPrompt(String title) {
         // Create the dialog
         dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initStyle(StageStyle.UNDECORATED);
+        dialog.setMinHeight(350);
         dialog.setTitle(title);
 
         // Create lock icon
@@ -37,6 +40,14 @@ public class PasswordPrompt {
         lockIcon.setScaleX(3);
         lockIcon.setScaleY(3);
         lockIcon.getStyleClass().addAll(Styles.ACCENT);
+
+        // notes name info
+        notesNameLabel = new Label();
+        notesNameLabel.getStyleClass().addAll(Styles.TEXT, Styles.LARGE);
+        notesNameLabel.setMaxWidth(Double.MAX_VALUE);
+        notesNameLabel.setAlignment(Pos.CENTER);
+        notesNameLabel.setVisible(false);
+        notesNameLabel.setManaged(false);
         
         var iconContainer = new HBox(lockIcon);
         iconContainer.setAlignment(Pos.CENTER);
@@ -100,7 +111,7 @@ public class PasswordPrompt {
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         
         // Main container
-        VBox container = getContainer(iconContainer, titleLabel, buttonBox);
+        VBox container = getContainer(iconContainer, titleLabel, notesNameLabel, buttonBox);
 
         // Create scene
         Scene scene = new Scene(container);
@@ -110,8 +121,8 @@ public class PasswordPrompt {
         dialog.setOnCloseRequest(Event::consume);
     }
 
-    private VBox getContainer(HBox iconContainer, Label titleLabel, HBox buttonBox) {
-        VBox container = new VBox(15, iconContainer, titleLabel, passwordField, confirmPasswordField, rememberCheckbox, buttonBox);
+    private VBox getContainer(HBox iconContainer, Label titleLabel, Label notesLabel, HBox buttonBox) {
+        VBox container = new VBox(15, iconContainer, titleLabel, notesLabel, passwordField, confirmPasswordField, rememberCheckbox, buttonBox);
         container.setPadding(new Insets(25));
         container.setMinWidth(350);
         container.setMaxWidth(450);
@@ -174,6 +185,14 @@ public class PasswordPrompt {
         confirmPasswordField.textProperty().addListener((_, _, newVal) -> {
             var isTextEqual = newVal.equals(passwordField.getText());
             submitButton.setDisable(!isTextEqual);
+        });
+    }
+
+    public void setNotesName(String name) {
+        Platform.runLater(() -> {
+            notesNameLabel.setText(name);
+            notesNameLabel.setVisible(true);
+            notesNameLabel.setManaged(true);
         });
     }
     

@@ -173,6 +173,7 @@ public class EditorController implements IEditorController {
 
     @Override
     public void freeze(boolean freeze) {
-        this.markdownEditor.setDisabled(freeze);
+        if (this.markdownEditor != null)
+            this.markdownEditor.setDisabled(freeze);
     }
 }

@@ -8,8 +8,8 @@ import com.doruk.dnotes.dto.SearchControlsDto;
 import com.doruk.dnotes.enums.*;
 import com.doruk.dnotes.interfaces.*;
 import com.doruk.dnotes.store.BookStore;
-import com.doruk.dnotes.utils.EventManager;
 import com.doruk.dnotes.utils.PathUtils;
+import com.doruk.dnotes.views.components.LoadingSpinner;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
@@ -190,14 +190,10 @@ public class BookController implements IController {
     private void openNote(BookPageDto note) {
         if (note == null)
             return;
-        
+
         // gracefully cleanup the existing editor
-        if (this.editorController != null) {
-            // freeze the editor
-            this.editorController.freeze(true);
-            this.editorController.close();
-            this.editorController = null; // remove reference
-        }
+        if (this.editorController != null)
+            closeEditor();
 
         this.editorController = (IEditorController) ControllerFactory.create(ViewPage.EDITOR,
                 this.navigationController);
@@ -236,7 +232,7 @@ public class BookController implements IController {
                 res.get(),
                 PathUtils.generateFileId(),
                 "")
-            );
+        );
 
         this.updateSidebarState(note, StateAction.Create);
         return note;
@@ -249,7 +245,7 @@ public class BookController implements IController {
             this.notes = this.notes.stream()
                     .filter(n -> !n.getId().equals(note.getId()))
                     .collect(Collectors.toList());
-            }
+        }
 
         if (action != StateAction.Delete)
             this.notes.addFirst(note);
@@ -262,19 +258,19 @@ public class BookController implements IController {
 
         if (action == StateAction.Delete && this.notes.isEmpty())
             this.view.setPlaceholder("Nothing left here...");
-        
+
         if (isFirstNote)
             this.view.setPlaceholder("Your first note is created, Click on it to continue...");
     }
 
     private void deleteNote(BookPageDto note) {
         // cannot delete currently editing note
-        if (this.currentEditingNote != null && 
-            this.currentEditingNote.getId().equals(note.getId())) {
-                DIFactory.createConfirmationModal("Cannot Delete", "You cannot delete the note you are currently editing")
-                .showAndWait();
-                return;
-            }
+        if (this.currentEditingNote != null &&
+                this.currentEditingNote.getId().equals(note.getId())) {
+            DIFactory.createConfirmationModal("Cannot Delete", "You cannot delete the note you are currently editing")
+                    .showAndWait();
+            return;
+        }
 
         this.noteModel.softDelete(note.getId());
         this.updateSidebarState(note, StateAction.Delete);
@@ -287,7 +283,7 @@ public class BookController implements IController {
                 updatedName,
                 note.getContentId(),
                 "")
-            );
+        );
 
         this.updateSidebarState(updatedNote, StateAction.Update);
     }
@@ -314,17 +310,25 @@ public class BookController implements IController {
 
         update.setOnAction(_ -> this.updateOrDelete(note));
         security.setOnAction(_ -> {
-            // make sure to publish context switch event, to let editor perform cleanup.
-            EventManager.getInstance().publishEvent(IEventManager.InternalEvent.CONTEXT_SWITCH);
+            // close the editor
+            this.closeEditor();
 
-            new SecurityController(note);
-
-            // now to remove the editor from scree, refresh the view
-            navigationController.goToBooksPage();
+            Platform.runLater(() -> this.runSecurityModal(note));
         });
         share.setOnAction(_ -> DIFactory.createSharedNoteExporter(note));
 
         contextMenu.show(event.getPickResult().getIntersectedNode(), event.getScreenX(), event.getScreenY());
+    }
+
+    private void runSecurityModal(BookPageDto note) {
+        var loading = new LoadingSpinner();
+        new SecurityController(note, () -> Platform.runLater(loading::show), () -> {
+            Platform.runLater(() -> {
+                loading.hide();
+                // refresh the view
+                Platform.runLater(navigationController::goToBooksPage);
+            });
+        });
     }
 
     @Override
@@ -336,19 +340,19 @@ public class BookController implements IController {
         isSearchProgress = !controls.getSearchField().getText().trim().isEmpty();
 
         // if searching, cleanup the editor
-        if (isSearchProgress && this.editorController != null){
+        if (isSearchProgress && this.editorController != null) {
             this.editorController.close();
             this.editorController = null;
             this.currentEditingNote = null;
         }
 
         this.noteParams = new PaginationParams(
-            controls.getSearchField().getText(),
-            controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
-            controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
+                controls.getSearchField().getText(),
+                controls.getSortByToggle().isSelected() ? SortBy.Name : SortBy.Date,
+                controls.getSortOrderToggle().isSelected() ? SortOrder.Ascending : SortOrder.Descending
         );
 
-       this.openBook();
+        this.openBook();
 
         if (!isSearchProgress)
             this.view.setSelectedSidebarItem(this.currentEditingNote);
@@ -365,5 +369,12 @@ public class BookController implements IController {
 
         searchControls.getSortByToggle().setOnAction(_ -> this.searchNotes(searchControls));
         searchControls.getSortOrderToggle().setOnAction(_ -> this.searchNotes(searchControls));
+    }
+
+    private void closeEditor() {
+        // freeze the editor
+        this.editorController.freeze(true);
+        this.editorController.close();
+        this.editorController = null; // remove reference
     }
 }
