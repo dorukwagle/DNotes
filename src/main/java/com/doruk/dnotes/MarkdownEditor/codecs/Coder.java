@@ -9,6 +9,7 @@ import com.doruk.dnotes.MarkdownEditor.codecs.dto.ParagraphNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.dto.SegmentNode;
 import com.doruk.dnotes.MarkdownEditor.codecs.enums.ParagraphModifiers;
 import com.doruk.dnotes.MarkdownEditor.codecs.interfaces.Codec.CodecType;
+import com.doruk.dnotes.MarkdownEditor.docstyle.ParagraphStyle;
 import com.doruk.dnotes.MarkdownEditor.enums.ToolName;
 import com.doruk.dnotes.MarkdownEditor.interfaces.FXTextEditor;
 import com.doruk.dnotes.MarkdownEditor.interfaces.ICodecManager;
@@ -60,12 +61,15 @@ public class Coder implements ICodecManager {
 
         var dataLen = area.getLength();
 
-        // insert a new paragraph if not already exists
-        if (area.getCaretColumn() > 0)
-            area.insertText(dataLen++, "\n"); // also increase length after insertion
+        // insert a new paragraph
+        if (dataLen > 0)
+            area.insertText(dataLen++, "\n"); // creates a paragraph
 
-        if (area.getCaretColumn() == 0 && isEmptyNode(node))
-            area.insertText(dataLen++, "\n"); // leave empty paragraphs
+        // if the node is empty, add whitespace
+        if (dataLen == 0 && isEmptyNode(node)) {
+            area.insertText(dataLen, "\u200B");
+            return;
+        }
 
         // create mutable paragraph style, then populate it
         var paragraphStyle = new MutableParagraphStyle();
