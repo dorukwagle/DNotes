@@ -15,12 +15,14 @@ import com.doruk.dnotes.MarkdownEditor.utils.StyleGroupRegistry;
 import com.doruk.dnotes.MarkdownEditor.utils.StyleHelper;
 import com.doruk.dnotes.store.GlobalConstants;
 import javafx.application.Platform;
+import javafx.collections.ObservableMap;
 import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.input.*;
 import javafx.scene.text.Font;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -29,13 +31,13 @@ public class MarkdownEditor implements IMarkdownEditor {
     private StringBuilder editorText;
     private View editorView;
     private final Set<KeyCode> keyActions = Set.of(
-        KeyCode.ENTER, 
-        KeyCode.TAB, 
-        KeyCode.BACK_SPACE
+            KeyCode.ENTER,
+            KeyCode.TAB,
+            KeyCode.BACK_SPACE
     );
     private final Set<KeyCode> modifierKeyActions = Set.of(
-        KeyCode.X,
-        KeyCode.V
+            KeyCode.X,
+            KeyCode.V
     );
     private CaretSelectionHandler caretSelectionHandler; // store for cleanup
 
@@ -56,6 +58,9 @@ public class MarkdownEditor implements IMarkdownEditor {
         // set default style
         this.editorView.getEditor().getArea()
                 .setTextInsertionStyle(StyleHelper.defaultStyle());
+
+        // bind shortcut keys to style buttons
+        Platform.runLater(this::bindShortcutKeys); // after rendering happens
     }
 
     private boolean shouldHandleKeyAction(KeyEvent event, KeyCode action) {
@@ -63,7 +68,7 @@ public class MarkdownEditor implements IMarkdownEditor {
             return true;
 
         return (event.isControlDown() || event.isMetaDown()) &&
-            modifierKeyActions.contains(action);
+                modifierKeyActions.contains(action);
     }
 
     private void loadFonts() {
@@ -94,22 +99,22 @@ public class MarkdownEditor implements IMarkdownEditor {
                             tool.unapply(editorView.getEditor());
                     });
                 });
-        
+
         // add event filter to resolve and unselect conflicting tools
         this.editorView.getControlPanel()
                 .getStyleButtons()
                 .forEach(btn ->
-                    btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
-                        var toolName = ToolName.fromName(btn.getId());
-                        var conflictingTools = StyleGroupRegistry.getConflictingTools(toolName);
-                        conflictingTools.remove(toolName);
-                        this.editorView.getControlPanel()
-                            .getStyleButtons()
-                            .stream()
-                            .filter(toggle -> conflictingTools.contains(ToolName.fromName(toggle.getId()))
-                                && toggle.isSelected())
-                            .forEach(toggle -> toggle.setSelected(false));
-                    }));
+                        btn.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> {
+                            var toolName = ToolName.fromName(btn.getId());
+                            var conflictingTools = StyleGroupRegistry.getConflictingTools(toolName);
+                            conflictingTools.remove(toolName);
+                            this.editorView.getControlPanel()
+                                    .getStyleButtons()
+                                    .stream()
+                                    .filter(toggle -> conflictingTools.contains(ToolName.fromName(toggle.getId()))
+                                            && toggle.isSelected())
+                                    .forEach(toggle -> toggle.setSelected(false));
+                        }));
     }
 
     private void initializeChangeHandlers() {
@@ -129,12 +134,12 @@ public class MarkdownEditor implements IMarkdownEditor {
         KeyEventDispatcher.addHandler(new CheckListKeyHandler());
 
         this.editorView.getEditor().getArea()
-            .addEventFilter(KeyEvent.KEY_PRESSED, event -> {                
-                if (!this.shouldHandleKeyAction(event, event.getCode()))
-                    return;
-                
-                KeyEventDispatcher.dispatch(editorView.getEditor(), event.getCode(), event);
-            });
+                .addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                    if (!this.shouldHandleKeyAction(event, event.getCode()))
+                        return;
+
+                    KeyEventDispatcher.dispatch(editorView.getEditor(), event.getCode(), event);
+                });
     }
 
     @Override
@@ -188,13 +193,13 @@ public class MarkdownEditor implements IMarkdownEditor {
     @Override
     public Enum<?>[] getCodecsValues() {
         return Factory.createCodecManager()
-            .getCodecsValues();
+                .getCodecsValues();
     }
 
     @Override
     public Stream<ParagraphNode> encodeAndDump() {
         return Factory.createCodecManager()
-            .dumpEditorDocument(editorView.getEditor());
+                .dumpEditorDocument(editorView.getEditor());
     }
 
     @Override
@@ -220,5 +225,48 @@ public class MarkdownEditor implements IMarkdownEditor {
 
         // enable the close button
         this.editorView.getControlPanel().getBackButton().setDisable(false);
+    }
+
+    private void bindToKeys(ObservableMap<KeyCombination, Runnable> map, KeyCode key, ToggleButton btn) {
+        map.put(new KeyCodeCombination(key, KeyCombination.CONTROL_DOWN), () -> {
+            btn.fire();
+            btn.fireEvent(new MouseEvent(
+                    MouseEvent.MOUSE_CLICKED,
+                    0, 0, 0, 0,
+                    MouseButton.PRIMARY, 1,
+                    false, false, false, false,
+                    true, false, false, false,
+                    false, false, null
+            ));
+        });
+    }
+
+    private void bindShortcutKeys() {
+        Map<ToolName, ToggleButton> btns = new EnumMap<>(ToolName.class);
+        var btnSet = Set.of(
+                ToolName.Bold.name(),
+                ToolName.Italic.name(),
+                ToolName.Underline.name(),
+                ToolName.H1.name(),
+                ToolName.H2.name(),
+                ToolName.H3.name(),
+                ToolName.H4.name()
+        );
+
+        this.editorView.getControlPanel().getStyleButtons().forEach(btn -> {
+            if (btnSet.contains(btn.getId()))
+                btns.put(ToolName.fromName(btn.getId()), btn);
+        });
+
+        var binding = this.editorView.getView().getScene()
+                .getAccelerators();
+
+        bindToKeys(binding, KeyCode.B, btns.get(ToolName.Bold));
+        bindToKeys(binding, KeyCode.I, btns.get(ToolName.Italic));
+        bindToKeys(binding, KeyCode.U, btns.get(ToolName.Underline));
+        bindToKeys(binding, KeyCode.DIGIT1, btns.get(ToolName.H1));
+        bindToKeys(binding, KeyCode.DIGIT2, btns.get(ToolName.H2));
+        bindToKeys(binding, KeyCode.DIGIT3, btns.get(ToolName.H3));
+        bindToKeys(binding, KeyCode.DIGIT4, btns.get(ToolName.H4));
     }
 }
