@@ -60,9 +60,12 @@ public class Coder implements ICodecManager {
 
         var dataLen = area.getLength();
 
-        // insert a new line if it's not first
-        if (dataLen > 0)
+        // insert a new paragraph if not already exists
+        if (area.getCaretColumn() > 0)
             area.insertText(dataLen++, "\n"); // also increase length after insertion
+
+        if (area.getCaretColumn() == 0 && isEmptyNode(node))
+            area.insertText(dataLen++, "\n"); // leave empty paragraphs
 
         // create mutable paragraph style, then populate it
         var paragraphStyle = new MutableParagraphStyle();
@@ -123,5 +126,13 @@ public class Coder implements ICodecManager {
                 ToolName.FontBG,
                 ToolName.Font,
         };
+    }
+
+    private boolean isEmptyNode(ParagraphNode node) {
+        var segments = node.getSegments();
+        if (segments.isEmpty())
+            return true;
+
+        return segments.getFirst().getText().isEmpty();
     }
 }
