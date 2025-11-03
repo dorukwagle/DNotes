@@ -1,7 +1,6 @@
 package com.doruk.dnotes.dataUtils.parser;
 
 import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -15,14 +14,11 @@ import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.MarkdownDecoder;
 import com.doruk.dnotes.utils.NumberUtils;
 
+import static com.doruk.dnotes.dataUtils.DataReader.readFully;
+
 public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecoder {
     public BinaryMarkdownDecoder(Enum<?>[] codecsName) {
         super(codecsName);
-    }
-
-    private void readFully(InputStream stream, byte[] bytes) throws IOException {
-        var byteStream = new DataInputStream(stream);
-        byteStream.readFully(bytes);
     }
 
     private void readGlobalStyles(InputStream stream, ParagraphNode node) throws IOException {

@@ -1,6 +1,7 @@
 package com.doruk.dnotes.dataUtils.readWrite;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.dataUtils.DataReader;
 import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
@@ -99,10 +100,7 @@ public class BackupReader {
 
             int nameLength = (int) NumberUtils.continuousBytesToLong(stream);
             byte[] nameBytes = new byte[nameLength];
-            int readBytes = stream.read(nameBytes);
-
-            if (readBytes != nameLength)
-                throw new ProcessingStageException("Unable to read complete document name from file");
+            DataReader.readFully(stream, nameBytes);
 
             String name = new String(nameBytes, StandardCharsets.UTF_8);
             var docPath = Path.of(PathUtils.join(PathUtils.getNotesDir(), name));
@@ -124,10 +122,7 @@ public class BackupReader {
 
         int length = (int) NumberUtils.continuousBytesToLong(stream);
         byte[] passwordHashBytes = new byte[length];
-        int readBytes = stream.read(passwordHashBytes);
-
-        if (readBytes != length)
-            throw new ProcessingStageException("Unable to read complete password from file");
+        DataReader.readFully(stream, passwordHashBytes);
 
         return new String(passwordHashBytes, StandardCharsets.UTF_8);
     }
@@ -138,14 +133,13 @@ public class BackupReader {
 
         byte[] chunk = new byte[chunkSize];
         int expectedBytes = (int) Math.min(remainingBytes, chunkSize);
-        int bytesRead;
-        while ((bytesRead = in.read(chunk, 0, expectedBytes)) != -1) {
-            if (expectedBytes != bytesRead)
-                throw new ProcessingStageException("File length, and expected length mismatch");
 
-            out.write(chunk, 0, bytesRead);
+        while (true) {
+            DataReader.readFully(in, chunk, expectedBytes);
 
-            remainingBytes -= bytesRead;
+            out.write(chunk, 0, expectedBytes);
+
+            remainingBytes -= expectedBytes;
 
             if (remainingBytes == 0)
                 break;
