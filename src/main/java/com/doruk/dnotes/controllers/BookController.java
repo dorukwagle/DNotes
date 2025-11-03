@@ -373,6 +373,8 @@ public class BookController implements IController {
 
     private void closeEditor() {
         // freeze the editor
+        if (this.editorController == null)
+            return;
         this.editorController.freeze(true);
         this.editorController.close();
         this.editorController = null; // remove reference

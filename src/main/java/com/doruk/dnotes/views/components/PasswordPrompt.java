@@ -32,7 +32,6 @@ public class PasswordPrompt {
         dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initStyle(StageStyle.UNDECORATED);
-        dialog.setMinHeight(350);
         dialog.setTitle(title);
 
         // Create lock icon
@@ -47,8 +46,7 @@ public class PasswordPrompt {
         notesNameLabel.setMaxWidth(Double.MAX_VALUE);
         notesNameLabel.setAlignment(Pos.CENTER);
         notesNameLabel.setVisible(false);
-        notesNameLabel.setManaged(false);
-        
+
         var iconContainer = new HBox(lockIcon);
         iconContainer.setAlignment(Pos.CENTER);
         
@@ -104,6 +102,7 @@ public class PasswordPrompt {
         cancelButton.setContentDisplay(ContentDisplay.RIGHT);
         cancelButton.setMaxWidth(Double.MAX_VALUE);
         cancelButton.setVisible(false);
+        cancelButton.setManaged(false);
         cancelButton.setOnAction(_ -> close());
         
         // Button container
@@ -125,7 +124,7 @@ public class PasswordPrompt {
         VBox container = new VBox(15, iconContainer, titleLabel, notesLabel, passwordField, confirmPasswordField, rememberCheckbox, buttonBox);
         container.setPadding(new Insets(25));
         container.setMinWidth(350);
-        container.setMaxWidth(450);
+        container.setMaxWidth(400);
         container.setStyle("""
             -fx-background-color: -color-bg-default;
             -fx-background-radius: 8px;
@@ -160,6 +159,7 @@ public class PasswordPrompt {
 
     public void setCancelButtonVisible(boolean enable) {
         cancelButton.setVisible(enable);
+        cancelButton.setManaged(enable);
     }
 
     public void setConfirmationCheckboxVisible(boolean enable) {
@@ -192,7 +192,6 @@ public class PasswordPrompt {
         Platform.runLater(() -> {
             notesNameLabel.setText(name);
             notesNameLabel.setVisible(true);
-            notesNameLabel.setManaged(true);
         });
     }
     

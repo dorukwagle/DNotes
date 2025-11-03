@@ -60,7 +60,13 @@ public class MarkdownEditor implements IMarkdownEditor {
                 .setTextInsertionStyle(StyleHelper.defaultStyle());
 
         // bind shortcut keys to style buttons
-        Platform.runLater(this::bindShortcutKeys); // after rendering happens
+        this.editorView.getControlPanel().getView()
+                .sceneProperty()
+                .subscribe(scene -> {
+                    if (scene == null)
+                        return;
+                    this.bindShortcutKeys();
+                });
     }
 
     private boolean shouldHandleKeyAction(KeyEvent event, KeyCode action) {
