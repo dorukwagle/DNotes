@@ -27,7 +27,7 @@ public class BackupWriter {
                 var dbIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(dbFilePath));
                 var dirStream = Files.newDirectoryStream(notesDir);
                 var outFile = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(backupFile))
-                ) {
+        ) {
             var seed = KeyUtil.generateSeed();
             var metaWriter = new MetaWriter(outFile);
             metaWriter.writeBackupMeta(seed, encrypt, new Date());
@@ -54,6 +54,8 @@ public class BackupWriter {
 
                 // write database
                 writeFile(dbIn, stream, Files.size(dbFilePath));
+                // close dbIn
+                dbIn.close();
 
                 // write notes
                 writeNotes(dirStream, stream);
