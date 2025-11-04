@@ -14,7 +14,7 @@ import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.interfaces.MarkdownDecoder;
 import com.doruk.dnotes.utils.NumberUtils;
 
-import static com.doruk.dnotes.dataUtils.DataReader.readFully;
+import static com.doruk.dnotes.dataUtils.StreamDataUtil.readFully;
 
 public class BinaryMarkdownDecoder extends BinaryParser implements MarkdownDecoder {
     public BinaryMarkdownDecoder(Enum<?>[] codecsName) {

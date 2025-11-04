@@ -1,7 +1,7 @@
 package com.doruk.dnotes.dataUtils.readWrite;
 
 import com.doruk.dnotes.DIFactory;
-import com.doruk.dnotes.dataUtils.DataReader;
+import com.doruk.dnotes.dataUtils.StreamDataUtil;
 import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
@@ -85,7 +85,7 @@ public class BackupReader {
         var dbPath = Path.of(DatabaseConnector.getDbPath());
         var dbLength = NumberUtils.continuousBytesToLong(stream);
         try (OutputStream out = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(dbPath))) {
-            writeFile(stream, out, dbLength);
+            StreamDataUtil.writeFileData(stream, out, dbLength);
         }
     }
 
@@ -100,7 +100,7 @@ public class BackupReader {
 
             int nameLength = (int) NumberUtils.continuousBytesToLong(stream);
             byte[] nameBytes = new byte[nameLength];
-            DataReader.readFully(stream, nameBytes);
+            StreamDataUtil.readFully(stream, nameBytes);
 
             String name = new String(nameBytes, StandardCharsets.UTF_8);
             var docPath = Path.of(PathUtils.join(PathUtils.getNotesDir(), name));
@@ -110,7 +110,7 @@ public class BackupReader {
 
             int dataLength = (int) NumberUtils.continuousBytesToLong(stream);
             try (OutputStream out = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(docPath))) {
-                writeFile(stream, out, dataLength);
+                StreamDataUtil.writeFileData(stream, out, dataLength);
             }
         }
     }
@@ -122,29 +122,8 @@ public class BackupReader {
 
         int length = (int) NumberUtils.continuousBytesToLong(stream);
         byte[] passwordHashBytes = new byte[length];
-        DataReader.readFully(stream, passwordHashBytes);
+        StreamDataUtil.readFully(stream, passwordHashBytes);
 
         return new String(passwordHashBytes, StandardCharsets.UTF_8);
-    }
-
-    private static void writeFile(InputStream in, OutputStream out, long fileLength) throws IOException {
-        var remainingBytes = fileLength;
-        var chunkSize = 2048; // 2kb
-
-        byte[] chunk = new byte[chunkSize];
-        int expectedBytes = (int) Math.min(remainingBytes, chunkSize);
-
-        while (true) {
-            DataReader.readFully(in, chunk, expectedBytes);
-
-            out.write(chunk, 0, expectedBytes);
-
-            remainingBytes -= expectedBytes;
-
-            if (remainingBytes == 0)
-                break;
-            if (remainingBytes < 0)
-                throw new ProcessingStageException("File length, and expected length mismatch");
-        }
     }
 }

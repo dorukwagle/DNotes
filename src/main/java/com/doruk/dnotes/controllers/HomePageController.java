@@ -3,6 +3,7 @@ package com.doruk.dnotes.controllers;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import com.doruk.dnotes.DIFactory;
@@ -353,15 +354,17 @@ public class HomePageController implements IController {
 
             var loader = new LoadingSpinner();
             loader.show();
-
-            try {
-                BackupWriter.write(res.orElse(null), res.isPresent() && !res.get().isBlank());
-            } catch (IOException e) {
-                throw new ProcessingStageException("Failed to create backup...");
-            } finally {
-                loader.hide();
-            }
+            CompletableFuture.runAsync(() -> {
+                try {
+                    BackupWriter.write(res.orElse(null), res.isPresent() && !res.get().isBlank());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    Platform.runLater(loader::hide);
+                }
+            });
         });
+
         confirm.setOnCancel(null);
         confirm.showAndWait();
         DIFactory.createConfirmationModal("Backup Successful", "Backup saved to: " + PathUtils.getBackupDir()).showAndWait();
@@ -394,24 +397,32 @@ public class HomePageController implements IController {
                 return;
             }
 
-            var password = "";
+            String[] password = {""};
             if (meta.isDocEncrypted()) {
                 var modal = DIFactory.createPromptModal("Password Protection", "Enter a password to restore your backup.", "Password:");
-                password = modal.showAndWait().orElse(null);
+                password[0] = modal.showAndWait().orElse(null);
             }
 
-            BackupReader.readAndRestore(file, password, meta.isDocEncrypted());
-            DIFactory.createConfirmationModal("Backup Restored", "Restart the app. Backup restored successfully.").showAndWait();
-
-            Platform.exit();
+            loader.show();
+            CompletableFuture.runAsync(() -> {
+                try {
+                    BackupReader.readAndRestore(file, password[0], meta.isDocEncrypted());
+                    Platform.runLater(() -> {
+                        DIFactory.createConfirmationModal("Backup Restored", "Restart the app. Backup restored successfully.").showAndWait();
+                        Platform.exit();
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> DIFactory.createConfirmationModal("Failed to restore backup", e.getMessage()).showAndWait());
+                    if (e instanceof IllegalArgumentException)
+                        return;
+                    DIFactory.createLogger().error(Thread.currentThread(), e);
+                    e.printStackTrace();
+                } finally {
+                    Platform.runLater(loader::hide);
+                }
+            });
         } catch (Exception e) {
-            if (e instanceof IllegalArgumentException iae) {
-                DIFactory.createConfirmationModal("Failed to restore backup", iae.getMessage()).showAndWait();
-                return;
-            }
             throw new ProcessingStageException(e.getMessage(), e);
-        } finally {
-            loader.hide();
         }
     }
 

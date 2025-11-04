@@ -1,7 +1,7 @@
 package com.doruk.dnotes.dataUtils.readWrite;
 
 import com.doruk.dnotes.DIFactory;
-import com.doruk.dnotes.dataUtils.DataReader;
+import com.doruk.dnotes.dataUtils.StreamDataUtil;
 import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaReader;
 import com.doruk.dnotes.dto.BookPageDto;
@@ -54,7 +54,7 @@ public class SharedReader {
             if (nameLength < 1) throw new ProcessingStageException("Invalid name length byte");
 
             var name = new byte[nameLength];
-            DataReader.readFully(in, name);
+            StreamDataUtil.readFully(in, name);
 
             var docName = new String(name, StandardCharsets.UTF_8);
 
@@ -73,7 +73,7 @@ public class SharedReader {
                 if (len < 1) throw new ProcessingStageException("Invalid password hash length byte");
 
                 var passwordHash = new byte[len];
-                DataReader.readFully(in, passwordHash);
+                StreamDataUtil.readFully(in, passwordHash);
 
                 note.setPassword(new String(passwordHash, StandardCharsets.UTF_8));
                 note.setIsLocked(true);
