@@ -1,9 +1,9 @@
 package com.doruk.dnotes.dataUtils.readWrite;
 
 import com.doruk.dnotes.DIFactory;
+import com.doruk.dnotes.dataUtils.StreamDataUtil;
 import com.doruk.dnotes.dataUtils.Markers;
 import com.doruk.dnotes.dataUtils.MetaWriter;
-import com.doruk.dnotes.dto.BookPageDto;
 import com.doruk.dnotes.exceptions.ProcessingStageException;
 import com.doruk.dnotes.utils.*;
 
@@ -27,7 +27,7 @@ public class BackupWriter {
                 var dbIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(dbFilePath));
                 var dirStream = Files.newDirectoryStream(notesDir);
                 var outFile = new BufferedOutputStream(FileAccessManager.getInstance().openFileForWrite(backupFile))
-                ) {
+        ) {
             var seed = KeyUtil.generateSeed();
             var metaWriter = new MetaWriter(outFile);
             metaWriter.writeBackupMeta(seed, encrypt, new Date());
@@ -53,7 +53,9 @@ public class BackupWriter {
                 writeLength(stream, Files.size(dbFilePath));
 
                 // write database
-                writeFile(dbIn, stream, Files.size(dbFilePath));
+                StreamDataUtil.writeFileData(dbIn, stream, Files.size(dbFilePath));
+                // close dbIn
+                dbIn.close();
 
                 // write notes
                 writeNotes(dirStream, stream);
@@ -84,7 +86,7 @@ public class BackupWriter {
 
             // write data
             try (var noteIn = new BufferedInputStream(FileAccessManager.getInstance().openFileForRead(note))) {
-                writeFile(noteIn, stream, Files.size(note));
+                StreamDataUtil.writeFileData(noteIn, stream, Files.size(note));
             }
         }
     }
@@ -93,25 +95,6 @@ public class BackupWriter {
         var lengthBytes = NumberUtils.toContinuationBytes(length);
         for (byte b : lengthBytes)
             stream.write(b);
-    }
-
-    private static void writeFile(InputStream in, OutputStream out, long fileLength) throws IOException {
-        var remainingBytes = fileLength;
-        var chunkSize = 2048; // 2kb
-
-        byte[] chunk = new byte[chunkSize];
-        int bytesRead;
-        while ((bytesRead = in.read(chunk)) != -1) {
-
-            out.write(chunk, 0, bytesRead);
-
-            remainingBytes -= bytesRead;
-
-            if (remainingBytes == 0)
-                break;
-            if (remainingBytes < 0)
-                throw new ProcessingStageException("File length, and expected length mismatch");
-        }
     }
 
     private static void writePasswordHash(String password, OutputStream out) throws IOException {

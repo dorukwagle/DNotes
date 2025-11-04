@@ -93,7 +93,7 @@ public class MetaReader {
             // read the length of metadata
             var metaLength = (int)NumberUtils.continuousBytesToLong(stream);
             byte[] metaBytes = new byte[metaLength];
-            stream.read(metaBytes);
+            StreamDataUtil.readFully(stream, metaBytes);
 
             // parse the results
             this.tempStream = new ByteArrayInputStream(metaBytes);
