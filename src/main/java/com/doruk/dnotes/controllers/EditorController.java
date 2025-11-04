@@ -14,6 +14,8 @@ import com.doruk.dnotes.interfaces.IPreference;
 import com.doruk.dnotes.store.GlobalConstants;
 import com.doruk.dnotes.utils.HashUtil;
 import com.doruk.dnotes.utils.PasswordStore;
+import com.doruk.dnotes.views.components.LoadingSpinner;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 
 import java.io.IOException;
@@ -85,7 +87,7 @@ public class EditorController implements IEditorController {
         this.scheduler.shutdownNow();
     }
 
-    private synchronized void  saveEditorDocument() {
+    private synchronized void saveEditorDocument() {
         if (this.markdownEditor == null)
             return;
 
@@ -120,19 +122,23 @@ public class EditorController implements IEditorController {
                 return;
             }
         }
+        var reader = note.getIsLocked() ?
+                DIFactory.createNoteReader(markdownEditor, this.password) :
+                DIFactory.createNoteReader(markdownEditor);
+        var loader = new LoadingSpinner();
+        loader.show();
 
-        try {
-            var reader = note.getIsLocked() ?
-                    DIFactory.createNoteReader(markdownEditor, this.password) :
-                    DIFactory.createNoteReader(markdownEditor);
-
-            reader.read(note.getContentId());
-            this.isNotesLoaded = true; // notes loaded completely
-        } catch (IOException | ProcessingStageException e) {
-            this.disableEditing();
-            // close the editor
-            throw new ProcessingStageException(e.getMessage(), e);
-        }
+        Platform.runLater(() -> {
+            try {
+                reader.read(note.getContentId());
+                this.isNotesLoaded = true; // notes loaded completely
+                loader.hide();
+            } catch (IOException | ProcessingStageException e) {
+                this.disableEditing();
+                // close the editor
+                throw new ProcessingStageException(e.getMessage(), e);
+            }
+        });
     }
 
     private void disableEditing() {
@@ -157,7 +163,7 @@ public class EditorController implements IEditorController {
             // verify password
             if (!HashUtil.compareHash(password, this.currentNote.getPassword())) {
                 DIFactory.createConfirmationModal("Incorrect Password",
-                        "Please enter the correct password!")
+                                "Please enter the correct password!")
                         .showAndWait();
                 return;
             }
